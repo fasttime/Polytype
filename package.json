@@ -1,0 +1,47 @@
+{
+  "name": "proxymi",
+  "version": "0.1.0",
+  "description": "Proxy-based multiple inheritance for ES6. Without mixins.",
+  "keywords": [
+    "class",
+    "classes",
+    "es6",
+    "inheritance",
+    "proxies",
+    "proxy",
+    "multiple-inheritance"
+  ],
+  "homepage": "https://github.com/fasttime/proxymi",
+  "bugs": {
+    "url": "https://github.com/fasttime/proxymi/issues"
+  },
+  "license": "ISC",
+  "author": "Francesco Trotta <ft@fasttime.org> (https://github.com/fasttime)",
+  "files": [
+    "lib/*.js",
+    "LICENSE.txt",
+    "package.json",
+    "*.md"
+  ],
+  "main": "lib/proxymi.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fasttime/proxymi.git"
+  },
+  "scripts": {
+    "build": "npm install && grunt"
+  },
+  "devDependencies": {
+    "assert": "https://github.com/fasttime/assert/tarball/master",
+    "grunt": "~1.0.1",
+    "grunt-cli": "~1.2.0",
+    "grunt-contrib-jshint": "~1.0.0",
+    "grunt-jscs": "~2.8.0",
+    "grunt-mocha-istanbul": "~4.0.2",
+    "grunt-node-version": "~1.0.2",
+    "mocha-matrix": "~0.1.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  }
+}
