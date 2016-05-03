@@ -1,17 +1,19 @@
 # Proxymi
 
+[![NPM](https://nodei.co/npm/proxymi.png?compact=true)](https://nodei.co/npm/proxymi/)
+
 **Proxy-based multiple inheritance for ES6. Without mixins.**
 
 **Proxymi** is a JavaScript library that adds dynamic multiple inheritance to JavaScript with a
 simple syntax.
 “Dynamic” means that runtime changes to base classes are reflected immediately in all derived
-classes just like you would expect when working with single prototype inheritance.
+classes just like programmers would expect when working with single prototype inheritance.
 So cool.
 So nerdy.
 
 Proxymi uses
 [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy),
-which are a new feature of ES6 and are not yet widely supported.
+which are a new feature of ECMAScript 6 and are not yet widely supported.
 As of today, Proxymi works in **current version of Chrome and Firefox, and in Node.js 6 or later**.
 As ES6 support in other browsers will improve, Proxymi will start to run in these browsers, too.
 
@@ -20,7 +22,7 @@ As ES6 support in other browsers will improve, Proxymi will start to run in thes
 ### In the Browser
 
 To use Proxymi in your project, download
-[proxymi.js](https://github.com/fasttime/Proximi/blob/master/lib/proxymi.js) from GitHub and
+[proxymi.js](https://github.com/fasttime/Proxymi/blob/master/lib/proxymi.js) from GitHub and
 include it in your HTML file.
 
 ```html
@@ -41,10 +43,10 @@ If you are using Node.js 6 or later, you can install Proxymi with [npm](https://
 npm install proxymi
 ```
 
-Then you can include it in your code.
+Then you can use it in your code.
 
 ```js
-var proxymi = require("proxymi");
+require("proxymi");
 ```
 
 ## Usage
@@ -90,7 +92,7 @@ extends classes(Circle, ColoredObject) // Base classes in a comma-separated list
 }
 ```
 
-#### Use methods, accessors and properties from all base classes
+#### Use methods and accessors from all base classes
 
 ```js
 let c = new ColoredCircle();
@@ -120,8 +122,8 @@ extends classes(Circle and ColoredObject)
 }
 ```
 
-You don't need to specify an array of parameters for each base constructor.
-If you omit the parameter arrays, the base constructors will still be invoked without parameters.
+There is no need to specify an array of parameters for each base constructor.
+If the parameter arrays are omitted, the base constructors will still be invoked without parameters.
 
 ```js
 class ColoredCircle
