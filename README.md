@@ -14,7 +14,8 @@ So nerdy.
 Proxymi uses
 [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy),
 which are a new feature of ECMAScript 6 and are not yet widely supported.
-As of today, Proxymi works in **current version of Chrome and Firefox, and in Node.js 6 or later**.
+As of today, Proxymi works in **current version of Chrome, Firefox, Opera and in Node.js 6 or
+later**.
 As ES6 support in other browsers will improve, Proxymi will start to run in these browsers, too.
 
 ## Setup Instructions
