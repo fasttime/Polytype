@@ -1,5 +1,5 @@
+/* eslint-env browser */
 /* global Matrix, TestSuite, mocha */
-/* jshint browser: true */
 
 (function ()
 {

@@ -1,5 +1,5 @@
+/* eslint-env mocha */
 /* global assert, classes, global, self */
-/* jshint mocha: true */
 
 (function (global)
 {
@@ -31,7 +31,7 @@
                     {
                         constructor(a)
                         {
-                            if (a !== undefined)
+                            if (a !== void 0)
                             {
                                 (callData || (callData = { })).A =
                                 {
@@ -56,9 +56,8 @@
                             };
                             return value;
                         }
-                        set aSetOnly(arg)
+                        set aSetOnly(arg) // eslint-disable-line no-unused-vars
                         {
-                            /* jshint unused: vars */
                             (callData || (callData = { })).A =
                             { args: Array.from(arguments), setter: 'aSetOnly', this: this };
                         }
@@ -76,9 +75,8 @@
                             };
                             return value;
                         }
-                        static set aStaticSet(arg)
+                        static set aStaticSet(arg) // eslint-disable-line no-unused-vars
                         {
-                            /* jshint unused: vars */
                             (callData || (callData = { })).A =
                             { args: Array.from(arguments), setter: 'aStaticSet', this: this };
                         }
@@ -108,7 +106,7 @@
                     {
                         constructor(b1, b2)
                         {
-                            if (b1 !== undefined || b2 !== undefined)
+                            if (b1 !== void 0 || b2 !== void 0)
                             {
                                 (callData || (callData = { })).B =
                                 {
@@ -133,9 +131,8 @@
                             };
                             return value;
                         }
-                        set bSetOnly(arg)
+                        set bSetOnly(arg) // eslint-disable-line no-unused-vars
                         {
-                            /* jshint unused: vars */
                             (callData || (callData = { })).B =
                             { args: Array.from(arguments), setter: 'bSetOnly', this: this };
                         }
@@ -153,9 +150,8 @@
                             };
                             return value;
                         }
-                        static set bStaticSet(arg)
+                        static set bStaticSet(arg) // eslint-disable-line no-unused-vars
                         {
-                            /* jshint unused: vars */
                             (callData || (callData = { })).B =
                             { args: Array.from(arguments), setter: 'bStaticSet', this: this };
                         }
@@ -184,7 +180,7 @@
                 C =
                     class C extends X
                     {
-                        constructor(...args)
+                        constructor(...args) // eslint-disable-line no-useless-constructor
                         {
                             super(...args);
                         }
@@ -245,7 +241,7 @@
                             () =>
                             {
                                 let c = new C();
-                                assert.strictEqual(c.aSetOnly, undefined);
+                                assert.strictEqual(c.aSetOnly, void 0);
                             }
                         );
                         it(
@@ -373,7 +369,7 @@
                             'ungettable properties',
                             () =>
                             {
-                                assert.strictEqual(C.aStaticSet, undefined);
+                                assert.strictEqual(C.aStaticSet, void 0);
                             }
                         );
                         it(
@@ -594,7 +590,7 @@
                             'sets own properties on this',
                             () =>
                             {
-                                let c = new C(undefined, ['foo', 'bar']);
+                                let c = new C(void 0, ['foo', 'bar']);
                                 assert.strictEqual(c.foo, 'bar');
                             }
                         );
@@ -702,12 +698,12 @@
                                 let c = new C();
                                 {
                                     let actual = c.getSuper(A).bGetOnly;
-                                    assert.strictEqual(actual, undefined);
+                                    assert.strictEqual(actual, void 0);
                                     assert.strictEqual(callData, null);
                                 }
                                 {
                                     let actual = c.getSuper(B).aGetOnly;
-                                    assert.strictEqual(actual, undefined);
+                                    assert.strictEqual(actual, void 0);
                                     assert.strictEqual(callData, null);
                                 }
                             }
@@ -717,18 +713,16 @@
                             () =>
                             {
                                 let c = new C();
-                                {
-                                    c.getSuper(A).aSetOnly = 42;
-                                    assert.deepEqual(callData.A.args, [42]);
-                                    assert.strictEqual(callData.A.setter, 'aSetOnly');
-                                    assert.strictEqual(callData.A.this, c);
-                                }
-                                {
-                                    c.getSuper(B).bSetOnly = 'foo';
-                                    assert.deepEqual(callData.B.args, ['foo']);
-                                    assert.strictEqual(callData.B.setter, 'bSetOnly');
-                                    assert.strictEqual(callData.B.this, c);
-                                }
+                                
+                                c.getSuper(A).aSetOnly = 42;
+                                assert.deepEqual(callData.A.args, [42]);
+                                assert.strictEqual(callData.A.setter, 'aSetOnly');
+                                assert.strictEqual(callData.A.this, c);
+                                
+                                c.getSuper(B).bSetOnly = 'foo';
+                                assert.deepEqual(callData.B.args, ['foo']);
+                                assert.strictEqual(callData.B.setter, 'bSetOnly');
+                                assert.strictEqual(callData.B.this, c);
                             }
                         );
                         it(
@@ -736,18 +730,16 @@
                             () =>
                             {
                                 let e = new E();
-                                {
-                                    e.getSuper(C).getSuper(A).aSetOnly = 42;
-                                    assert.deepEqual(callData.A.args, [42]);
-                                    assert.strictEqual(callData.A.setter, 'aSetOnly');
-                                    assert.ok(isInPrototypeChainOf(e, callData.A.this));
-                                }
-                                {
-                                    e.getSuper(C).getSuper(B).bSetOnly = 'foo';
-                                    assert.deepEqual(callData.B.args, ['foo']);
-                                    assert.strictEqual(callData.B.setter, 'bSetOnly');
-                                    assert.ok(isInPrototypeChainOf(e, callData.B.this));
-                                }
+                                
+                                e.getSuper(C).getSuper(A).aSetOnly = 42;
+                                assert.deepEqual(callData.A.args, [42]);
+                                assert.strictEqual(callData.A.setter, 'aSetOnly');
+                                assert.ok(isInPrototypeChainOf(e, callData.A.this));
+                                
+                                e.getSuper(C).getSuper(B).bSetOnly = 'foo';
+                                assert.deepEqual(callData.B.args, ['foo']);
+                                assert.strictEqual(callData.B.setter, 'bSetOnly');
+                                assert.ok(isInPrototypeChainOf(e, callData.B.this));
                             }
                         );
                         it(
@@ -821,12 +813,12 @@
                             {
                                 {
                                     let actual = C.getStaticSuper(A).bStaticGet;
-                                    assert.strictEqual(actual, undefined);
+                                    assert.strictEqual(actual, void 0);
                                     assert.strictEqual(callData, null);
                                 }
                                 {
                                     let actual = C.getStaticSuper(B).aStaticGet;
-                                    assert.strictEqual(actual, undefined);
+                                    assert.strictEqual(actual, void 0);
                                     assert.strictEqual(callData, null);
                                 }
                             }
@@ -952,7 +944,7 @@
                                     'get',
                                     () =>
                                     {
-                                        assert.strictEqual(bar.bar, undefined);
+                                        assert.strictEqual(bar.bar, void 0);
                                     }
                                 );
                                 it(
@@ -966,7 +958,7 @@
                                     'set',
                                     () =>
                                     {
-                                        assert.strictEqual(bar.foo, undefined);
+                                        assert.strictEqual(bar.foo, void 0);
                                     }
                                 );
                             }
@@ -996,140 +988,20 @@
                                     'get',
                                     () =>
                                     {
-                                        assert.strictEqual(bar.bar, undefined);
+                                        assert.strictEqual(bar.bar, void 0);
                                     }
                                 );
                                 it(
                                     'set',
                                     () =>
                                     {
-                                        assert.strictEqual(bar.foo, undefined);
+                                        assert.strictEqual(bar.foo, void 0);
                                     }
                                 );
                             }
                         );
                     }
                 );
-                /*
-                describe(
-                    'invalid super operations throw a ReferenceError',
-                    () =>
-                    {
-                        describe(
-                            'in nonstatic context',
-                            () =>
-                            {
-                                class Foo { }
-                                class Bar extends classes(Foo)
-                                {
-                                    deleteProperty()
-                                    {
-                                        delete super.class(Foo).foo;
-                                    }
-                                    has()
-                                    {
-                                        (() => 'foo' in super.class(Foo))();
-                                    }
-                                    isExtensible()
-                                    {
-                                        Object.isExtensible(super.class(Foo));
-                                    }
-                                    preventExtensions()
-                                    {
-                                        Object.preventExtensions(super.class(Foo));
-                                    }
-                                }
-                                let bar;
-                                beforeEach(
-                                    () =>
-                                    {
-                                        bar = new Bar();
-                                    }
-                                );
-                                it(
-                                    'apply',
-                                    () =>
-                                    {
-                                        class Foo { }
-                                        class Bar extends classes(Foo)
-                                        {
-                                            apply()
-                                            {
-                                                super.class(Foo)();
-                                            }
-                                        }
-                                        let bar =
-                                            function ()
-                                            { };
-                                        Object.setPrototypeOf(bar, Bar.prototype);
-                                        assert.throws(() => bar.apply(), ReferenceError);
-                                    }
-                                );
-                                let names =
-                                    Object
-                                    .getOwnPropertyNames(Bar.prototype)
-                                    .filter(name => name !== 'constructor');
-                                names.forEach(
-                                    name =>
-                                    it(
-                                        name,
-                                        () =>
-                                        {
-                                            assert.throws(() => bar[name](), ReferenceError);
-                                        }
-                                    )
-                                );
-                            }
-                        );
-                        describe(
-                            'in static context',
-                            () =>
-                            {
-                                class Foo { }
-                                class Bar extends classes(Foo)
-                                {
-                                    static apply()
-                                    {
-                                        super.class(Foo)();
-                                    }
-                                    static deleteProperty()
-                                    {
-                                        delete super.class(Foo).foo;
-                                    }
-                                    static has()
-                                    {
-                                        (() => 'foo' in super.class(Foo))();
-                                    }
-                                    static isExtensible()
-                                    {
-                                        Object.isExtensible(super.class(Foo));
-                                    }
-                                    static preventExtensions()
-                                    {
-                                        Object.preventExtensions(super.class(Foo));
-                                    }
-                                }
-                                let names =
-                                    Object
-                                    .getOwnPropertyNames(Bar)
-                                    .filter(
-                                        name => !['length', 'name', 'prototype'].includes(name)
-                                    );
-                                names.forEach(
-                                    name =>
-                                    it(
-                                        name,
-                                        () =>
-                                        {
-                                            assert.throws(() => Bar[name](), ReferenceError);
-                                        }
-                                    )
-                                );
-                            }
-                        );
-                    }
-                );
-                */
             }
         );
         describe(
@@ -1186,7 +1058,7 @@
         );
     }
     
-    var TestSuite = { init: init };
+    let TestSuite = { init };
     global.TestSuite = TestSuite;
 }
 )(typeof self === 'undefined' ? global : self);

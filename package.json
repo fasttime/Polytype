@@ -1,6 +1,6 @@
 {
   "name": "proxymi",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Proxy-based multiple inheritance for ES6. Without mixins.",
   "keywords": [
     "class",
@@ -35,11 +35,13 @@
     "assert": "https://github.com/fasttime/assert/tarball/master",
     "grunt": "~1.0.1",
     "grunt-cli": "~1.2.0",
-    "grunt-contrib-jshint": "~1.0.0",
-    "grunt-jscs": "~2.8.0",
-    "grunt-mocha-istanbul": "~4.0.2",
+    "grunt-eslint": "~18.1.0",
+    "grunt-jscs": "~3.0.0",
+    "grunt-mocha-istanbul": "~5.0.1",
     "grunt-node-version": "~1.0.2",
-    "mocha-matrix": "~0.1.0"
+    "istanbul": "~0.4.3",
+    "mocha": "~2.5.3",
+    "mocha-matrix": "~0.1.1"
   },
   "engines": {
     "node": ">=6.0.0"
