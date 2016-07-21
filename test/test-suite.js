@@ -869,7 +869,7 @@
                             () =>
                             {
                                 Foo =
-                                    function Foo()
+                                    function ()
                                     { };
                                 Foo.prototype.foo = 42;
                                 Bar =
@@ -910,7 +910,7 @@
                             () =>
                             {
                                 Foo =
-                                    function Foo()
+                                    function ()
                                     { };
                                 Foo.prototype = null;
                             }
