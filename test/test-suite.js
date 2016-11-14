@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, global, self */
+/* global assert, classes, document, global, self */
 
 (function (global)
 {
@@ -1054,6 +1054,19 @@
                         assert.deepStrictEqual(actual, [A.prototype, B.prototype]);
                     }
                 );
+                if (typeof document !== 'undefined') // Browser only test
+                {
+                    it(
+                        'returns a one element array if an object has document.all for prototype',
+                        () =>
+                        {
+                            assert.deepStrictEqual(
+                                Object.getPrototypeListOf(Object.create(document.all)),
+                                [document.all]
+                            );
+                        }
+                    );
+                }
             }
         );
     }
