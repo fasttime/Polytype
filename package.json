@@ -26,18 +26,22 @@
     "url": "https://github.com/fasttime/proxymi.git"
   },
   "scripts": {
-    "build": "npm install && grunt"
+    "build": "npm install && gulp"
   },
   "devDependencies": {
     "assert": "https://github.com/fasttime/assert/tarball/master",
     "grunt": "~1.0.1",
     "grunt-cli": "~1.2.0",
-    "grunt-fasttime-lint": "~0.0.1",
-    "grunt-mocha-istanbul": "~5.0.1",
+    "grunt-fasttime-lint": "~0.0.6",
+    "grunt-mocha-istanbul": "~5.0.2",
     "grunt-node-version": "~1.0.2",
-    "istanbul": "~0.4.4",
-    "mocha": "~2.5.3",
-    "mocha-matrix": "~0.1.1"
+    "gulp": "~3.9.1",
+    "gulp-fasttime-lint": "~0.0.6",
+    "gulp-spawn-mocha": "~3.1.0",
+    "istanbul": "~0.4.5",
+    "mocha": "~3.1.2",
+    "mocha-matrix": "~0.1.1",
+    "run-sequence": "^1.2.2"
   },
   "engines": {
     "node": ">=6.0.0"

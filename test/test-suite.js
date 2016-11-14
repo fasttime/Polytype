@@ -27,7 +27,7 @@
             () =>
             {
                 A =
-                    class A
+                    class
                     {
                         constructor(a)
                         {
@@ -102,7 +102,7 @@
                         }
                     };
                 B =
-                    class B
+                    class
                     {
                         constructor(b1, b2)
                         {
@@ -178,7 +178,7 @@
                     };
                 X = classes(A, B);
                 C =
-                    class C extends X
+                    class extends X
                     {
                         constructor(...args) // eslint-disable-line no-useless-constructor
                         {
@@ -193,9 +193,9 @@
                             return super.class(type);
                         }
                     };
-                D = class D { };
+                D = class { };
                 E =
-                    class E extends classes(C, D)
+                    class extends classes(C, D)
                     {
                         getSuper(type)
                         {
@@ -873,7 +873,7 @@
                                     { };
                                 Foo.prototype.foo = 42;
                                 Bar =
-                                    class Bar extends classes(Foo)
+                                    class extends classes(Foo)
                                     {
                                         bar()
                                         {
