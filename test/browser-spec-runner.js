@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global Matrix, TestSuite, mocha */
+/* global Matrix, mocha */
 
 (function ()
 {
@@ -12,7 +12,6 @@
     
     mocha.setup({ ui: 'bdd', reporter: Matrix });
     mocha.checkLeaks();
-    TestSuite.init();
     addEventListener('load', handleLoad);
 }
 )();
