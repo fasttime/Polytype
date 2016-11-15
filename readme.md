@@ -8,15 +8,15 @@
 simple syntax.
 “Dynamic” means that runtime changes to base classes are reflected immediately in all derived
 classes just like programmers would expect when working with single prototype inheritance.
-So cool.
-So nerdy.
+So easy.
 
 Proxymi uses
-[proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy),
-which are a new feature of ECMAScript 6 and are not yet widely supported.
-As of today, Proxymi works in **current version of Chrome, Firefox, Opera and in Node.js 6 or
+[proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
+along with other new features introduced by ECMAScript 6 to provide multiple inheritance.
+Some of these features are not yet widely supported.
+As of today, Proxymi works in **current versions of Chrome, Firefox, Opera and in Node.js 6 or
 later**.
-As ES6 support in other browsers will improve, Proxymi will start to run in these browsers, too.
+As ES6 support in other browsers will improve, Proxymi will start to run in those browsers, too.
 
 ## Setup Instructions
 
@@ -103,6 +103,17 @@ c.color = 'red';
 console.log(c.centerX, c.centerY);  // 42, 31
 console.log(c.diameter);            // 2
 c.paint();                          // "painting in red"
+```
+
+#### `instanceof` works just like it should
+
+```js
+let c = new ColoredCircle();
+console.log(c instanceof Circle);           // true
+console.log(c instanceof ColoredObject);    // true
+console.log(c instanceof ColoredCircle);    // true
+console.log(c instanceof Object);           // true
+console.log(c instanceof Array);            // false
 ```
 
 #### Invoke multiple base constructors
