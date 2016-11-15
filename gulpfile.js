@@ -4,43 +4,56 @@
 
 const gulp = require('gulp');
 
+const lintOptions =
+{
+    envs: ['es6'],
+    eslintRules:
+    {
+        'arrow-body-style':         ['error'],
+        'arrow-parens':             ['error', 'as-needed'],
+        'arrow-spacing':            'error',
+        'constructor-super':        'error',
+        'no-class-assign':          'error',
+        'no-confusing-arrow':       ['error', { allowParens: true }],
+        'no-dupe-class-members':    'error',
+        'no-new-symbol':            'error',
+        'no-this-before-super':     'error',
+        'no-useless-computed-key':  'error',
+        'no-useless-constructor':   'error',
+        'no-useless-rename':        'error',
+        'no-var':                   'error',
+        'object-shorthand':         'error',
+        'prefer-arrow-callback':    'error',
+        'prefer-const':             'error',
+        'prefer-numeric-literals':  'error',
+        'prefer-spread':            'error',
+        'prefer-template':          'error',
+        'rest-spread-spacing':      'error',
+        'template-curly-spacing':   'error',
+    },
+    parserOptions: { ecmaVersion: 6 }
+};
+
 gulp.task(
-    'lint',
+    'lint:lib',
     () =>
     {
         const lint = require('gulp-fasttime-lint');
         
-        const src = ['*.js', 'lib/**/*.js', 'test/**/*.js'];
-        const options =
-        {
-            envs: ['es6'],
-            eslintRules:
-            {
-                'arrow-body-style':         ['error'],
-                'arrow-parens':             ['error', 'as-needed'],
-                'arrow-spacing':            'error',
-                'constructor-super':        'error',
-                'no-class-assign':          'error',
-                'no-confusing-arrow':       ['error', { allowParens: true }],
-                'no-dupe-class-members':    'error',
-                'no-new-symbol':            'error',
-                'no-this-before-super':     'error',
-                'no-useless-computed-key':  'error',
-                'no-useless-constructor':   'error',
-                'no-useless-rename':        'error',
-                'no-var':                   'error',
-                'object-shorthand':         'error',
-                'prefer-arrow-callback':    'error',
-                'prefer-const':             'error',
-                'prefer-numeric-literals':  'error',
-                'prefer-spread':            'error',
-                'prefer-template':          'error',
-                'rest-spread-spacing':      'error',
-                'template-curly-spacing':   'error',
-            },
-            parserOptions: { ecmaVersion: 6 }
-        };
-        const stream = gulp.src(src).pipe(lint(options));
+        const options = Object.assign({ globals: ['global', 'self'] }, lintOptions);
+        const stream = gulp.src('lib/**/*.js').pipe(lint(options));
+        return stream;
+    }
+);
+
+gulp.task(
+    'lint:other',
+    () =>
+    {
+        const lint = require('gulp-fasttime-lint');
+        
+        const src = ['*.js', 'test/**/*.js'];
+        const stream = gulp.src(src).pipe(lint(lintOptions));
         return stream;
     }
 );
@@ -62,6 +75,6 @@ gulp.task(
     {
         const runSequence = require('run-sequence');
         
-        runSequence('lint', 'test', callback);
+        runSequence('lint:lib', 'lint:other', 'test', callback);
     }
 );
