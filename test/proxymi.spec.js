@@ -7,14 +7,201 @@
     
     function isInPrototypeChainOf(obj1, obj2)
     {
-        let Temp = Function();
+        const Temp = Function();
         Temp.prototype = obj1;
-        let result = obj2 instanceof Temp;
+        const result = obj2 instanceof Temp;
         return result;
     }
     
     function init()
     {
+        function setup()
+        {
+            A =
+                class A // eslint-disable-line no-shadow
+                {
+                    constructor(a)
+                    {
+                        if (a !== void 0)
+                        {
+                            (callData || (callData = { })).A =
+                            {
+                                args: [...arguments],
+                                newTarget: new.target,
+                                this: this
+                            };
+                            this.aProp = a;
+                        }
+                    }
+                    aMethod()
+                    { }
+                    get aGetOnly()
+                    {
+                        const value = Symbol();
+                        (callData || (callData = { })).A =
+                        {
+                            args: [...arguments],
+                            getter: 'aGetOnly',
+                            this: this,
+                            value
+                        };
+                        return value;
+                    }
+                    set aSetOnly(arg) // eslint-disable-line no-unused-vars
+                    {
+                        (callData || (callData = { })).A =
+                        { args: [...arguments], setter: 'aSetOnly', this: this };
+                    }
+                    static aStatic()
+                    { }
+                    static get aStaticGet()
+                    {
+                        const value = Symbol();
+                        (callData || (callData = { })).A =
+                        {
+                            args: [...arguments],
+                            getter: 'aStaticGet',
+                            this: this,
+                            value
+                        };
+                        return value;
+                    }
+                    static set aStaticSet(arg) // eslint-disable-line no-unused-vars
+                    {
+                        (callData || (callData = { })).A =
+                        { args: [...arguments], setter: 'aStaticSet', this: this };
+                    }
+                    someMethod()
+                    {
+                        return this.aProp;
+                    }
+                    static someStaticMethod()
+                    {
+                        return this.aProp;
+                    }
+                    static get staticGS()
+                    {
+                        const value = Symbol();
+                        (callData || (callData = { })).A =
+                        {
+                            args: [...arguments],
+                            getter: 'staticGS',
+                            this: this,
+                            value
+                        };
+                        return value;
+                    }
+                };
+            B =
+                class B // eslint-disable-line no-shadow
+                {
+                    constructor(b1, b2)
+                    {
+                        if (b1 !== void 0 || b2 !== void 0)
+                        {
+                            (callData || (callData = { })).B =
+                            {
+                                args: [...arguments],
+                                newTarget: new.target,
+                                this: this
+                            };
+                            this[b1] = b2;
+                        }
+                    }
+                    bMethod()
+                    { }
+                    get bGetOnly()
+                    {
+                        const value = Symbol();
+                        (callData || (callData = { })).B =
+                        {
+                            args: [...arguments],
+                            getter: 'bGetOnly',
+                            this: this,
+                            value
+                        };
+                        return value;
+                    }
+                    set bSetOnly(arg) // eslint-disable-line no-unused-vars
+                    {
+                        (callData || (callData = { })).B =
+                        { args: [...arguments], setter: 'bSetOnly', this: this };
+                    }
+                    static bStatic()
+                    { }
+                    static get bStaticGet()
+                    {
+                        const value = Symbol();
+                        (callData || (callData = { })).B =
+                        {
+                            args: [...arguments],
+                            getter: 'bStaticGet',
+                            this: this,
+                            value
+                        };
+                        return value;
+                    }
+                    static set bStaticSet(arg) // eslint-disable-line no-unused-vars
+                    {
+                        (callData || (callData = { })).B =
+                        { args: [...arguments], setter: 'bStaticSet', this: this };
+                    }
+                    someMethod()
+                    {
+                        return this.bProp;
+                    }
+                    static someStaticMethod()
+                    {
+                        return this.bProp;
+                    }
+                    static get staticGS()
+                    {
+                        const value = Symbol();
+                        (callData || (callData = { })).B =
+                        {
+                            args: [...arguments],
+                            getter: 'staticGS',
+                            this: this,
+                            value
+                        };
+                        return value;
+                    }
+                };
+            X = classes(A, B);
+            C =
+                class C extends X // eslint-disable-line no-shadow
+                {
+                    constructor(...args) // eslint-disable-line no-useless-constructor
+                    {
+                        super(...args);
+                    }
+                    getSuper(type)
+                    {
+                        return super.class(type);
+                    }
+                    static getStaticSuper(type)
+                    {
+                        return super.class(type);
+                    }
+                };
+            D =
+                class
+                { };
+            E =
+                class extends classes(C, D)
+                {
+                    getSuper(type)
+                    {
+                        return super.class(type);
+                    }
+                    static getStaticSuper(type)
+                    {
+                        return super.class(type);
+                    }
+                };
+            callData = null;
+        }
+        
         let A;
         let B;
         let X;
@@ -23,197 +210,18 @@
         let E;
         let callData;
         
-        beforeEach(
-            () =>
-            {
-                A =
-                    class A // eslint-disable-line no-shadow
-                    {
-                        constructor(a)
-                        {
-                            if (a !== void 0)
-                            {
-                                (callData || (callData = { })).A =
-                                {
-                                    args: [...arguments],
-                                    newTarget: new.target,
-                                    this: this
-                                };
-                                this.aProp = a;
-                            }
-                        }
-                        aMethod()
-                        { }
-                        get aGetOnly()
-                        {
-                            let value = Symbol();
-                            (callData || (callData = { })).A =
-                            {
-                                args: [...arguments],
-                                getter: 'aGetOnly',
-                                this: this,
-                                value
-                            };
-                            return value;
-                        }
-                        set aSetOnly(arg) // eslint-disable-line no-unused-vars
-                        {
-                            (callData || (callData = { })).A =
-                            { args: [...arguments], setter: 'aSetOnly', this: this };
-                        }
-                        static aStatic()
-                        { }
-                        static get aStaticGet()
-                        {
-                            let value = Symbol();
-                            (callData || (callData = { })).A =
-                            {
-                                args: [...arguments],
-                                getter: 'aStaticGet',
-                                this: this,
-                                value
-                            };
-                            return value;
-                        }
-                        static set aStaticSet(arg) // eslint-disable-line no-unused-vars
-                        {
-                            (callData || (callData = { })).A =
-                            { args: [...arguments], setter: 'aStaticSet', this: this };
-                        }
-                        someMethod()
-                        {
-                            return this.aProp;
-                        }
-                        static someStaticMethod()
-                        {
-                            return this.aProp;
-                        }
-                        static get staticGS()
-                        {
-                            let value = Symbol();
-                            (callData || (callData = { })).A =
-                            {
-                                args: [...arguments],
-                                getter: 'staticGS',
-                                this: this,
-                                value
-                            };
-                            return value;
-                        }
-                    };
-                B =
-                    class B // eslint-disable-line no-shadow
-                    {
-                        constructor(b1, b2)
-                        {
-                            if (b1 !== void 0 || b2 !== void 0)
-                            {
-                                (callData || (callData = { })).B =
-                                {
-                                    args: [...arguments],
-                                    newTarget: new.target,
-                                    this: this
-                                };
-                                this[b1] = b2;
-                            }
-                        }
-                        bMethod()
-                        { }
-                        get bGetOnly()
-                        {
-                            let value = Symbol();
-                            (callData || (callData = { })).B =
-                            {
-                                args: [...arguments],
-                                getter: 'bGetOnly',
-                                this: this,
-                                value
-                            };
-                            return value;
-                        }
-                        set bSetOnly(arg) // eslint-disable-line no-unused-vars
-                        {
-                            (callData || (callData = { })).B =
-                            { args: [...arguments], setter: 'bSetOnly', this: this };
-                        }
-                        static bStatic()
-                        { }
-                        static get bStaticGet()
-                        {
-                            let value = Symbol();
-                            (callData || (callData = { })).B =
-                            {
-                                args: [...arguments],
-                                getter: 'bStaticGet',
-                                this: this,
-                                value
-                            };
-                            return value;
-                        }
-                        static set bStaticSet(arg) // eslint-disable-line no-unused-vars
-                        {
-                            (callData || (callData = { })).B =
-                            { args: [...arguments], setter: 'bStaticSet', this: this };
-                        }
-                        someMethod()
-                        {
-                            return this.bProp;
-                        }
-                        static someStaticMethod()
-                        {
-                            return this.bProp;
-                        }
-                        static get staticGS()
-                        {
-                            let value = Symbol();
-                            (callData || (callData = { })).B =
-                            {
-                                args: [...arguments],
-                                getter: 'staticGS',
-                                this: this,
-                                value
-                            };
-                            return value;
-                        }
-                    };
-                X = classes(A, B);
-                C =
-                    class C extends X // eslint-disable-line no-shadow
-                    {
-                        constructor(...args) // eslint-disable-line no-useless-constructor
-                        {
-                            super(...args);
-                        }
-                        getSuper(type)
-                        {
-                            return super.class(type);
-                        }
-                        static getStaticSuper(type)
-                        {
-                            return super.class(type);
-                        }
-                    };
-                D = class { };
-                E =
-                    class extends classes(C, D)
-                    {
-                        getSuper(type)
-                        {
-                            return super.class(type);
-                        }
-                        static getStaticSuper(type)
-                        {
-                            return super.class(type);
-                        }
-                    };
-                callData = null;
-            }
-        );
-        
         describe(
             'classes',
             () =>
             {
+                beforeEach(setup);
+                
+                it(
+                    'cannot be called with new',
+                    // eslint-disable-next-line new-cap
+                    () => assert.throws(() => new classes(A), TypeError)
+                );
+                
                 describe(
                     'provides instance level inheritance for',
                     () =>
@@ -222,16 +230,16 @@
                             'the in operator',
                             () =>
                             {
-                                let c = new C();
-                                assert.ok('aMethod' in c);
-                                assert.ok('bMethod' in c);
+                                const c = new C();
+                                assert.property(c, 'aMethod');
+                                assert.property(c, 'bMethod');
                             }
                         );
                         it(
                             'methods',
                             () =>
                             {
-                                let c = new C();
+                                const c = new C();
                                 assert.strictEqual(c.aMethod, A.prototype.aMethod);
                                 assert.strictEqual(c.bMethod, B.prototype.bMethod);
                             }
@@ -240,7 +248,7 @@
                             'ungettable properties',
                             () =>
                             {
-                                let c = new C();
+                                const c = new C();
                                 assert.strictEqual(c.aSetOnly, void 0);
                             }
                         );
@@ -248,9 +256,9 @@
                             'direct base class getters',
                             () =>
                             {
-                                let c = new C();
-                                let actual = c.aGetOnly;
-                                assert.deepStrictEqual(
+                                const c = new C();
+                                const actual = c.aGetOnly;
+                                assert.deepEqual(
                                     callData.A,
                                     { args: [], getter: 'aGetOnly', this: c, value: actual }
                                 );
@@ -260,9 +268,9 @@
                             'indirect base class getters',
                             () =>
                             {
-                                let e = new E();
-                                let actual = e.aGetOnly;
-                                assert.deepStrictEqual(
+                                const e = new E();
+                                const actual = e.aGetOnly;
+                                assert.deepEqual(
                                     callData.A,
                                     { args: [], getter: 'aGetOnly', this: e, value: actual }
                                 );
@@ -273,9 +281,9 @@
                             () =>
                             {
                                 A.prototype.a = 13;
-                                let c = new C();
+                                const c = new C();
                                 c.a = 42;
-                                assert.deepStrictEqual(
+                                assert.deepEqual(
                                     Object.getOwnPropertyDescriptor(c, 'a'),
                                     {
                                         configurable: true,
@@ -291,7 +299,7 @@
                             () =>
                             {
                                 Object.defineProperty(A.prototype, 'a', { value: 13 });
-                                let c = new C();
+                                const c = new C();
                                 assert.throws(
                                     () =>
                                     {
@@ -305,9 +313,9 @@
                             'direct base class setters',
                             () =>
                             {
-                                let c = new C();
+                                const c = new C();
                                 c.aSetOnly = 42;
-                                assert.deepStrictEqual(
+                                assert.deepEqual(
                                     callData.A,
                                     { args: [42], setter: 'aSetOnly', this: c }
                                 );
@@ -317,9 +325,9 @@
                             'indirect base class setters',
                             () =>
                             {
-                                let e = new E();
+                                const e = new E();
                                 e.aSetOnly = 42;
-                                assert.deepStrictEqual(
+                                assert.deepEqual(
                                     callData.A,
                                     { args: [42], setter: 'aSetOnly', this: e }
                                 );
@@ -369,20 +377,9 @@
                                 }
                             );
                             
-                            afterEach(
-                                () =>
-                                {
-                                    delete document.all.foo;
-                                }
-                            );
+                            afterEach(() => delete document.all.foo);
                             
-                            it(
-                                'with getters',
-                                () =>
-                                {
-                                    assert.strictEqual(bar[0], document.all[0]);
-                                }
-                            );
+                            it('with getters', () => assert.strictEqual(bar[0], document.all[0]));
                             it(
                                 'with setters',
                                 () =>
@@ -395,8 +392,8 @@
                                 'with super',
                                 () =>
                                 {
-                                    let actual = bar.getFromFoo(0);
-                                    let expected = document.all[0];
+                                    const actual = bar.getFromFoo(0);
+                                    const expected = document.all[0];
                                     assert.strictEqual(actual, expected);
                                 }
                             );
@@ -408,10 +405,9 @@
                     'allows adding new properties to an instance',
                     () =>
                     {
-                        let c = new C();
+                        const c = new C();
                         c.cNewProp = 42;
-                        assert.ok('cNewProp' in c);
-                        assert.deepStrictEqual(
+                        assert.deepEqual(
                             Object.getOwnPropertyDescriptor(c, 'cNewProp'),
                             {
                                 configurable: true,
@@ -422,6 +418,7 @@
                         );
                     }
                 );
+                
                 describe(
                     'provides class level inheritance for',
                     () =>
@@ -430,8 +427,8 @@
                             'the in operator',
                             () =>
                             {
-                                assert.ok('aStatic' in C);
-                                assert.ok('bStatic' in C);
+                                assert.property(C, 'aStatic');
+                                assert.property(C, 'bStatic');
                             }
                         );
                         it(
@@ -444,17 +441,14 @@
                         );
                         it(
                             'ungettable properties',
-                            () =>
-                            {
-                                assert.strictEqual(C.aStaticSet, void 0);
-                            }
+                            () => assert.strictEqual(C.aStaticSet, void 0)
                         );
                         it(
                             'direct base class getters',
                             () =>
                             {
-                                let actual = C.aStaticGet;
-                                assert.deepStrictEqual(
+                                const actual = C.aStaticGet;
+                                assert.deepEqual(
                                     callData.A,
                                     { args: [], getter: 'aStaticGet', this: C, value: actual }
                                 );
@@ -464,8 +458,8 @@
                             'indirect base class getters',
                             () =>
                             {
-                                let actual = E.aStaticGet;
-                                assert.deepStrictEqual(
+                                const actual = E.aStaticGet;
+                                assert.deepEqual(
                                     callData.A,
                                     { args: [], getter: 'aStaticGet', this: E, value: actual }
                                 );
@@ -477,7 +471,7 @@
                             {
                                 A.aProp = 'A';
                                 C.aProp = 'C';
-                                assert.deepStrictEqual(
+                                assert.deepEqual(
                                     Object.getOwnPropertyDescriptor(C, 'aProp'),
                                     {
                                         configurable: true,
@@ -507,7 +501,7 @@
                             () =>
                             {
                                 C.aStaticSet = 42;
-                                assert.deepStrictEqual(
+                                assert.deepEqual(
                                     callData.A,
                                     { args: [42], setter: 'aStaticSet', this: C }
                                 );
@@ -518,7 +512,7 @@
                             () =>
                             {
                                 E.aStaticSet = 42;
-                                assert.deepStrictEqual(
+                                assert.deepEqual(
                                     callData.A,
                                     { args: [42], setter: 'aStaticSet', this: E }
                                 );
@@ -526,12 +520,13 @@
                         );
                     }
                 );
+                
                 it(
                     'allows adding new properties to a class',
                     () =>
                     {
                         C.cNewProp = 42;
-                        assert.deepStrictEqual(
+                        assert.deepEqual(
                             Object.getOwnPropertyDescriptor(C, 'cNewProp'),
                             {
                                 configurable: true,
@@ -544,24 +539,42 @@
                 );
                 it(
                     'without arguments evaluates to null',
-                    () =>
-                    {
-                        assert.strictEqual(classes(), null);
-                    }
+                    () => assert.isNull(classes())
                 );
                 it(
-                    'with invalid arguments throws a TypeError',
+                    'with a null argument throws a TypeError',
                     () =>
                     {
                         assert.throws(
-                            () =>
-                            {
-                                classes({ });
-                            },
-                            TypeError
+                            () => classes(null),
+                            TypeError,
+                            /^Argument is not a constructor$/
                         );
                     }
                 );
+                it(
+                    'with a non-callable argument throws a TypeError',
+                    () =>
+                    {
+                        assert.throws(
+                            () => classes({ }),
+                            TypeError,
+                            /^Argument is not a constructor$/
+                        );
+                    }
+                );
+                it(
+                    'with a non-constructor argument throws a TypeError',
+                    () =>
+                    {
+                        assert.throws(
+                            () => classes(() => void 0),
+                            TypeError,
+                            /^Argument is not a constructor$/
+                        );
+                    }
+                );
+                
                 describe(
                     'exposes class property',
                     () =>
@@ -570,75 +583,57 @@
                             'prototype',
                             () =>
                             {
-                                let yDescriptor = Object.getOwnPropertyDescriptor(A, 'prototype');
+                                const yDescriptor = Object.getOwnPropertyDescriptor(A, 'prototype');
                                 yDescriptor.value = X.prototype;
-                                let xDescriptor = Object.getOwnPropertyDescriptor(X, 'prototype');
-                                assert.deepStrictEqual(xDescriptor, yDescriptor);
+                                const xDescriptor = Object.getOwnPropertyDescriptor(X, 'prototype');
+                                assert.deepEqual(xDescriptor, yDescriptor);
                             }
                         );
                         it(
                             'length',
                             () =>
                             {
-                                let yDescriptor = Object.getOwnPropertyDescriptor(A, 'length');
+                                const yDescriptor = Object.getOwnPropertyDescriptor(A, 'length');
                                 yDescriptor.value = X.length;
-                                let xDescriptor = Object.getOwnPropertyDescriptor(X, 'length');
-                                assert.deepStrictEqual(xDescriptor, yDescriptor);
+                                const xDescriptor = Object.getOwnPropertyDescriptor(X, 'length');
+                                assert.deepEqual(xDescriptor, yDescriptor);
                             }
                         );
                         it(
                             'constructor',
                             () =>
                             {
-                                let yDescriptor =
+                                const yDescriptor =
                                     Object.getOwnPropertyDescriptor(A.prototype, 'constructor');
                                 yDescriptor.value = X;
-                                let xDescriptor =
+                                const xDescriptor =
                                     Object.getOwnPropertyDescriptor(X.prototype, 'constructor');
-                                assert.deepStrictEqual(xDescriptor, yDescriptor);
+                                assert.deepEqual(xDescriptor, yDescriptor);
                             }
                         );
                     }
                 );
+                
                 it(
                     'constructor must be called with \'new\'',
                     () =>
                     {
                         assert.throws(
                             X,
-                            RegExp(
-                                '^TypeError: Class constructor \\(A,B\\) cannot be invoked ' +
-                                'without \'new\'$'
-                            )
+                            TypeError,
+                            /^Class constructor \(A,B\) cannot be invoked without 'new'$/
                         );
                     }
                 );
                 it(
                     'instance prototype cannot be modified',
-                    () =>
-                    {
-                        assert.throws(
-                            () =>
-                            {
-                                Object.setPrototypeOf(X.prototype, { });
-                            },
-                            TypeError
-                        );
-                    }
+                    () => assert.throws(() => Object.setPrototypeOf(X.prototype, { }), TypeError)
                 );
                 it(
                     'class prototype cannot be modified',
-                    () =>
-                    {
-                        assert.throws(
-                            () =>
-                            {
-                                Object.setPrototypeOf(X, { });
-                            },
-                            TypeError
-                        );
-                    }
+                    () => assert.throws(() => Object.setPrototypeOf(X, { }), TypeError)
                 );
+                
                 describe(
                     'super in constructor',
                     () =>
@@ -648,26 +643,23 @@
                             () =>
                             {
                                 new C([42], ['foo', 'bar']);
-                                assert.deepStrictEqual(callData.A.args, [42]);
+                                assert.deepEqual(callData.A.args, [42]);
                                 assert.strictEqual(callData.A.newTarget, C);
-                                assert.ok(callData.A.this instanceof C);
-                                assert.deepStrictEqual(callData.B.args, ['foo', 'bar']);
+                                assert.instanceOf(callData.A.this, C);
+                                assert.deepEqual(callData.B.args, ['foo', 'bar']);
                                 assert.strictEqual(callData.B.newTarget, C);
-                                assert.ok(callData.B.this instanceof C);
+                                assert.instanceOf(callData.B.this, C);
                             }
                         );
                         it(
                             'throws a TypeError for wrong argument',
-                            () =>
-                            {
-                                assert.throws(() => new C(0), TypeError);
-                            }
+                            () => assert.throws(() => new C(0), TypeError)
                         );
                         it(
                             'sets own properties on this',
                             () =>
                             {
-                                let c = new C(void 0, ['foo', 'bar']);
+                                const c = new C(void 0, ['foo', 'bar']);
                                 assert.strictEqual(c.foo, 'bar');
                             }
                         );
@@ -675,12 +667,13 @@
                             'does not overwrite own properties on this',
                             () =>
                             {
-                                let c = new C([42], ['aProp', 13]);
+                                const c = new C([42], ['aProp', 13]);
                                 assert.strictEqual(c.aProp, 42);
                             }
                         );
                     }
                 );
+                
                 describe(
                     'super.class in nonstatic context',
                     () =>
@@ -689,18 +682,19 @@
                             'returns a proxy for any superclass argument',
                             () =>
                             {
-                                let c = new C();
-                                assert.ok(c.getSuper(A) instanceof C);
+                                const c = new C();
+                                assert.instanceOf(c.getSuper(A), C);
                             }
                         );
                         it(
                             'throws a TypeError for wrong argument',
                             () =>
                             {
-                                let e = new E();
+                                const e = new E();
                                 assert.throws(
                                     () => e.getSuper(A),
-                                    /^TypeError: Argument is not a direct superclass$/
+                                    TypeError,
+                                    /^Argument is not a direct superclass$/
                                 );
                             }
                         );
@@ -708,7 +702,7 @@
                             'invokes a direct superclass method',
                             () =>
                             {
-                                let c = new C();
+                                const c = new C();
                                 c.aProp = 'A';
                                 c.bProp = 'B';
                                 assert.strictEqual(c.getSuper(A).someMethod(), 'A');
@@ -719,7 +713,7 @@
                             'invokes an indirect superclass method',
                             () =>
                             {
-                                let e = new E();
+                                const e = new E();
                                 e.aProp = 'A';
                                 e.bProp = 'B';
                                 assert.strictEqual(e.getSuper(C).getSuper(A).someMethod(), 'A');
@@ -730,16 +724,16 @@
                             'invokes a direct superclass getter',
                             () =>
                             {
-                                let c = new C();
+                                const c = new C();
                                 {
-                                    let actual = c.getSuper(A).aGetOnly;
+                                    const actual = c.getSuper(A).aGetOnly;
                                     assert.deepEqual(callData.A.args, []);
                                     assert.strictEqual(callData.A.getter, 'aGetOnly');
                                     assert.strictEqual(callData.A.this, c);
                                     assert.strictEqual(callData.A.value, actual);
                                 }
                                 {
-                                    let actual = c.getSuper(B).bGetOnly;
+                                    const actual = c.getSuper(B).bGetOnly;
                                     assert.deepEqual(callData.B.args, []);
                                     assert.strictEqual(callData.B.getter, 'bGetOnly');
                                     assert.strictEqual(callData.B.this, c);
@@ -751,19 +745,19 @@
                             'invokes an indirect superclass getter',
                             () =>
                             {
-                                let e = new E();
+                                const e = new E();
                                 {
-                                    let actual = e.getSuper(C).getSuper(A).aGetOnly;
+                                    const actual = e.getSuper(C).getSuper(A).aGetOnly;
                                     assert.deepEqual(callData.A.args, []);
                                     assert.strictEqual(callData.A.getter, 'aGetOnly');
-                                    assert.ok(isInPrototypeChainOf(e, callData.A.this));
+                                    assert(isInPrototypeChainOf(e, callData.A.this));
                                     assert.strictEqual(callData.A.value, actual);
                                 }
                                 {
-                                    let actual = e.getSuper(C).getSuper(B).bGetOnly;
+                                    const actual = e.getSuper(C).getSuper(B).bGetOnly;
                                     assert.deepEqual(callData.B.args, []);
                                     assert.strictEqual(callData.B.getter, 'bGetOnly');
-                                    assert.ok(isInPrototypeChainOf(e, callData.B.this));
+                                    assert(isInPrototypeChainOf(e, callData.B.this));
                                     assert.strictEqual(callData.B.value, actual);
                                 }
                             }
@@ -772,14 +766,14 @@
                             'does not invoke a getter in a different superclass',
                             () =>
                             {
-                                let c = new C();
+                                const c = new C();
                                 {
-                                    let actual = c.getSuper(A).bGetOnly;
+                                    const actual = c.getSuper(A).bGetOnly;
                                     assert.strictEqual(actual, void 0);
                                     assert.strictEqual(callData, null);
                                 }
                                 {
-                                    let actual = c.getSuper(B).aGetOnly;
+                                    const actual = c.getSuper(B).aGetOnly;
                                     assert.strictEqual(actual, void 0);
                                     assert.strictEqual(callData, null);
                                 }
@@ -789,7 +783,7 @@
                             'invokes a direct superclass setter',
                             () =>
                             {
-                                let c = new C();
+                                const c = new C();
                                 
                                 c.getSuper(A).aSetOnly = 42;
                                 assert.deepEqual(callData.A.args, [42]);
@@ -806,43 +800,41 @@
                             'invokes an indirect superclass setter',
                             () =>
                             {
-                                let e = new E();
+                                const e = new E();
                                 
                                 e.getSuper(C).getSuper(A).aSetOnly = 42;
                                 assert.deepEqual(callData.A.args, [42]);
                                 assert.strictEqual(callData.A.setter, 'aSetOnly');
-                                assert.ok(isInPrototypeChainOf(e, callData.A.this));
+                                assert(isInPrototypeChainOf(e, callData.A.this));
                                 
                                 e.getSuper(C).getSuper(B).bSetOnly = 'foo';
                                 assert.deepEqual(callData.B.args, ['foo']);
                                 assert.strictEqual(callData.B.setter, 'bSetOnly');
-                                assert.ok(isInPrototypeChainOf(e, callData.B.this));
+                                assert(isInPrototypeChainOf(e, callData.B.this));
                             }
                         );
                         it(
                             'does not invoke a setter in a different superclass',
                             () =>
                             {
-                                let c = new C();
+                                const c = new C();
                                 c.getSuper(A).bSetOnly = 42;
                                 c.getSuper(B).aSetOnly = 13;
-                                assert.ok(c.hasOwnProperty('aSetOnly'));
-                                assert.ok(c.hasOwnProperty('bSetOnly'));
+                                assert(c.hasOwnProperty('aSetOnly'));
+                                assert(c.hasOwnProperty('bSetOnly'));
                                 assert.strictEqual(callData, null);
                             }
                         );
                     }
                 );
+                
                 describe(
                     'super.class in static context',
                     () =>
                     {
                         it(
                             'returns a proxy for any superclass argument',
-                            () =>
-                            {
-                                assert.notEqual(C.getStaticSuper(A), null);
-                            }
+                            () => assert.isNotNull(C.getStaticSuper(A))
                         );
                         it(
                             'throws a TypeError for wrong argument',
@@ -850,7 +842,8 @@
                             {
                                 assert.throws(
                                     () => E.getStaticSuper(A),
-                                    /^TypeError: Argument is not a direct superclass$/
+                                    TypeError,
+                                    /^Argument is not a direct superclass$/
                                 );
                             }
                         );
@@ -869,14 +862,14 @@
                             () =>
                             {
                                 {
-                                    let actual = C.getStaticSuper(A).staticGS;
+                                    const actual = C.getStaticSuper(A).staticGS;
                                     assert.deepEqual(callData.A.args, []);
                                     assert.strictEqual(callData.A.getter, 'staticGS');
                                     assert.strictEqual(callData.A.this, C);
                                     assert.strictEqual(callData.A.value, actual);
                                 }
                                 {
-                                    let actual = C.getStaticSuper(B).staticGS;
+                                    const actual = C.getStaticSuper(B).staticGS;
                                     assert.deepEqual(callData.B.args, []);
                                     assert.strictEqual(callData.B.getter, 'staticGS');
                                     assert.strictEqual(callData.B.this, C);
@@ -889,12 +882,12 @@
                             () =>
                             {
                                 {
-                                    let actual = C.getStaticSuper(A).bStaticGet;
+                                    const actual = C.getStaticSuper(A).bStaticGet;
                                     assert.strictEqual(actual, void 0);
                                     assert.strictEqual(callData, null);
                                 }
                                 {
-                                    let actual = C.getStaticSuper(B).aStaticGet;
+                                    const actual = C.getStaticSuper(B).aStaticGet;
                                     assert.strictEqual(actual, void 0);
                                     assert.strictEqual(callData, null);
                                 }
@@ -905,11 +898,11 @@
                             () =>
                             {
                                 C.getStaticSuper(A).aStaticSet = 42;
-                                assert.deepStrictEqual(callData.A.args, [42]);
+                                assert.deepEqual(callData.A.args, [42]);
                                 assert.strictEqual(callData.A.setter, 'aStaticSet');
                                 assert.strictEqual(callData.A.this.name, 'C');
                                 C.getStaticSuper(B).bStaticSet = 42;
-                                assert.deepStrictEqual(callData.B.args, [42]);
+                                assert.deepEqual(callData.B.args, [42]);
                                 assert.strictEqual(callData.B.setter, 'bStaticSet');
                                 assert.strictEqual(callData.B.this.name, 'C');
                             }
@@ -925,16 +918,21 @@
                         );
                     }
                 );
+                
                 it(
                     'name',
                     () =>
                     {
-                        class ぁ1 { }
-                        class ぁ2 { }
-                        class ぁ3 { }
+                        class ぁ1
+                        { }
+                        class ぁ2
+                        { }
+                        class ぁ3
+                        { }
                         assert.strictEqual(classes(ぁ1, ぁ2, ぁ3).name, '(ぁ1,ぁ2,ぁ3)');
                     }
                 );
+                
                 describe(
                     'superclass prototype is treated as immutable',
                     () =>
@@ -961,22 +959,11 @@
                                 bar = new Bar();
                             }
                         );
-                        it(
-                            'in prototype proxy',
-                            () =>
-                            {
-                                assert.strictEqual(bar.foo, 42);
-                            }
-                        );
-                        it(
-                            'in super proxy',
-                            () =>
-                            {
-                                assert.strictEqual(bar.bar(), 42);
-                            }
-                        );
+                        it('in prototype proxy', () => assert.strictEqual(bar.foo, 42));
+                        it('in super proxy', () => assert.strictEqual(bar.bar(), 42));
                     }
                 );
+                
                 describe(
                     'null prototype',
                     () =>
@@ -1017,27 +1004,9 @@
                                         bar = new Bar();
                                     }
                                 );
-                                it(
-                                    'get',
-                                    () =>
-                                    {
-                                        assert.strictEqual(bar.bar, void 0);
-                                    }
-                                );
-                                it(
-                                    'in',
-                                    () =>
-                                    {
-                                        assert.strictEqual(bar.in(), false);
-                                    }
-                                );
-                                it(
-                                    'set',
-                                    () =>
-                                    {
-                                        assert.strictEqual(bar.foo, void 0);
-                                    }
-                                );
+                                it('get', () => assert.isUndefined(bar.bar));
+                                it('in', () => assert.isFalse(bar.in()));
+                                it('set', () => assert.isUndefined(bar.foo));
                             }
                         );
                         describe(
@@ -1061,20 +1030,8 @@
                                         bar = new Bar();
                                     }
                                 );
-                                it(
-                                    'get',
-                                    () =>
-                                    {
-                                        assert.strictEqual(bar.bar, void 0);
-                                    }
-                                );
-                                it(
-                                    'set',
-                                    () =>
-                                    {
-                                        assert.strictEqual(bar.foo, void 0);
-                                    }
-                                );
+                                it('get', () => assert.isUndefined(bar.bar));
+                                it('set', () => assert.isUndefined(bar.foo));
                             }
                         );
                     }
@@ -1086,50 +1043,46 @@
             'Object.getPrototypeListOf',
             () =>
             {
+                beforeEach(setup);
+                
                 it(
                     'returns an empty array if an object has null prototype',
-                    () =>
-                    {
-                        assert.deepStrictEqual(Object.getPrototypeListOf(Object.create(null)), []);
-                    }
+                    () => assert.deepEqual(Object.getPrototypeListOf(Object.create(null)), [])
                 );
                 it(
                     'returns a one element array if an object has a non-null prototype',
-                    () =>
-                    {
-                        assert.deepStrictEqual(Object.getPrototypeListOf({ }), [Object.prototype]);
-                    }
+                    () => assert.deepEqual(Object.getPrototypeListOf({ }), [Object.prototype])
                 );
                 it(
                     'returns the prototype of a multiple inheritance class',
                     () =>
                     {
-                        let actual = Object.getPrototypeListOf(C);
-                        assert.deepStrictEqual(actual, [Object.getPrototypeOf(C)]);
+                        const actual = Object.getPrototypeListOf(C);
+                        assert.deepEqual(actual, [Object.getPrototypeOf(C)]);
                     }
                 );
                 it(
                     'returns the prototype of a multiple inheritance object',
                     () =>
                     {
-                        let actual = Object.getPrototypeListOf(new C());
-                        assert.deepStrictEqual(actual, [C.prototype]);
+                        const actual = Object.getPrototypeListOf(new C());
+                        assert.deepEqual(actual, [C.prototype]);
                     }
                 );
                 it(
                     'returns all prototypes of a clustered constructor',
                     () =>
                     {
-                        let actual = Object.getPrototypeListOf(X);
-                        assert.deepStrictEqual(actual, [A, B]);
+                        const actual = Object.getPrototypeListOf(X);
+                        assert.deepEqual(actual, [A, B]);
                     }
                 );
                 it(
                     'returns all prototypes of a clustered prototype',
                     () =>
                     {
-                        let actual = Object.getPrototypeListOf(X.prototype);
-                        assert.deepStrictEqual(actual, [A.prototype, B.prototype]);
+                        const actual = Object.getPrototypeListOf(X.prototype);
+                        assert.deepEqual(actual, [A.prototype, B.prototype]);
                     }
                 );
                 usingDocumentAll(
@@ -1138,7 +1091,7 @@
                         'returns a one element array if an object has document.all for prototype',
                         () =>
                         {
-                            assert.deepStrictEqual(
+                            assert.deepEqual(
                                 Object.getPrototypeListOf(Object.create(document.all)),
                                 [document.all]
                             );
@@ -1152,17 +1105,19 @@
             'instanceof',
             () =>
             {
+                beforeEach(setup);
+                
                 it(
                     'works with all base types',
                     () =>
                     {
-                        let e = new E();
-                        assert(e instanceof A);
-                        assert(e instanceof B);
-                        assert(e instanceof X);
-                        assert(e instanceof C);
-                        assert(e instanceof D);
-                        assert(e instanceof Object);
+                        const e = new E();
+                        assert.instanceOf(e, A);
+                        assert.instanceOf(e, B);
+                        assert.instanceOf(e, X);
+                        assert.instanceOf(e, C);
+                        assert.instanceOf(e, D);
+                        assert.instanceOf(e, Object);
                     }
                 );
             }
@@ -1174,14 +1129,14 @@
             {
                 function createNullPrototypeFunction()
                 {
-                    let fn = Function();
+                    const fn = Function();
                     fn.prototype = null;
                     return fn;
                 }
                 
                 function test(argDescription, type, arg, expectedResult)
                 {
-                    let description = 'returns ' + expectedResult + ' ' + argDescription;
+                    const description = `returns ${expectedResult} ${argDescription}`;
                     it(
                         description,
                         () =>
@@ -1194,6 +1149,24 @@
                     );
                 }
                 
+                it(
+                    'is set on base classes',
+                    () =>
+                    {
+                        assert(A.hasOwnProperty(Symbol.hasInstance));
+                        assert(B.hasOwnProperty(Symbol.hasInstance));
+                        assert(D.hasOwnProperty(Symbol.hasInstance));
+                    }
+                );
+                it(
+                    'is not set on derived classes',
+                    () =>
+                    {
+                        assert(!C.hasOwnProperty(Symbol.hasInstance));
+                        assert(!X.hasOwnProperty(Symbol.hasInstance));
+                        assert(!E.hasOwnProperty(Symbol.hasInstance));
+                    }
+                );
                 test('when this is not callable', { prototype: Object.prototype }, { }, false);
                 test('when this is null', null, { }, false);
                 test('with null argument', Object, null, false);
@@ -1210,8 +1183,8 @@
                     'throws a TypeError when this has null prototype',
                     () =>
                     {
-                        let arg = Object.create(null);
-                        let fn =
+                        const arg = Object.create(null);
+                        const fn =
                             Object[Symbol.hasInstance].bind(createNullPrototypeFunction(), arg);
                         assert.throws(fn, TypeError);
                     }
@@ -1233,14 +1206,17 @@
     }
     
     let assert;
-    
-    if (typeof module !== 'undefined')
     {
-        assert = require('assert');
-        require('../lib/proxymi.js');
+        let chai;
+        if (typeof module !== 'undefined')
+        {
+            chai = require('chai');
+            require('../lib/proxymi.js');
+        }
+        else
+            chai = self.chai;
+        assert = chai.assert;
     }
-    else
-        assert = self.assert;
     init();
 }
 )();

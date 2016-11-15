@@ -14,8 +14,7 @@ Proxymi uses
 [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
 along with other new features introduced by ECMAScript 6 to provide multiple inheritance.
 Some of these features are not yet widely supported.
-As of today, Proxymi works in **current versions of Chrome, Firefox, Opera and in Node.js 6 or
-later**.
+As of today, Proxymi works in **current versions of Chrome, Firefox, Opera and in Node.js 7**.
 As ES6 support in other browsers will improve, Proxymi will start to run in those browsers, too.
 
 ## Setup Instructions
