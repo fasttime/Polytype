@@ -27,7 +27,7 @@
             () =>
             {
                 A =
-                    class
+                    class A // eslint-disable-line no-shadow
                     {
                         constructor(a)
                         {
@@ -35,7 +35,7 @@
                             {
                                 (callData || (callData = { })).A =
                                 {
-                                    args: Array.from(arguments),
+                                    args: [...arguments],
                                     newTarget: new.target,
                                     this: this
                                 };
@@ -49,7 +49,7 @@
                             let value = Symbol();
                             (callData || (callData = { })).A =
                             {
-                                args: Array.from(arguments),
+                                args: [...arguments],
                                 getter: 'aGetOnly',
                                 this: this,
                                 value
@@ -59,7 +59,7 @@
                         set aSetOnly(arg) // eslint-disable-line no-unused-vars
                         {
                             (callData || (callData = { })).A =
-                            { args: Array.from(arguments), setter: 'aSetOnly', this: this };
+                            { args: [...arguments], setter: 'aSetOnly', this: this };
                         }
                         static aStatic()
                         { }
@@ -68,7 +68,7 @@
                             let value = Symbol();
                             (callData || (callData = { })).A =
                             {
-                                args: Array.from(arguments),
+                                args: [...arguments],
                                 getter: 'aStaticGet',
                                 this: this,
                                 value
@@ -78,7 +78,7 @@
                         static set aStaticSet(arg) // eslint-disable-line no-unused-vars
                         {
                             (callData || (callData = { })).A =
-                            { args: Array.from(arguments), setter: 'aStaticSet', this: this };
+                            { args: [...arguments], setter: 'aStaticSet', this: this };
                         }
                         someMethod()
                         {
@@ -93,7 +93,7 @@
                             let value = Symbol();
                             (callData || (callData = { })).A =
                             {
-                                args: Array.from(arguments),
+                                args: [...arguments],
                                 getter: 'staticGS',
                                 this: this,
                                 value
@@ -102,7 +102,7 @@
                         }
                     };
                 B =
-                    class
+                    class B // eslint-disable-line no-shadow
                     {
                         constructor(b1, b2)
                         {
@@ -110,7 +110,7 @@
                             {
                                 (callData || (callData = { })).B =
                                 {
-                                    args: Array.from(arguments),
+                                    args: [...arguments],
                                     newTarget: new.target,
                                     this: this
                                 };
@@ -124,7 +124,7 @@
                             let value = Symbol();
                             (callData || (callData = { })).B =
                             {
-                                args: Array.from(arguments),
+                                args: [...arguments],
                                 getter: 'bGetOnly',
                                 this: this,
                                 value
@@ -134,7 +134,7 @@
                         set bSetOnly(arg) // eslint-disable-line no-unused-vars
                         {
                             (callData || (callData = { })).B =
-                            { args: Array.from(arguments), setter: 'bSetOnly', this: this };
+                            { args: [...arguments], setter: 'bSetOnly', this: this };
                         }
                         static bStatic()
                         { }
@@ -143,7 +143,7 @@
                             let value = Symbol();
                             (callData || (callData = { })).B =
                             {
-                                args: Array.from(arguments),
+                                args: [...arguments],
                                 getter: 'bStaticGet',
                                 this: this,
                                 value
@@ -153,7 +153,7 @@
                         static set bStaticSet(arg) // eslint-disable-line no-unused-vars
                         {
                             (callData || (callData = { })).B =
-                            { args: Array.from(arguments), setter: 'bStaticSet', this: this };
+                            { args: [...arguments], setter: 'bStaticSet', this: this };
                         }
                         someMethod()
                         {
@@ -168,7 +168,7 @@
                             let value = Symbol();
                             (callData || (callData = { })).B =
                             {
-                                args: Array.from(arguments),
+                                args: [...arguments],
                                 getter: 'staticGS',
                                 this: this,
                                 value
@@ -178,7 +178,7 @@
                     };
                 X = classes(A, B);
                 C =
-                    class extends X
+                    class C extends X // eslint-disable-line no-shadow
                     {
                         constructor(...args) // eslint-disable-line no-useless-constructor
                         {
@@ -327,6 +327,83 @@
                         );
                     }
                 );
+                
+                usingDocumentAll(
+                    () =>
+                    describe(
+                        'works well when document.all is in the prototype chain',
+                        () =>
+                        {
+                            let Bar;
+                            let Foo;
+                            let bar;
+                            let foo;
+                            
+                            beforeEach(
+                                () =>
+                                {
+                                    Foo = Function();
+                                    Foo.prototype = document.all;
+                                    Bar =
+                                        class extends classes(Foo)
+                                        {
+                                            getFromFoo(prop)
+                                            {
+                                                return super.class(Foo)[prop];
+                                            }
+                                        };
+                                    bar = new Bar();
+                                    foo = void 0;
+                                    Object.defineProperty(
+                                        document.all,
+                                        'foo',
+                                        {
+                                            configurable: true,
+                                            get: () => void 0,
+                                            set: value =>
+                                            {
+                                                foo = value;
+                                            }
+                                        }
+                                    );
+                                }
+                            );
+                            
+                            afterEach(
+                                () =>
+                                {
+                                    delete document.all.foo;
+                                }
+                            );
+                            
+                            it(
+                                'with getters',
+                                () =>
+                                {
+                                    assert.strictEqual(bar[0], document.all[0]);
+                                }
+                            );
+                            it(
+                                'with setters',
+                                () =>
+                                {
+                                    bar.foo = 42;
+                                    assert.strictEqual(foo, 42);
+                                }
+                            );
+                            it(
+                                'with super',
+                                () =>
+                                {
+                                    let actual = bar.getFromFoo(0);
+                                    let expected = document.all[0];
+                                    assert.strictEqual(actual, expected);
+                                }
+                            );
+                        }
+                    )
+                );
+                
                 it(
                     'allows adding new properties to an instance',
                     () =>
@@ -1004,6 +1081,7 @@
                 );
             }
         );
+        
         describe(
             'Object.getPrototypeListOf',
             () =>
@@ -1054,8 +1132,8 @@
                         assert.deepStrictEqual(actual, [A.prototype, B.prototype]);
                     }
                 );
-                if (typeof document !== 'undefined') // Browser only test
-                {
+                usingDocumentAll(
+                    () =>
                     it(
                         'returns a one element array if an object has document.all for prototype',
                         () =>
@@ -1065,13 +1143,96 @@
                                 [document.all]
                             );
                         }
+                    )
+                );
+            }
+        );
+        
+        describe(
+            'instanceof',
+            () =>
+            {
+                it(
+                    'works with all base types',
+                    () =>
+                    {
+                        let e = new E();
+                        assert(e instanceof A);
+                        assert(e instanceof B);
+                        assert(e instanceof X);
+                        assert(e instanceof C);
+                        assert(e instanceof D);
+                        assert(e instanceof Object);
+                    }
+                );
+            }
+        );
+        
+        describe(
+            'Symbol.hasInstance',
+            () =>
+            {
+                function createNullPrototypeFunction()
+                {
+                    let fn = Function();
+                    fn.prototype = null;
+                    return fn;
+                }
+                
+                function test(argDescription, type, arg, expectedResult)
+                {
+                    let description = 'returns ' + expectedResult + ' ' + argDescription;
+                    it(
+                        description,
+                        () =>
+                        {
+                            assert.equal(
+                                Object[Symbol.hasInstance].call(type, arg),
+                                expectedResult
+                            );
+                        }
                     );
                 }
+                
+                test('when this is not callable', { prototype: Object.prototype }, { }, false);
+                test('when this is null', null, { }, false);
+                test('with null argument', Object, null, false);
+                test('with undefined argument', Object, void 0, false);
+                test('with boolean type argument', Boolean, true, false);
+                test('with number type argument', Number, 1, false);
+                test('with string type argument', String, 'foo', false);
+                test('with symbol type argument', Symbol, Symbol.iterator, false);
+                usingDocumentAll(
+                    () => test('with document.all argument', Object, document.all, true)
+                );
+                test('when the argument is the prototype of this', Symbol, Symbol.prototype, false);
+                it(
+                    'throws a TypeError when this has null prototype',
+                    () =>
+                    {
+                        let arg = Object.create(null);
+                        let fn =
+                            Object[Symbol.hasInstance].bind(createNullPrototypeFunction(), arg);
+                        assert.throws(fn, TypeError);
+                    }
+                );
+                test(
+                    'with a primitive argument when this has null prototype',
+                    createNullPrototypeFunction(),
+                    1,
+                    false
+                );
             }
         );
     }
     
-    var assert;
+    function usingDocumentAll(fn)
+    {
+        if (typeof document !== 'undefined')
+            fn();
+    }
+    
+    let assert;
     
     if (typeof module !== 'undefined')
     {
