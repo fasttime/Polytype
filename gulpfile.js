@@ -24,7 +24,6 @@ const lintOptions =
         'no-var':                   'error',
         'object-shorthand':         'error',
         'prefer-arrow-callback':    'error',
-        'prefer-const':             'error',
         'prefer-numeric-literals':  'error',
         'prefer-spread':            'error',
         'prefer-template':          'error',

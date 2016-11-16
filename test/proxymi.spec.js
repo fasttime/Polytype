@@ -543,36 +543,19 @@
                 );
                 it(
                     'with a null argument throws a TypeError',
-                    () =>
-                    {
-                        assert.throws(
-                            () => classes(null),
-                            TypeError,
-                            /^Argument is not a constructor$/
-                        );
-                    }
+                    () => assert.throws(() => classes(null), TypeError)
                 );
                 it(
                     'with a non-callable argument throws a TypeError',
-                    () =>
-                    {
-                        assert.throws(
-                            () => classes({ }),
-                            TypeError,
-                            /^Argument is not a constructor$/
-                        );
-                    }
+                    () => assert.throws(() => classes({ }), TypeError)
                 );
                 it(
                     'with a non-constructor argument throws a TypeError',
-                    () =>
-                    {
-                        assert.throws(
-                            () => classes(() => void 0),
-                            TypeError,
-                            /^Argument is not a constructor$/
-                        );
-                    }
+                    () => assert.throws(() => classes(() => void 0), TypeError)
+                );
+                it(
+                    'with a bound function throws a TypeError',
+                    () => assert.throws(() => classes(Array.bind()), TypeError)
                 );
                 
                 describe(
@@ -1149,6 +1132,8 @@
                     );
                 }
                 
+                beforeEach(setup);
+                
                 it(
                     'is set on base classes',
                     () =>
@@ -1169,6 +1154,20 @@
                 );
                 test('when this is not callable', { prototype: Object.prototype }, { }, false);
                 test('when this is null', null, { }, false);
+                {
+                    class Foo
+                    { }
+                    const Foo2 = Foo.bind();
+                    class Bar extends classes(Object, Foo)
+                    { }
+                    test('with an instance of a bound target function', Foo2, new Bar(), true);
+                    test(
+                        'with an instance of a subclass of a bound target function',
+                        Foo2,
+                        new Bar(),
+                        true
+                    );
+                }
                 test('with null argument', Object, null, false);
                 test('with undefined argument', Object, void 0, false);
                 test('with boolean type argument', Boolean, true, false);
