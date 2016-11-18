@@ -5,6 +5,13 @@
 {
     'use strict';
     
+    function exactRegExp(str)
+    {
+        const pattern = `^${str.replace(/[.()[]/g, '\\$&')}$`;
+        const regExp = RegExp(pattern);
+        return regExp;
+    }
+    
     function isInPrototypeChainOf(obj1, obj2)
     {
         const Temp = Function();
@@ -15,6 +22,11 @@
     
     function init()
     {
+        function cleanup()
+        {
+            A = B = X = C = D = E = callData = void 0;
+        }
+        
         function setup()
         {
             A =
@@ -183,6 +195,11 @@
                     {
                         return super.class(type);
                     }
+                    newSuper(type)
+                    {
+                        const superClass = super.class;
+                        new superClass(type); // eslint-disable-line new-cap
+                    }
                 };
             D =
                 class
@@ -215,11 +232,29 @@
             () =>
             {
                 beforeEach(setup);
+                afterEach(cleanup);
                 
                 it(
                     'cannot be called with new',
-                    // eslint-disable-next-line new-cap
-                    () => assert.throws(() => new classes(A), TypeError)
+                    () =>
+                    assert.throws(
+                        () => new classes(), // eslint-disable-line new-cap
+                        TypeError,
+                        exactRegExp('classes is not a constructor')
+                    )
+                );
+                it(
+                    'without arguments evaluates to null',
+                    () => assert.isNull(classes())
+                );
+                it(
+                    'works with a function that is not an instance of Function',
+                    () =>
+                    {
+                        const foo = Function();
+                        Object.setPrototypeOf(foo, { });
+                        assert.doesNotThrow(() => classes(foo));
+                    }
                 );
                 
                 describe(
@@ -334,71 +369,6 @@
                             }
                         );
                     }
-                );
-                
-                usingDocumentAll(
-                    () =>
-                    describe(
-                        'works well when document.all is in the prototype chain',
-                        () =>
-                        {
-                            let Bar;
-                            let Foo;
-                            let bar;
-                            let foo;
-                            
-                            beforeEach(
-                                () =>
-                                {
-                                    Foo = Function();
-                                    Foo.prototype = document.all;
-                                    Bar =
-                                        class extends classes(Foo)
-                                        {
-                                            getFromFoo(prop)
-                                            {
-                                                return super.class(Foo)[prop];
-                                            }
-                                        };
-                                    bar = new Bar();
-                                    foo = void 0;
-                                    Object.defineProperty(
-                                        document.all,
-                                        'foo',
-                                        {
-                                            configurable: true,
-                                            get: () => void 0,
-                                            set: value =>
-                                            {
-                                                foo = value;
-                                            }
-                                        }
-                                    );
-                                }
-                            );
-                            
-                            afterEach(() => delete document.all.foo);
-                            
-                            it('with getters', () => assert.strictEqual(bar[0], document.all[0]));
-                            it(
-                                'with setters',
-                                () =>
-                                {
-                                    bar.foo = 42;
-                                    assert.strictEqual(foo, 42);
-                                }
-                            );
-                            it(
-                                'with super',
-                                () =>
-                                {
-                                    const actual = bar.getFromFoo(0);
-                                    const expected = document.all[0];
-                                    assert.strictEqual(actual, expected);
-                                }
-                            );
-                        }
-                    )
                 );
                 
                 it(
@@ -537,25 +507,155 @@
                         );
                     }
                 );
-                it(
-                    'without arguments evaluates to null',
-                    () => assert.isNull(classes())
+                
+                usingDocumentAll(
+                    () =>
+                    describe(
+                        'works well when document.all is in the prototype chain',
+                        () =>
+                        {
+                            let Bar;
+                            let Foo;
+                            let bar;
+                            let foo;
+                            
+                            beforeEach(
+                                () =>
+                                {
+                                    Foo = Function();
+                                    Foo.prototype = document.all;
+                                    Bar =
+                                        class extends classes(Foo)
+                                        {
+                                            getFromFoo(prop)
+                                            {
+                                                return super.class(Foo)[prop];
+                                            }
+                                        };
+                                    bar = new Bar();
+                                    foo = void 0;
+                                    Object.defineProperty(
+                                        document.all,
+                                        'foo',
+                                        {
+                                            configurable: true,
+                                            get: () => void 0,
+                                            set: value =>
+                                            {
+                                                foo = value;
+                                            }
+                                        }
+                                    );
+                                }
+                            );
+                            
+                            afterEach(() => delete document.all.foo);
+                            
+                            it('with getters', () => assert.strictEqual(bar[0], document.all[0]));
+                            it(
+                                'with setters',
+                                () =>
+                                {
+                                    bar.foo = 42;
+                                    assert.strictEqual(foo, 42);
+                                }
+                            );
+                            it(
+                                'with super',
+                                () =>
+                                {
+                                    const actual = bar.getFromFoo(0);
+                                    const expected = document.all[0];
+                                    assert.strictEqual(actual, expected);
+                                }
+                            );
+                        }
+                    )
                 );
-                it(
-                    'with a null argument throws a TypeError',
-                    () => assert.throws(() => classes(null), TypeError)
+                
+                describe(
+                    'throws a TypeError',
+                    () =>
+                    {
+                        it(
+                            'with a null argument',
+                            () =>
+                            assert.throws(
+                                () => classes(null),
+                                TypeError,
+                                exactRegExp('null is not a constructor')
+                            )
+                        );
+                        it(
+                            'with a symbol argument',
+                            () =>
+                            assert.throws(
+                                () => classes(Symbol()),
+                                TypeError,
+                                exactRegExp('Symbol() is not a constructor')
+                            )
+                        );
+                        it(
+                            'with a non-callable object argument',
+                            () =>
+                            assert.throws(
+                                () => classes({ }),
+                                TypeError,
+                                exactRegExp('[object Object] is not a constructor')
+                            )
+                        );
+                        it(
+                            'with a non-constructor callable argument',
+                            () => assert.throws(
+                                () => classes(() => void 0),
+                                TypeError,
+                                exactRegExp('() => void 0 is not a constructor')
+                            )
+                        );
+                        it(
+                            'with a bound function',
+                            () => assert.throws(
+                                () => classes(Array.bind()),
+                                TypeError,
+                                exactRegExp(
+                                    'Property prototype of bound Array is not an object or null'
+                                )
+                            )
+                        );
+                        it(
+                            'with a function with a non-object property prototype value',
+                            () =>
+                            {
+                                const foo = Function();
+                                Object.defineProperty(foo, 'prototype', { value: 42 });
+                                assert.throws(
+                                    () => classes(foo),
+                                    TypeError,
+                                    exactRegExp(
+                                        'Property prototype of anonymous is not an object or null'
+                                    )
+                                );
+                            }
+                        );
+                    }
                 );
+                
                 it(
-                    'with a non-callable argument throws a TypeError',
-                    () => assert.throws(() => classes({ }), TypeError)
-                );
-                it(
-                    'with a non-constructor argument throws a TypeError',
-                    () => assert.throws(() => classes(() => void 0), TypeError)
-                );
-                it(
-                    'with a bound function throws a TypeError',
-                    () => assert.throws(() => classes(Array.bind()), TypeError)
+                    'gets propoperty prototype only once',
+                    () =>
+                    {
+                        function getPrototype()
+                        {
+                            ++getCount;
+                            return null;
+                        }
+                        
+                        let getCount = 0;
+                        const foo = Function().bind();
+                        Object.defineProperty(foo, 'prototype', { get: getPrototype });
+                        classes(foo);
+                        assert.equal(getCount, 1);
+                    }
                 );
                 
                 describe(
@@ -598,19 +698,20 @@
                 );
                 
                 it(
-                    'constructor must be called with \'new\'',
+                    'constructor must be called with new',
                     () =>
                     {
                         assert.throws(
                             X,
                             TypeError,
-                            /^Class constructor \(A,B\) cannot be invoked without 'new'$/
+                            exactRegExp('Class constructor (A,B) cannot be invoked without \'new\'')
                         );
                     }
                 );
                 it(
                     'instance prototype cannot be modified',
-                    () => assert.throws(() => Object.setPrototypeOf(X.prototype, { }), TypeError)
+                    () =>
+                    assert.throws(() => Object.setPrototypeOf(X.prototype, { }), TypeError)
                 );
                 it(
                     'class prototype cannot be modified',
@@ -662,6 +763,18 @@
                     () =>
                     {
                         it(
+                            'cannot be called with new',
+                            () =>
+                            {
+                                const c = new C();
+                                assert.throws(
+                                    () => c.newSuper(A),
+                                    TypeError,
+                                    'superClass is not a constructor'
+                                );
+                            }
+                        );
+                        it(
                             'returns a proxy for any superclass argument',
                             () =>
                             {
@@ -677,7 +790,7 @@
                                 assert.throws(
                                     () => e.getSuper(A),
                                     TypeError,
-                                    /^Argument is not a direct superclass$/
+                                    exactRegExp('Argument is not a direct superclass')
                                 );
                             }
                         );
@@ -826,7 +939,7 @@
                                 assert.throws(
                                     () => E.getStaticSuper(A),
                                     TypeError,
-                                    /^Argument is not a direct superclass$/
+                                    exactRegExp('Argument is not a direct superclass')
                                 );
                             }
                         );
@@ -1027,7 +1140,17 @@
             () =>
             {
                 beforeEach(setup);
+                afterEach(cleanup);
                 
+                it(
+                    'cannot be called with new',
+                    () =>
+                    assert.throws(
+                        () => new Object.getPrototypeListOf(), // eslint-disable-line new-cap
+                        TypeError,
+                        exactRegExp('Object.getPrototypeListOf is not a constructor')
+                    )
+                );
                 it(
                     'returns an empty array if an object has null prototype',
                     () => assert.deepEqual(Object.getPrototypeListOf(Object.create(null)), [])
@@ -1089,6 +1212,7 @@
             () =>
             {
                 beforeEach(setup);
+                afterEach(cleanup);
                 
                 it(
                     'works with all base types',
@@ -1133,7 +1257,17 @@
                 }
                 
                 beforeEach(setup);
+                afterEach(cleanup);
                 
+                it(
+                    'cannot be called with new',
+                    () =>
+                    assert.throws(
+                        () => new Object[Symbol.hasInstance](),
+                        TypeError,
+                        exactRegExp('Object[Symbol.hasInstance] is not a constructor')
+                    )
+                );
                 it(
                     'is set on base classes',
                     () =>
