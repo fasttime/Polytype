@@ -195,6 +195,11 @@
                     {
                         return super.class(type);
                     }
+                    static newStaticSuper(type)
+                    {
+                        const superClass = super.class;
+                        new superClass(type); // eslint-disable-line new-cap
+                    }
                     newSuper(type)
                     {
                         const superClass = super.class;
@@ -758,8 +763,135 @@
                     }
                 );
                 
+                it(
+                    'name',
+                    () =>
+                    {
+                        class ぁ1
+                        { }
+                        class ぁ2
+                        { }
+                        class ぁ3
+                        { }
+                        assert.strictEqual(classes(ぁ1, ぁ2, ぁ3).name, '(ぁ1,ぁ2,ぁ3)');
+                    }
+                );
+                
                 describe(
-                    'super.class in nonstatic context',
+                    'superclass prototype is treated as immutable',
+                    () =>
+                    {
+                        let Foo;
+                        let Bar;
+                        let bar;
+                        beforeEach(
+                            () =>
+                            {
+                                Foo =
+                                    function ()
+                                    { };
+                                Foo.prototype.foo = 42;
+                                Bar =
+                                    class extends classes(Foo)
+                                    {
+                                        bar()
+                                        {
+                                            return super.class(Foo).foo;
+                                        }
+                                    };
+                                Foo.prototype = { };
+                                bar = new Bar();
+                            }
+                        );
+                        it('in prototype proxy', () => assert.strictEqual(bar.foo, 42));
+                        it('in super proxy', () => assert.strictEqual(bar.bar(), 42));
+                    }
+                );
+                
+                describe(
+                    'null prototype',
+                    () =>
+                    {
+                        let Foo;
+                        let bar;
+                        beforeEach(
+                            () =>
+                            {
+                                Foo =
+                                    function ()
+                                    { };
+                                Foo.prototype = null;
+                            }
+                        );
+                        describe(
+                            'in this works with',
+                            () =>
+                            {
+                                beforeEach(
+                                    () =>
+                                    {
+                                        class Bar extends classes(Foo)
+                                        {
+                                            get bar()
+                                            {
+                                                return this.foo;
+                                            }
+                                            in()
+                                            {
+                                                return 'foo' in this;
+                                            }
+                                            set bar(value)
+                                            {
+                                                this.foo = value;
+                                            }
+                                        }
+                                        bar = new Bar();
+                                    }
+                                );
+                                it('get', () => assert.isUndefined(bar.bar));
+                                it('in', () => assert.isFalse(bar.in()));
+                                it('set', () => assert.isUndefined(bar.foo));
+                            }
+                        );
+                        describe(
+                            'in super works with',
+                            () =>
+                            {
+                                beforeEach(
+                                    () =>
+                                    {
+                                        class Bar extends classes(Foo)
+                                        {
+                                            get bar()
+                                            {
+                                                return super.class(Foo).foo;
+                                            }
+                                            set bar(value)
+                                            {
+                                                super.class(Foo).foo = value;
+                                            }
+                                        }
+                                        bar = new Bar();
+                                    }
+                                );
+                                it('get', () => assert.isUndefined(bar.bar));
+                                it('set', () => assert.isUndefined(bar.foo));
+                            }
+                        );
+                    }
+                );
+            }
+        );
+        
+        describe(
+            'super.class',
+            ()  =>
+            {
+                beforeEach(setup);
+                afterEach(cleanup);
+                
+                describe(
+                    'in nonstatic context',
                     () =>
                     {
                         it(
@@ -925,9 +1057,20 @@
                 );
                 
                 describe(
-                    'super.class in static context',
+                    'in static context',
                     () =>
                     {
+                        it(
+                            'cannot be called with new',
+                            () =>
+                            {
+                                assert.throws(
+                                    () => C.newStaticSuper(A),
+                                    TypeError,
+                                    'superClass is not a constructor'
+                                );
+                            }
+                        );
                         it(
                             'returns a proxy for any superclass argument',
                             () => assert.isNotNull(C.getStaticSuper(A))
@@ -1010,124 +1153,6 @@
                                 E.getStaticSuper(C).getStaticSuper(A).bStaticSet = 42;
                                 E.getStaticSuper(C).getStaticSuper(B).aStaticSet = 13;
                                 assert.strictEqual(callData, null);
-                            }
-                        );
-                    }
-                );
-                
-                it(
-                    'name',
-                    () =>
-                    {
-                        class ぁ1
-                        { }
-                        class ぁ2
-                        { }
-                        class ぁ3
-                        { }
-                        assert.strictEqual(classes(ぁ1, ぁ2, ぁ3).name, '(ぁ1,ぁ2,ぁ3)');
-                    }
-                );
-                
-                describe(
-                    'superclass prototype is treated as immutable',
-                    () =>
-                    {
-                        let Foo;
-                        let Bar;
-                        let bar;
-                        beforeEach(
-                            () =>
-                            {
-                                Foo =
-                                    function ()
-                                    { };
-                                Foo.prototype.foo = 42;
-                                Bar =
-                                    class extends classes(Foo)
-                                    {
-                                        bar()
-                                        {
-                                            return super.class(Foo).foo;
-                                        }
-                                    };
-                                Foo.prototype = { };
-                                bar = new Bar();
-                            }
-                        );
-                        it('in prototype proxy', () => assert.strictEqual(bar.foo, 42));
-                        it('in super proxy', () => assert.strictEqual(bar.bar(), 42));
-                    }
-                );
-                
-                describe(
-                    'null prototype',
-                    () =>
-                    {
-                        let Foo;
-                        let bar;
-                        beforeEach(
-                            () =>
-                            {
-                                Foo =
-                                    function ()
-                                    { };
-                                Foo.prototype = null;
-                            }
-                        );
-                        describe(
-                            'in this works with',
-                            () =>
-                            {
-                                beforeEach(
-                                    () =>
-                                    {
-                                        class Bar extends classes(Foo)
-                                        {
-                                            get bar()
-                                            {
-                                                return this.foo;
-                                            }
-                                            in()
-                                            {
-                                                return 'foo' in this;
-                                            }
-                                            set bar(value)
-                                            {
-                                                this.foo = value;
-                                            }
-                                        }
-                                        bar = new Bar();
-                                    }
-                                );
-                                it('get', () => assert.isUndefined(bar.bar));
-                                it('in', () => assert.isFalse(bar.in()));
-                                it('set', () => assert.isUndefined(bar.foo));
-                            }
-                        );
-                        describe(
-                            'in super works with',
-                            () =>
-                            {
-                                beforeEach(
-                                    () =>
-                                    {
-                                        class Bar extends classes(Foo)
-                                        {
-                                            get bar()
-                                            {
-                                                return super.class(Foo).foo;
-                                            }
-                                            set bar(value)
-                                            {
-                                                super.class(Foo).foo = value;
-                                            }
-                                        }
-                                        bar = new Bar();
-                                    }
-                                );
-                                it('get', () => assert.isUndefined(bar.bar));
-                                it('set', () => assert.isUndefined(bar.foo));
                             }
                         );
                     }
@@ -1227,6 +1252,25 @@
                         assert.instanceOf(e, Object);
                     }
                 );
+                it(
+                    'works with bound types',
+                    () =>
+                    {
+                        const AAA = A.bind(1).bind(2);
+                        const EEE = E.bind(3).bind(4);
+                        assert.instanceOf(new EEE(), AAA);
+                    }
+                );
+                it(
+                    'works with subclasses of bound types',
+                    () =>
+                    {
+                        class Foo extends classes(E.bind().bind())
+                        { }
+                        const Bar = Foo.bind().bind();
+                        assert.instanceOf(new Bar(), B.bind().bind());
+                    }
+                );
             }
         );
         
@@ -1288,20 +1332,6 @@
                 );
                 test('when this is not callable', { prototype: Object.prototype }, { }, false);
                 test('when this is null', null, { }, false);
-                {
-                    class Foo
-                    { }
-                    const Foo2 = Foo.bind();
-                    class Bar extends classes(Object, Foo)
-                    { }
-                    test('with an instance of a bound target function', Foo2, new Bar(), true);
-                    test(
-                        'with an instance of a subclass of a bound target function',
-                        Foo2,
-                        new Bar(),
-                        true
-                    );
-                }
                 test('with null argument', Object, null, false);
                 test('with undefined argument', Object, void 0, false);
                 test('with boolean type argument', Boolean, true, false);
