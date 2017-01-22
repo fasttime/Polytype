@@ -24,7 +24,7 @@
     {
         function cleanup()
         {
-            A = B = X = C = D = E = callData = void 0;
+            A = B = X = C = D = E = callData = undefined;
         }
         
         function setup()
@@ -34,11 +34,11 @@
                 {
                     constructor(a)
                     {
-                        if (a !== void 0)
+                        if (a !== undefined)
                         {
                             (callData || (callData = { })).A =
                             {
-                                args: [...arguments],
+                                args: [...arguments], // eslint-disable-line prefer-rest-params
                                 newTarget: new.target,
                                 this: this
                             };
@@ -52,7 +52,7 @@
                         const value = Symbol();
                         (callData || (callData = { })).A =
                         {
-                            args: [...arguments],
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
                             getter: 'aGetOnly',
                             this: this,
                             value
@@ -62,7 +62,11 @@
                     set aSetOnly(arg) // eslint-disable-line no-unused-vars
                     {
                         (callData || (callData = { })).A =
-                        { args: [...arguments], setter: 'aSetOnly', this: this };
+                        {
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
+                            setter: 'aSetOnly',
+                            this: this
+                        };
                     }
                     static aStatic()
                     { }
@@ -71,7 +75,7 @@
                         const value = Symbol();
                         (callData || (callData = { })).A =
                         {
-                            args: [...arguments],
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
                             getter: 'aStaticGet',
                             this: this,
                             value
@@ -81,7 +85,11 @@
                     static set aStaticSet(arg) // eslint-disable-line no-unused-vars
                     {
                         (callData || (callData = { })).A =
-                        { args: [...arguments], setter: 'aStaticSet', this: this };
+                        {
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
+                            setter: 'aStaticSet',
+                            this: this
+                        };
                     }
                     someMethod()
                     {
@@ -96,7 +104,7 @@
                         const value = Symbol();
                         (callData || (callData = { })).A =
                         {
-                            args: [...arguments],
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
                             getter: 'staticGS',
                             this: this,
                             value
@@ -109,11 +117,11 @@
                 {
                     constructor(b1, b2)
                     {
-                        if (b1 !== void 0 || b2 !== void 0)
+                        if (b1 !== undefined || b2 !== undefined)
                         {
                             (callData || (callData = { })).B =
                             {
-                                args: [...arguments],
+                                args: [...arguments], // eslint-disable-line prefer-rest-params
                                 newTarget: new.target,
                                 this: this
                             };
@@ -127,7 +135,7 @@
                         const value = Symbol();
                         (callData || (callData = { })).B =
                         {
-                            args: [...arguments],
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
                             getter: 'bGetOnly',
                             this: this,
                             value
@@ -137,7 +145,11 @@
                     set bSetOnly(arg) // eslint-disable-line no-unused-vars
                     {
                         (callData || (callData = { })).B =
-                        { args: [...arguments], setter: 'bSetOnly', this: this };
+                        {
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
+                            setter: 'bSetOnly',
+                            this: this
+                        };
                     }
                     static bStatic()
                     { }
@@ -146,7 +158,7 @@
                         const value = Symbol();
                         (callData || (callData = { })).B =
                         {
-                            args: [...arguments],
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
                             getter: 'bStaticGet',
                             this: this,
                             value
@@ -156,7 +168,11 @@
                     static set bStaticSet(arg) // eslint-disable-line no-unused-vars
                     {
                         (callData || (callData = { })).B =
-                        { args: [...arguments], setter: 'bStaticSet', this: this };
+                        {
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
+                            setter: 'bStaticSet',
+                            this: this
+                        };
                     }
                     someMethod()
                     {
@@ -171,7 +187,7 @@
                         const value = Symbol();
                         (callData || (callData = { })).B =
                         {
-                            args: [...arguments],
+                            args: [...arguments], // eslint-disable-line prefer-rest-params
                             getter: 'staticGS',
                             this: this,
                             value
@@ -289,7 +305,7 @@
                             () =>
                             {
                                 const c = new C();
-                                assert.strictEqual(c.aSetOnly, void 0);
+                                assert.strictEqual(c.aSetOnly, undefined);
                             }
                         );
                         it(
@@ -416,7 +432,7 @@
                         );
                         it(
                             'ungettable properties',
-                            () => assert.strictEqual(C.aStaticSet, void 0)
+                            () => assert.strictEqual(C.aStaticSet, undefined)
                         );
                         it(
                             'direct base class getters',
@@ -538,13 +554,13 @@
                                             }
                                         };
                                     bar = new Bar();
-                                    foo = void 0;
+                                    foo = undefined;
                                     Object.defineProperty(
                                         document.all,
                                         'foo',
                                         {
                                             configurable: true,
-                                            get: () => void 0,
+                                            get: () => undefined,
                                             set: value =>
                                             {
                                                 foo = value;
@@ -570,7 +586,7 @@
                                 () =>
                                 {
                                     const actual = bar.getFromFoo(0);
-                                    const expected = document.all[0];
+                                    const [expected] = document.all;
                                     assert.strictEqual(actual, expected);
                                 }
                             );
@@ -612,9 +628,9 @@
                         it(
                             'with a non-constructor callable argument',
                             () => assert.throws(
-                                () => classes(() => void 0),
+                                () => classes(() => undefined),
                                 TypeError,
-                                exactRegExp('() => void 0 is not a constructor')
+                                exactRegExp('() => undefined is not a constructor')
                             )
                         );
                         it(
@@ -748,7 +764,7 @@
                             'sets own properties on this',
                             () =>
                             {
-                                const c = new C(void 0, ['foo', 'bar']);
+                                const c = new C(undefined, ['foo', 'bar']);
                                 assert.strictEqual(c.foo, 'bar');
                             }
                         );
@@ -997,12 +1013,12 @@
                                 const c = new C();
                                 {
                                     const actual = c.getSuper(A).bGetOnly;
-                                    assert.strictEqual(actual, void 0);
+                                    assert.strictEqual(actual, undefined);
                                     assert.strictEqual(callData, null);
                                 }
                                 {
                                     const actual = c.getSuper(B).aGetOnly;
-                                    assert.strictEqual(actual, void 0);
+                                    assert.strictEqual(actual, undefined);
                                     assert.strictEqual(callData, null);
                                 }
                             }
@@ -1122,12 +1138,12 @@
                             {
                                 {
                                     const actual = C.getStaticSuper(A).bStaticGet;
-                                    assert.strictEqual(actual, void 0);
+                                    assert.strictEqual(actual, undefined);
                                     assert.strictEqual(callData, null);
                                 }
                                 {
                                     const actual = C.getStaticSuper(B).aStaticGet;
-                                    assert.strictEqual(actual, void 0);
+                                    assert.strictEqual(actual, undefined);
                                     assert.strictEqual(callData, null);
                                 }
                             }
@@ -1333,7 +1349,7 @@
                 test('when this is not callable', { prototype: Object.prototype }, { }, false);
                 test('when this is null', null, { }, false);
                 test('with null argument', Object, null, false);
-                test('with undefined argument', Object, void 0, false);
+                test('with undefined argument', Object, undefined, false);
                 test('with boolean type argument', Boolean, true, false);
                 test('with number type argument', Number, 1, false);
                 test('with string type argument', String, 'foo', false);
@@ -1377,8 +1393,8 @@
             require('../lib/proxymi.js');
         }
         else
-            chai = self.chai;
-        assert = chai.assert;
+            ({ chai } = self);
+        ({ assert } = chai);
     }
     init();
 }

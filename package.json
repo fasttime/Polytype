@@ -31,10 +31,10 @@
   "devDependencies": {
     "chai": "~3.5.0",
     "gulp": "~3.9.1",
-    "gulp-fasttime-lint": "~0.0.6",
+    "gulp-fasttime-lint": "~0.2.4",
     "gulp-spawn-mocha": "~3.1.0",
     "istanbul": "~0.4.5",
-    "mocha": "~3.1.2",
+    "mocha": "~3.2.0",
     "mocha-matrix": "~0.1.1",
     "run-sequence": "~1.2.2"
   },
