@@ -37,7 +37,7 @@ Alternatively, you can hotlink the online file.
 
 ### In Node.js
 
-If you are using Node.js 6 or later, you can install Proxymi with [npm](https://www.npmjs.org).
+If you are using Node.js 7 or later, you can install Proxymi with [npm](https://www.npmjs.org).
 
 ```
 npm install proxymi
@@ -61,16 +61,15 @@ class Circle
 {
     constructor(centerX, centerY, radius)
     {
-        this.centerX    = centerX;
-        this.centerY    = centerY;
-        this.radius     = radius;
+        this.moveTo(centerX, centerY);
+        this.radius = radius;
     }
     get diameter() { return this.radius * 2; }
     set diameter(diameter) { this.radius = diameter / 2; }
     moveTo(centerX, centerY)
     {
-        this.centerX    = centerX;
-        this.centerY    = centerY;
+        this.centerX = centerX;
+        this.centerY = centerY;
     }
     toString()
     {
@@ -89,6 +88,7 @@ class ColoredObject
 class ColoredCircle
 extends classes(Circle, ColoredObject) // Base classes in a comma-separated list
 {
+    // Add methods here.
 }
 ```
 
@@ -96,6 +96,7 @@ extends classes(Circle, ColoredObject) // Base classes in a comma-separated list
 
 ```js
 let c = new ColoredCircle();
+
 c.moveTo(42, 31);
 c.radius = 1;
 c.color = 'red';
@@ -108,6 +109,7 @@ c.paint();                          // "painting in red"
 
 ```js
 let c = new ColoredCircle();
+
 console.log(c instanceof Circle);           // true
 console.log(c instanceof ColoredObject);    // true
 console.log(c instanceof ColoredCircle);    // true
@@ -121,7 +123,7 @@ Use arrays to group together parameters for each base constructor in the derived
 
 ```js
 class ColoredCircle
-extends classes(Circle and ColoredObject)
+extends classes(Circle, ColoredObject)
 {
     constructor(centerX, centerY, radius, color)
     {
@@ -190,6 +192,5 @@ reflected in all derived classes. This is the magic of proxies.
 let c = new ColoredCircle();
 
 Circle.prototype.foo = () => console.log("foo");
-
 c.foo(); // print "foo"
 ```
