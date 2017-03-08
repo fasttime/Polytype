@@ -15,7 +15,7 @@ Proxymi uses
 along with other new features introduced by ECMAScript 6 to provide multiple inheritance.
 Some of these features are not yet widely supported.
 As of today, Proxymi works in **current versions of Chrome, Firefox, Opera and in Node.js 7**.
-As ES6 support in other browsers will improve, Proxymi will start to run in those browsers, too.
+As ES6 support in other browsers improves, Proxymi will start to run in those browsers, too.
 
 ## Setup Instructions
 
@@ -37,7 +37,7 @@ Alternatively, you can hotlink the online file.
 
 ### In Node.js
 
-If you are using Node.js 7 or later, you can install Proxymi with [npm](https://www.npmjs.org).
+If you are using Node.js 7, you can install Proxymi with [npm](https://www.npmjs.org).
 
 ```
 npm install proxymi
@@ -153,9 +153,24 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
-#### Use methods and accessors from a specific base class
+#### Use base class methods and accessors
 
-If different base classes declare a method or accessor with the same name, the syntax
+As usual, the keyword `super` invokes a base class method or accessor when used inside a derived
+class.
+
+```js
+class ColoredCircle
+extends classes(Circle, ColoredObject)
+{
+    paint()
+    {
+        console.log("Using method paint of some base class");
+        super.paint();
+    }
+}
+```
+
+If different base classes include a method or accessor with the same name, the syntax
 `super.class(BaseClass).methodOrAccessor` can be used to make the invocation unambiguous.
 
 ```js
@@ -164,7 +179,7 @@ extends classes(Circle, ColoredObject)
 {
     toString()
     {
-        // Use method toString from base class Circle
+        // Using method toString of base class Circle
         let circleString = super.class(Circle).toString();
         return `${circleString} in ${this.color}`;
     }
