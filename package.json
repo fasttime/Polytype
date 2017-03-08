@@ -1,6 +1,6 @@
 {
   "name": "proxymi",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Proxy-based multiple inheritance for ES6. Without mixins.",
   "keywords": [
     "class",
