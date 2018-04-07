@@ -5,19 +5,12 @@
 {
     'use strict';
     
-    function exactRegExp(str)
+    function exactRegExp(...strs)
     {
-        const pattern = `^${str.replace(/[.()[]/g, '\\$&')}$`;
-        const regExp = RegExp(pattern);
+        const patterns = strs.map(str => `${str.replace(/[.()[]/g, '\\$&')}`);
+        const pattern = patterns.length > 1 ? `(?:${patterns.join('|')})` : patterns[0];
+        const regExp = new RegExp(`^${pattern}$`);
         return regExp;
-    }
-    
-    function isInPrototypeChainOf(obj1, obj2)
-    {
-        const Temp = Function();
-        Temp.prototype = obj1;
-        const result = obj2 instanceof Temp;
-        return result;
     }
     
     function init()
@@ -261,7 +254,7 @@
                     assert.throws(
                         () => new classes(), // eslint-disable-line new-cap
                         TypeError,
-                        exactRegExp('classes is not a constructor')
+                        /\bis not a constructor\b/
                     )
                 );
                 it(
@@ -639,12 +632,12 @@
                                 () => classes(Array.bind()),
                                 TypeError,
                                 exactRegExp(
-                                    'Property prototype of bound Array is not an object or null'
+                                    'Property \'prototype\' of bound Array is not an object or null'
                                 )
                             )
                         );
                         it(
-                            'with a function with a non-object property prototype value',
+                            'with a function with a non-object property \'prototype\' value',
                             () =>
                             {
                                 const foo = Function();
@@ -653,7 +646,8 @@
                                     () => classes(foo),
                                     TypeError,
                                     exactRegExp(
-                                        'Property prototype of anonymous is not an object or null'
+                                        'Property \'prototype\' of anonymous is not an object or ' +
+                                        'null'
                                     )
                                 );
                             }
@@ -662,7 +656,7 @@
                 );
                 
                 it(
-                    'gets propoperty prototype only once',
+                    'gets property \'prototype\' only once',
                     () =>
                     {
                         function getPrototype()
@@ -723,7 +717,7 @@
                     () =>
                     {
                         assert.throws(
-                            X,
+                            () => X(),
                             TypeError,
                             exactRegExp('Class constructor (A,B) cannot be invoked without \'new\'')
                         );
@@ -864,15 +858,44 @@
                                         bar = new Bar();
                                     }
                                 );
-                                it('get', () => assert.isUndefined(bar.bar));
-                                it('in', () => assert.isFalse(bar.in()));
-                                it('set', () => assert.isUndefined(bar.foo));
+                                it(
+                                    'get',
+                                    () =>
+                                    {
+                                        const foo = 42;
+                                        bar.foo = foo;
+                                        assert.strictEqual(bar.bar, foo);
+                                    }
+                                );
+                                it(
+                                    'in',
+                                    () =>
+                                    {
+                                        const foo = 43;
+                                        bar.foo = foo;
+                                        assert.isTrue(bar.in());
+                                    }
+                                );
+                                it(
+                                    'set',
+                                    () =>
+                                    {
+                                        const foo = 44;
+                                        bar.bar = foo;
+                                        assert.strictEqual(bar.foo, foo);
+                                    }
+                                );
                             }
                         );
                         describe(
-                            'in super works with',
+                            'in super throws a TypeError with',
                             () =>
                             {
+                                const unprototypedSuperclassErrorRegExp =
+                                    exactRegExp(
+                                        'Property \'prototype\' of superclass is null',
+                                        'undefined is not an object (evaluating \'super.class\')'
+                                    );
                                 beforeEach(
                                     () =>
                                     {
@@ -890,8 +913,31 @@
                                         bar = new Bar();
                                     }
                                 );
-                                it('get', () => assert.isUndefined(bar.bar));
-                                it('set', () => assert.isUndefined(bar.foo));
+                                it(
+                                    'get',
+                                    () =>
+                                    {
+                                        assert.throws(
+                                            () => void bar.bar,
+                                            TypeError,
+                                            unprototypedSuperclassErrorRegExp
+                                        );
+                                    }
+                                );
+                                it(
+                                    'set',
+                                    () =>
+                                    {
+                                        assert.throws(
+                                            () =>
+                                            {
+                                                bar.bar = undefined;
+                                            },
+                                            TypeError,
+                                            unprototypedSuperclassErrorRegExp
+                                        );
+                                    }
+                                );
                             }
                         );
                     }
@@ -918,7 +964,7 @@
                                 assert.throws(
                                     () => c.newSuper(A),
                                     TypeError,
-                                    'superClass is not a constructor'
+                                    /\bis not a constructor\b/
                                 );
                             }
                         );
@@ -1083,7 +1129,7 @@
                                 assert.throws(
                                     () => C.newStaticSuper(A),
                                     TypeError,
-                                    'superClass is not a constructor'
+                                    /\bis not a constructor\b/
                                 );
                             }
                         );
@@ -1189,7 +1235,7 @@
                     assert.throws(
                         () => new Object.getPrototypeListOf(), // eslint-disable-line new-cap
                         TypeError,
-                        exactRegExp('Object.getPrototypeListOf is not a constructor')
+                        /\bis not a constructor\b/
                     )
                 );
                 it(
@@ -1325,7 +1371,7 @@
                     assert.throws(
                         () => new Object[Symbol.hasInstance](),
                         TypeError,
-                        exactRegExp('Object[Symbol.hasInstance] is not a constructor')
+                        /\bis not a constructor\b/
                     )
                 );
                 it(
@@ -1376,6 +1422,14 @@
                 );
             }
         );
+    }
+    
+    function isInPrototypeChainOf(obj1, obj2)
+    {
+        const Temp = Function();
+        Temp.prototype = obj1;
+        const result = obj2 instanceof Temp;
+        return result;
     }
     
     function usingDocumentAll(fn)
