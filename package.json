@@ -1,11 +1,11 @@
 {
   "name": "proxymi",
   "version": "0.2.4",
-  "description": "Proxy-based multiple inheritance for ES6. Without mixins.",
+  "description": "Proxy-based multiple inheritance for JavaScript. Without mixins.",
   "keywords": [
     "class",
     "classes",
-    "es6",
+    "es8",
     "inheritance",
     "proxies",
     "proxy",

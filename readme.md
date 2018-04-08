@@ -2,20 +2,23 @@
 
 [![NPM](https://nodei.co/npm/proxymi.png?compact=true)](https://nodei.co/npm/proxymi/)
 
-**Proxy-based multiple inheritance for ES6. Without mixins.**
+**Proxy-based multiple inheritance for JavaScript. Without mixins.**
 
-**Proxymi** is a JavaScript library that adds dynamic multiple inheritance to JavaScript with a
+**Proxymi** is a library that adds support for dynamic
+[multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance) to JavaScript with a
 simple syntax.
-“Dynamic” means that runtime changes to base classes are reflected immediately in all derived
+“Dynamic” means that changes to base classes at runtime are reflected immediately in all derived
 classes just like programmers would expect when working with single prototype inheritance.
 So easy.
 
 Proxymi uses
 [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
-along with other new features introduced by ECMAScript 6 to provide multiple inheritance.
-Some of these features are not yet widely supported.
-As of today, Proxymi works in **current versions of Chrome, Firefox, Opera and in Node.js 7**.
-As ES6 support in other browsers improves, Proxymi will start to run in those browsers, too.
+along with other relatively new language features to provide multiple inheritance.
+Some of these features are not yet well supported in all browsers.
+As of today, Proxymi works in **current versions of Chrome, Firefox,
+Safari<sup>[[notes](#compatibility "Safari is only partially supported. See the Compatibility
+section for details.")]</sup>, Opera and in Node.js**.
+As JavaScript support in other browsers improves, Proxymi will start to run in those browsers, too.
 
 ## Setup Instructions
 
@@ -37,7 +40,7 @@ Alternatively, you can hotlink the online file.
 
 ### In Node.js
 
-If you are using Node.js 7, you can install Proxymi with [npm](https://www.npmjs.org).
+If you are using Node.js 7 or later, you can install Proxymi with [npm](https://www.npmjs.org).
 
 ```
 npm install proxymi
@@ -209,3 +212,19 @@ let c = new ColoredCircle();
 Circle.prototype.foo = () => console.log("foo");
 c.foo(); // print "foo"
 ```
+
+## Compatibility
+
+Proximy was successfully tested on the following browsers / JavaScript engines.
+
+* Chrome 54+
+* Firefox 51+
+* Safari 11 *(Partial support. See notes below.)*
+* Opera 41+
+* Node.js 7+
+
+Safari does not reject non-constructor functions (such as arrow functions, generators, etc.) as
+arguments to `classes`, although it does not allow instantiating classes derived from such
+functions.
+Also, Safari does not throw a `TypeError` when attempting to assign to a read-only property of a
+Proximi class or object in strict mode.
