@@ -23,7 +23,7 @@
         function setup()
         {
             A =
-                class A // eslint-disable-line no-shadow
+                class A
                 {
                     constructor(a)
                     {
@@ -52,7 +52,7 @@
                         };
                         return value;
                     }
-                    set aSetOnly(arg) // eslint-disable-line no-unused-vars
+                    set aSetOnly(arg)
                     {
                         (callData || (callData = { })).A =
                         {
@@ -75,7 +75,7 @@
                         };
                         return value;
                     }
-                    static set aStaticSet(arg) // eslint-disable-line no-unused-vars
+                    static set aStaticSet(arg)
                     {
                         (callData || (callData = { })).A =
                         {
@@ -106,7 +106,7 @@
                     }
                 };
             B =
-                class B // eslint-disable-line no-shadow
+                class B
                 {
                     constructor(b1, b2)
                     {
@@ -135,7 +135,7 @@
                         };
                         return value;
                     }
-                    set bSetOnly(arg) // eslint-disable-line no-unused-vars
+                    set bSetOnly(arg)
                     {
                         (callData || (callData = { })).B =
                         {
@@ -158,7 +158,7 @@
                         };
                         return value;
                     }
-                    static set bStaticSet(arg) // eslint-disable-line no-unused-vars
+                    static set bStaticSet(arg)
                     {
                         (callData || (callData = { })).B =
                         {
@@ -190,7 +190,7 @@
                 };
             X = classes(A, B);
             C =
-                class C extends X // eslint-disable-line no-shadow
+                class C extends X
                 {
                     constructor(...args) // eslint-disable-line no-useless-constructor
                     {
@@ -402,6 +402,14 @@
                         );
                     }
                 );
+                it(
+                    'allows getting undefined properties from an instance',
+                    () =>
+                    {
+                        const e = new E();
+                        assert.isUndefined(e.unknown);
+                    }
+                );
                 
                 describe(
                     'provides class level inheritance for',
@@ -520,6 +528,10 @@
                             }
                         );
                     }
+                );
+                it(
+                    'allows getting undefined properties from an class',
+                    () => assert.isUndefined(E.unknown)
                 );
                 
                 usingDocumentAll(

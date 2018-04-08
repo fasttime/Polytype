@@ -29,14 +29,14 @@
     "build": "npm install && gulp"
   },
   "devDependencies": {
-    "chai": "~3.5.0",
+    "chai": "~4.1.2",
     "gulp": "~3.9.1",
-    "gulp-fasttime-lint": "~0.2.6",
-    "gulp-spawn-mocha": "~3.1.0",
+    "gulp-fasttime-lint": "~0.2.8",
+    "gulp-spawn-mocha": "~5.0.1",
     "istanbul": "~0.4.5",
-    "mocha": "~3.2.0",
+    "mocha": "~5.0.5",
     "mocha-matrix": "~0.1.1",
-    "run-sequence": "~1.2.2"
+    "run-sequence": "~2.2.1"
   },
   "engines": {
     "node": ">=7.0.0"
