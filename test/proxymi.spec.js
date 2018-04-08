@@ -664,6 +664,17 @@
                                 );
                             }
                         );
+                        it(
+                            'with a repeated argument',
+                            () =>
+                            {
+                                assert.throws(
+                                    () => classes(A, B, A),
+                                    TypeError,
+                                    exactRegExp('Duplicate superclass A')
+                                );
+                            }
+                        );
                     }
                 );
                 
