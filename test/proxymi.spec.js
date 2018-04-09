@@ -1249,9 +1249,6 @@
             'Object.getPrototypeListOf',
             () =>
             {
-                beforeEach(setup);
-                afterEach(cleanup);
-                
                 it(
                     'cannot be called with new',
                     () =>
@@ -1273,32 +1270,60 @@
                     'returns the prototype of a multiple inheritance class',
                     () =>
                     {
-                        const actual = Object.getPrototypeListOf(C);
-                        assert.deepEqual(actual, [Object.getPrototypeOf(C)]);
+                        class _A
+                        { }
+                        class _B
+                        { }
+                        class _C extends classes(_A, _B)
+                        { }
+                        const actual = Object.getPrototypeListOf(_C);
+                        assert.deepEqual(actual, [Object.getPrototypeOf(_C)]);
                     }
                 );
                 it(
                     'returns the prototype of a multiple inheritance object',
                     () =>
                     {
-                        const actual = Object.getPrototypeListOf(new C());
-                        assert.deepEqual(actual, [C.prototype]);
+                        class _A
+                        { }
+                        class _B
+                        { }
+                        class _C extends classes(_A, _B)
+                        { }
+                        const actual = Object.getPrototypeListOf(new _C());
+                        assert.deepEqual(actual, [_C.prototype]);
                     }
                 );
                 it(
                     'returns all prototypes of a clustered constructor',
                     () =>
                     {
-                        const actual = Object.getPrototypeListOf(X);
-                        assert.deepEqual(actual, [A, B]);
+                        class _A
+                        { }
+                        class _B
+                        { }
+                        const _AB = classes(_A, _B);
+                        const actual = Object.getPrototypeListOf(_AB);
+                        assert.deepEqual(actual, [_A, _B]);
                     }
                 );
                 it(
-                    'returns all prototypes of a clustered prototype',
+                    'returns all prototypes of a clustered prototype excluding null and duplicates',
                     () =>
                     {
-                        const actual = Object.getPrototypeListOf(X.prototype);
-                        assert.deepEqual(actual, [A.prototype, B.prototype]);
+                        class _A
+                        { }
+                        function _B()
+                        { }
+                        _B.prototype = null;
+                        class _C
+                        { }
+                        function _D()
+                        { }
+                        _D.prototype = _A.prototype;
+                        const _ABCD = classes(_A, _B, _C, _D);
+                        const actual = Object.getPrototypeListOf(_ABCD.prototype);
+                        assert.deepEqual(actual, [_A.prototype, _C.prototype]);
                     }
                 );
                 usingDocumentAll(
