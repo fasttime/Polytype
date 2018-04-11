@@ -1302,8 +1302,8 @@
                         { }
                         class _B
                         { }
-                        const _AB = classes(_A, _B);
-                        const actual = Object.getPrototypeListOf(_AB);
+                        const xAB = classes(_A, _B);
+                        const actual = Object.getPrototypeListOf(xAB);
                         assert.deepEqual(actual, [_A, _B]);
                     }
                 );
@@ -1321,8 +1321,8 @@
                         function _D()
                         { }
                         _D.prototype = _A.prototype;
-                        const _ABCD = classes(_A, _B, _C, _D);
-                        const actual = Object.getPrototypeListOf(_ABCD.prototype);
+                        const xABCD = classes(_A, _B, _C, _D);
+                        const actual = Object.getPrototypeListOf(xABCD.prototype);
                         assert.deepEqual(actual, [_A.prototype, _C.prototype]);
                     }
                 );
@@ -1385,7 +1385,7 @@
         );
         
         describe(
-            'Symbol.hasInstance',
+            '[Symbol.hasInstance]',
             () =>
             {
                 function createNullPrototypeFunction()
@@ -1410,9 +1410,6 @@
                     );
                 }
                 
-                beforeEach(setup);
-                afterEach(cleanup);
-                
                 it(
                     'cannot be called with new',
                     () =>
@@ -1423,21 +1420,48 @@
                     )
                 );
                 it(
+                    'has name \'[Symbol.hasInstance]\'',
+                    () =>
+                    {
+                        assert.strictEqual(Object[Symbol.hasInstance].name, '[Symbol.hasInstance]');
+                    }
+                );
+                it(
                     'is set on base classes',
                     () =>
                     {
-                        assert(A.hasOwnProperty(Symbol.hasInstance));
-                        assert(B.hasOwnProperty(Symbol.hasInstance));
-                        assert(D.hasOwnProperty(Symbol.hasInstance));
+                        class _A
+                        { }
+                        class _B
+                        { }
+                        classes(_A, _B);
+                        class _D
+                        { }
+                        class _E extends _D
+                        { }
+                        classes(_E);
+                        assert(_A.hasOwnProperty(Symbol.hasInstance));
+                        assert(_B.hasOwnProperty(Symbol.hasInstance));
+                        assert(_D.hasOwnProperty(Symbol.hasInstance));
                     }
                 );
                 it(
                     'is not set on derived classes',
                     () =>
                     {
-                        assert(!C.hasOwnProperty(Symbol.hasInstance));
-                        assert(!X.hasOwnProperty(Symbol.hasInstance));
-                        assert(!E.hasOwnProperty(Symbol.hasInstance));
+                        class _A
+                        { }
+                        const xA = classes(_A);
+                        class _B extends xA
+                        { }
+                        class _C extends _B
+                        { }
+                        class _D extends classes(_C)
+                        { }
+                        assert(!xA.hasOwnProperty(Symbol.hasInstance));
+                        assert(!_B.hasOwnProperty(Symbol.hasInstance));
+                        assert(!_C.hasOwnProperty(Symbol.hasInstance));
+                        assert(!_D.hasOwnProperty(Symbol.hasInstance));
                     }
                 );
                 test('when this is not callable', { prototype: Object.prototype }, { }, false);
