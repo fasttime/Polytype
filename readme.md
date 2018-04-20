@@ -42,7 +42,7 @@ Alternatively, you can hotlink the online file.
 
 If you are using Node.js 7 or later, you can install Proxymi with [npm](https://www.npmjs.org).
 
-```
+```console
 npm install proxymi
 ```
 
@@ -120,6 +120,24 @@ console.log(c instanceof Object);           // true
 console.log(c instanceof Array);            // false
 ```
 
+#### Check for inheritance
+
+In pure JavaScript, the expression
+```js
+B.prototype instanceof A
+```
+determines if `A` is a base class of class `B`.
+
+Proxymi takes care that this method still works well with multiple inheritance.
+
+```js
+console.log(ColoredCircle.prototype instanceof Circle);         // true
+console.log(ColoredCircle.prototype instanceof ColoredObject);  // true
+console.log(ColoredCircle.prototype instanceof ColoredCircle);  // false
+console.log(ColoredCircle.prototype instanceof Object);         // true
+console.log(Circle.prototype instanceof ColoredObject);         // false
+```
+
 #### Invoke multiple base constructors
 
 Use arrays to group together parameters for each base constructor in the derived class constructor.
@@ -174,7 +192,10 @@ extends classes(Circle, ColoredObject)
 ```
 
 If different base classes include a method or accessor with the same name, the syntax
-`super.class(BaseClass).methodOrAccessor` can be used to make the invocation unambiguous.
+```js
+super.class(DirectBaseClass).methodOrAccessor
+```
+can be used to make the invocation unambiguous.
 
 ```js
 class ColoredCircle
@@ -194,9 +215,7 @@ extends classes(Circle, ColoredObject)
 ```js
 ColoredCircle.areSameColor(c1, c2)
 ```
-
 same as
-
 ```js
 ColoredObject.areSameColor(c1, c2)
 ```
