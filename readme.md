@@ -54,7 +54,7 @@ require("proxymi");
 
 ## Usage
 
-#### Inherit from more than one base class
+### Inherit from more than one base class
 
 For example, declare a derived class `ColoredCircle` that inherits from both base classes `Circle`
 and `ColoredObject`.
@@ -95,7 +95,7 @@ extends classes(Circle, ColoredObject) // Base classes in a comma-separated list
 }
 ```
 
-#### Use methods and accessors from all base classes
+### Use methods and accessors from all base classes
 
 ```js
 let c = new ColoredCircle();
@@ -108,7 +108,7 @@ console.log(c.diameter);            // 2
 c.paint();                          // "painting in red"
 ```
 
-#### `instanceof` works just like it should
+### `instanceof` works just like it should
 
 ```js
 let c = new ColoredCircle();
@@ -120,7 +120,7 @@ console.log(c instanceof Object);           // true
 console.log(c instanceof Array);            // false
 ```
 
-#### Check for inheritance
+### Test for inheritance
 
 In pure JavaScript, the expression
 ```js
@@ -128,7 +128,7 @@ B.prototype instanceof A
 ```
 determines if `A` is a base class of class `B`.
 
-Proxymi takes care that this method still works well with multiple inheritance.
+Proxymi takes care that this test still works well with multiple inheritance.
 
 ```js
 console.log(ColoredCircle.prototype instanceof Circle);         // true
@@ -138,7 +138,7 @@ console.log(ColoredCircle.prototype instanceof Object);         // true
 console.log(Circle.prototype instanceof ColoredObject);         // false
 ```
 
-#### Invoke multiple base constructors
+### Invoke multiple base constructors
 
 Use arrays to group together parameters for each base constructor in the derived class constructor.
 
@@ -174,7 +174,7 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
-#### Use base class methods and accessors
+### Use base class methods and accessors
 
 As usual, the keyword `super` invokes a base class method or accessor when used inside a derived
 class.
@@ -210,7 +210,7 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
-#### Static methods and accessors are inherited, too
+### Static methods and accessors are inherited, too
 
 ```js
 ColoredCircle.areSameColor(c1, c2)
@@ -220,7 +220,7 @@ same as
 ColoredObject.areSameColor(c1, c2)
 ```
 
-#### Dynamic base class changes
+### Dynamic base class changes
 
 If a property in a base class is added, removed or modified at runtime, the changes are immediately
 reflected in all derived classes. This is the magic of proxies.
@@ -242,8 +242,8 @@ Proximy was successfully tested on the following browsers / JavaScript engines.
 * Opera 41+
 * Node.js 7+
 
-Safari does not reject non-constructor functions (such as arrow functions, generators, etc.) as
-arguments to `classes`, although it does not allow instantiating classes derived from such
-functions.
+Because of poor ECMAScript compliance, Safari accepts non-constructor functions (such as arrow
+functions, generators, etc.) as arguments to `classes`, although it does not allow instantiating
+classes derived from such functions.
 Also, Safari does not throw a `TypeError` when attempting to assign to a read-only property of a
 Proximi class or object in strict mode.
