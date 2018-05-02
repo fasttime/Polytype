@@ -15,7 +15,7 @@ Proxymi uses
 [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
 along with other relatively new language features to provide multiple inheritance.
 Some of these features are not yet well supported in all browsers.
-As of today, Proxymi works in **current versions of Chrome, Firefox,
+As of today, Proxymi runs in **current versions of Chrome, Firefox,
 Safari<sup>[[notes](#compatibility "Safari is only partially supported. See the Compatibility
 section for details.")]</sup>, Opera and in Node.js**.
 As JavaScript support in other browsers improves, Proxymi will start to run in those browsers, too.
@@ -234,7 +234,7 @@ c.foo(); // print "foo"
 
 ## Compatibility
 
-Proximy was successfully tested on the following browsers / JavaScript engines.
+Proxymi was successfully tested in the following browsers / JavaScript engines.
 
 * Chrome 54+
 * Firefox 51+
@@ -246,4 +246,7 @@ Because of poor ECMAScript compliance, Safari accepts non-constructor functions 
 functions, generators, etc.) as arguments to `classes`, although it does not allow instantiating
 classes derived from such functions.
 Also, Safari does not throw a `TypeError` when attempting to assign to a read-only property of a
-Proximi class or object in strict mode.
+Proxymi class or object in strict mode.
+
+Edge with its JavaScript engine Chakra doesn't do well either: for now, Proxymi doesn't run in that
+browser.
