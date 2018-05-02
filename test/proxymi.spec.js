@@ -38,8 +38,8 @@
                     )
                 );
                 it(
-                    'without arguments evaluates to null',
-                    () => assert.isNull(classes())
+                    'without arguments throws a TypeError',
+                    () => assert.throws(() => classes(), TypeError, 'No superclasses specified')
                 );
                 it(
                     'works with a function that is not an instance of Function',
