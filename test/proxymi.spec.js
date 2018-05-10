@@ -24,6 +24,23 @@
     
     function init()
     {
+        usingReloadProxymi(
+            reloadProxymi =>
+            {
+                it(
+                    'Proxymi is loaded only once',
+                    () =>
+                    {
+                        const expectedClasses = classes;
+                        const promise =
+                            reloadProxymi()
+                            .then(() => assert.strictEqual(classes, expectedClasses));
+                        return promise;
+                    }
+                );
+            }
+        );
+        
         describe(
             'classes',
             () =>
@@ -1560,6 +1577,42 @@
     {
         if (typeof document !== 'undefined')
             fn();
+    }
+    
+    function usingReloadProxymi(fn)
+    {
+        if (typeof require === 'function')
+        {
+            const reloadProxymi =
+                () =>
+                {
+                    const path = require.resolve('..');
+                    delete require.cache[path];
+                    require(path);
+                    const promise = Promise.resolve();
+                    return promise;
+                };
+            fn(reloadProxymi);
+        }
+        else if (typeof document !== 'undefined')
+        {
+            const reloadProxymi =
+                () =>
+                {
+                    const promise =
+                        new Promise(
+                            resolve =>
+                            {
+                                const script = document.createElement('script');
+                                script.onload = resolve;
+                                script.src = '../lib/proxymi.js';
+                                document.head.appendChild(script);
+                            }
+                        );
+                    return promise;
+                };
+            fn(reloadProxymi);
+        }
     }
     
     let assert;
