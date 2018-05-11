@@ -989,8 +989,8 @@
                                 const c = new C();
                                 c.getSuper(A).bSetOnly = 42;
                                 c.getSuper(B).aSetOnly = 13;
-                                assert(c.hasOwnProperty('aSetOnly'));
-                                assert(c.hasOwnProperty('bSetOnly'));
+                                assert.ownProperty(c, 'aSetOnly');
+                                assert.ownProperty(c, 'bSetOnly');
                                 assert.isEmpty(callData);
                             }
                         );
@@ -1227,20 +1227,24 @@
                     () =>
                     {
                         const A = createNullPrototypeFunction('A');
-                        class B
+                        const B =
+                            () =>
+                            { };
+                        B.prototype = { };
+                        const C = Object.create(B);
+                        C.prototype = Object.create(B.prototype);
+                        function D()
                         { }
-                        class C
-                        { }
-                        const _BC = classes(B, C);
-                        class D extends _BC
-                        { }
-                        class E extends classes(A, D)
+                        Object.setPrototypeOf(D, C);
+                        D.prototype = Object.create(C.prototype);
+                        const _AD = classes(A, D);
+                        class E extends _AD
                         { }
                         const e = new E();
                         assert.instanceOf(e, B);
-                        assert.instanceOf(e, _BC);
-                        assert.instanceOf(e, C);
                         assert.instanceOf(e, D);
+                        assert.instanceOf(e, _AD);
+                        assert.instanceOf(e, E);
                         assert.instanceOf(e, Object);
                     }
                 );
@@ -1314,41 +1318,26 @@
                     }
                 );
                 it(
-                    'is set on base classes',
+                    'is set only on base classes',
                     () =>
                     {
-                        class A
+                        const A = createNullPrototypeFunction('A');
+                        const B =
+                            () =>
+                            { };
+                        B.prototype = { };
+                        const C = Object.create(B);
+                        C.prototype = Object.create(B.prototype);
+                        function D()
                         { }
-                        class B
-                        { }
-                        classes(A, B);
-                        class D
-                        { }
-                        class E extends D
-                        { }
-                        classes(E);
-                        assert(A.hasOwnProperty(Symbol.hasInstance));
-                        assert(B.hasOwnProperty(Symbol.hasInstance));
-                        assert(D.hasOwnProperty(Symbol.hasInstance));
-                    }
-                );
-                it(
-                    'is not set on derived classes',
-                    () =>
-                    {
-                        class A
-                        { }
-                        const _A = classes(A);
-                        class B extends _A
-                        { }
-                        class C extends B
-                        { }
-                        class D extends classes(C)
-                        { }
-                        assert(!_A.hasOwnProperty(Symbol.hasInstance));
-                        assert(!B.hasOwnProperty(Symbol.hasInstance));
-                        assert(!C.hasOwnProperty(Symbol.hasInstance));
-                        assert(!D.hasOwnProperty(Symbol.hasInstance));
+                        Object.setPrototypeOf(D, C);
+                        D.prototype = Object.create(C.prototype);
+                        const _AD = classes(A, D);
+                        assert.ownProperty(A, Symbol.hasInstance);
+                        assert.ownProperty(B, Symbol.hasInstance);
+                        assert.notOwnProperty(C, Symbol.hasInstance);
+                        assert.notOwnProperty(D, Symbol.hasInstance);
+                        assert.notOwnProperty(_AD, Symbol.hasInstance);
                     }
                 );
                 test('when this is not callable', { prototype: Object.prototype }, { }, false);
