@@ -18,7 +18,7 @@
     {
         const patterns = strs.map(str => `${str.replace(/[.()[]/g, '\\$&')}`);
         const pattern = patterns.length > 1 ? `(?:${patterns.join('|')})` : patterns[0];
-        const regExp = new RegExp(`^${pattern}$`);
+        const regExp = RegExp(`^${pattern}$`);
         return regExp;
     }
     
