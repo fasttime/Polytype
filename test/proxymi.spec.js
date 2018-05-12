@@ -46,6 +46,10 @@
             () =>
             {
                 it(
+                    'has name \'classes\'',
+                    () => assert.strictEqual(classes.name, 'classes')
+                );
+                it(
                     'cannot be called with new',
                     () =>
                     assert.throws(
@@ -825,6 +829,10 @@
                     () =>
                     {
                         it(
+                            'has name \'class\'',
+                            () => assert.strictEqual(classes(Object).prototype.class.name, 'class')
+                        );
+                        it(
                             'cannot be called with new',
                             () =>
                             {
@@ -1002,6 +1010,10 @@
                     () =>
                     {
                         it(
+                            'has name \'class\'',
+                            () => assert.strictEqual(classes(Object).class.name, 'class')
+                        );
+                        it(
                             'cannot be called with new',
                             () =>
                             {
@@ -1141,6 +1153,10 @@
             'Object.getPrototypeListOf',
             () =>
             {
+                it(
+                    'has name \'getPrototypeListOf\'',
+                    () => assert.strictEqual(Object.getPrototypeListOf.name, 'getPrototypeListOf')
+                );
                 it(
                     'cannot be called with new',
                     () =>
@@ -1302,6 +1318,11 @@
                 }
                 
                 it(
+                    'has name \'[Symbol.hasInstance]\'',
+                    () =>
+                    assert.strictEqual(Object[Symbol.hasInstance].name, '[Symbol.hasInstance]')
+                );
+                it(
                     'cannot be called with new',
                     () =>
                     assert.throws(
@@ -1309,13 +1330,6 @@
                         TypeError,
                         /\bis not a constructor\b/
                     )
-                );
-                it(
-                    'has name \'[Symbol.hasInstance]\'',
-                    () =>
-                    {
-                        assert.strictEqual(Object[Symbol.hasInstance].name, '[Symbol.hasInstance]');
-                    }
                 );
                 it(
                     'is set only on base classes',
