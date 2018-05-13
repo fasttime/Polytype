@@ -24,51 +24,24 @@
     
     function init()
     {
-        usingReloadProxymi(
-            reloadProxymi =>
-            {
-                it(
-                    'Proxymi is loaded only once',
-                    () =>
-                    {
-                        const expectedClasses = classes;
-                        const promise =
-                            reloadProxymi()
-                            .then(() => assert.strictEqual(classes, expectedClasses));
-                        return promise;
-                    }
-                );
-            }
-        );
-        
         describe(
-            'classes',
+            'Proxymi',
             () =>
             {
-                it(
-                    'has name \'classes\'',
-                    () => assert.strictEqual(classes.name, 'classes')
-                );
-                it(
-                    'cannot be called with new',
-                    () =>
-                    assert.throws(
-                        () => new classes(), // eslint-disable-line new-cap
-                        TypeError,
-                        /\bis not a constructor\b/
-                    )
-                );
-                it(
-                    'without arguments throws a TypeError',
-                    () => assert.throws(() => classes(), TypeError, 'No superclasses specified')
-                );
-                it(
-                    'works with a function that is not an instance of Function',
-                    () =>
+                usingReloadProxymi(
+                    reloadProxymi =>
                     {
-                        const foo = Function();
-                        Object.setPrototypeOf(foo, { });
-                        assert.doesNotThrow(() => classes(foo));
+                        it(
+                            'is loaded only once',
+                            () =>
+                            {
+                                const expectedClasses = classes;
+                                const promise =
+                                    reloadProxymi()
+                                    .then(() => assert.strictEqual(classes, expectedClasses));
+                                return promise;
+                            }
+                        );
                     }
                 );
                 
@@ -434,10 +407,346 @@
                     )
                 );
                 
+                it(
+                    'instance prototype cannot be modified',
+                    () =>
+                    {
+                        const { _AB } = setupTestData();
+                        assert.throws(() => Object.setPrototypeOf(_AB.prototype, { }), TypeError);
+                    }
+                );
+                it(
+                    'instance prototype has property \'constructor\'',
+                    () =>
+                    {
+                        const constructor = classes(Object);
+                        const actualDescriptor =
+                            Object.getOwnPropertyDescriptor(constructor.prototype, 'constructor');
+                        const expectedDescriptor =
+                        {
+                            configurable: true,
+                            enumerable: false,
+                            value: constructor,
+                            writable: true,
+                        };
+                        assert.deepEqual(actualDescriptor, expectedDescriptor);
+                    }
+                );
+                it(
+                    'class prototype cannot be modified',
+                    () =>
+                    {
+                        const { _AB } = setupTestData();
+                        assert.throws(() => Object.setPrototypeOf(_AB, { }), TypeError);
+                    }
+                );
+                
+                describe(
+                    'super in constructor',
+                    () =>
+                    {
+                        it(
+                            'invokes a direct super constructor',
+                            () =>
+                            {
+                                const { C, callData } = setupTestData();
+                                new C([42], ['foo', 'bar']);
+                                assert.deepEqual(callData.A.args, [42]);
+                                assert.strictEqual(callData.A.newTarget, C);
+                                assert.instanceOf(callData.A.this, C);
+                                assert.deepEqual(callData.B.args, ['foo', 'bar']);
+                                assert.strictEqual(callData.B.newTarget, C);
+                                assert.instanceOf(callData.B.this, C);
+                            }
+                        );
+                        it(
+                            'throws a TypeError for wrong argument',
+                            () =>
+                            {
+                                const { C } = setupTestData();
+                                assert.throws(() => new C(0), TypeError);
+                            }
+                        );
+                        it(
+                            'sets own properties on this',
+                            () =>
+                            {
+                                const { C } = setupTestData();
+                                const c = new C(undefined, ['foo', 'bar']);
+                                assert.strictEqual(c.foo, 'bar');
+                            }
+                        );
+                        it(
+                            'does not overwrite own properties on this',
+                            () =>
+                            {
+                                const { C } = setupTestData();
+                                const c = new C([42], ['aProp', 13]);
+                                assert.strictEqual(c.aProp, 42);
+                            }
+                        );
+                    }
+                );
+                
+                describe(
+                    'superclass prototype is treated as immutable',
+                    () =>
+                    {
+                        let Foo;
+                        let Bar;
+                        let bar;
+                        beforeEach(
+                            () =>
+                            {
+                                Foo =
+                                    function ()
+                                    { };
+                                Foo.prototype.foo = 42;
+                                Bar =
+                                    class extends classes(Foo)
+                                    {
+                                        bar()
+                                        {
+                                            return super.class(Foo).foo;
+                                        }
+                                    };
+                                Foo.prototype = { };
+                                bar = new Bar();
+                            }
+                        );
+                        it('in prototype proxy', () => assert.strictEqual(bar.foo, 42));
+                        it('in super proxy', () => assert.strictEqual(bar.bar(), 42));
+                    }
+                );
+                
+                describe(
+                    'null prototype',
+                    () =>
+                    {
+                        let Foo;
+                        let bar;
+                        
+                        beforeEach(
+                            () =>
+                            {
+                                Foo = createNullPrototypeFunction('Foo');
+                            }
+                        );
+                        
+                        describe(
+                            'in this works with',
+                            () =>
+                            {
+                                beforeEach(
+                                    () =>
+                                    {
+                                        class Bar extends classes(Foo)
+                                        {
+                                            get bar()
+                                            {
+                                                return this.foo;
+                                            }
+                                            in()
+                                            {
+                                                return 'foo' in this;
+                                            }
+                                            set bar(value)
+                                            {
+                                                this.foo = value;
+                                            }
+                                        }
+                                        bar = new Bar();
+                                    }
+                                );
+                                it(
+                                    'get',
+                                    () =>
+                                    {
+                                        const foo = 42;
+                                        bar.foo = foo;
+                                        assert.strictEqual(bar.bar, foo);
+                                    }
+                                );
+                                it(
+                                    'in',
+                                    () =>
+                                    {
+                                        const foo = 43;
+                                        bar.foo = foo;
+                                        assert.isTrue(bar.in());
+                                    }
+                                );
+                                it(
+                                    'set',
+                                    () =>
+                                    {
+                                        const foo = 44;
+                                        bar.bar = foo;
+                                        assert.strictEqual(bar.foo, foo);
+                                    }
+                                );
+                            }
+                        );
+                        
+                        describe(
+                            'in super throws a TypeError with',
+                            () =>
+                            {
+                                const unprototypedSuperclassErrorRegExp =
+                                    exactRegExp(
+                                        'Property \'prototype\' of superclass is null',
+                                        'undefined is not an object (evaluating \'super.class\')'
+                                    );
+                                beforeEach(
+                                    () =>
+                                    {
+                                        class Bar extends classes(Foo)
+                                        {
+                                            get bar()
+                                            {
+                                                return super.class(Foo).foo;
+                                            }
+                                            set bar(value)
+                                            {
+                                                super.class(Foo).foo = value;
+                                            }
+                                        }
+                                        bar = new Bar();
+                                    }
+                                );
+                                it(
+                                    'get',
+                                    () =>
+                                    {
+                                        assert.throws(
+                                            () => void bar.bar,
+                                            TypeError,
+                                            unprototypedSuperclassErrorRegExp
+                                        );
+                                    }
+                                );
+                                it(
+                                    'set',
+                                    () =>
+                                    {
+                                        assert.throws(
+                                            () =>
+                                            {
+                                                bar.bar = undefined;
+                                            },
+                                            TypeError,
+                                            unprototypedSuperclassErrorRegExp
+                                        );
+                                    }
+                                );
+                            }
+                        );
+                    }
+                );
+                
+                describe(
+                    'instanceof',
+                    () =>
+                    {
+                        it(
+                            'works with all base types',
+                            () =>
+                            {
+                                const A = createNullPrototypeFunction('A');
+                                const B =
+                                    () =>
+                                    { };
+                                B.prototype = { };
+                                const C = Object.create(B);
+                                C.prototype = Object.create(B.prototype);
+                                function D()
+                                { }
+                                Object.setPrototypeOf(D, C);
+                                D.prototype = Object.create(C.prototype);
+                                const _AD = classes(A, D);
+                                class E extends _AD
+                                { }
+                                const e = new E();
+                                assert.instanceOf(e, B);
+                                assert.instanceOf(e, D);
+                                assert.instanceOf(e, _AD);
+                                assert.instanceOf(e, E);
+                                assert.instanceOf(e, Object);
+                            }
+                        );
+                        it(
+                            'works with bound types',
+                            () =>
+                            {
+                                class A
+                                { }
+                                const Aʼʼ = A.bind(1).bind(2);
+                                class B extends classes(A)
+                                { }
+                                class C extends B
+                                { }
+                                const Cʼʼ = C.bind(3).bind(4);
+                                assert.instanceOf(new Cʼʼ(), Aʼʼ);
+                            }
+                        );
+                        it(
+                            'works with subclasses of bound types',
+                            () =>
+                            {
+                                class A
+                                { }
+                                const Aʼʼ = A.bind().bind();
+                                class B extends classes(A)
+                                { }
+                                const Bʼʼ = B.bind().bind();
+                                class C extends classes(Bʼʼ)
+                                { }
+                                const Cʼʼ = C.bind().bind();
+                                assert.instanceOf(new Cʼʼ(), Aʼʼ);
+                            }
+                        );
+                    }
+                );
+            }
+        );
+        
+        describe(
+            'classes',
+            () =>
+            {
+                it(
+                    'has name \'classes\'',
+                    () => assert.strictEqual(classes.name, 'classes')
+                );
+                it('has length 0', () => assert.strictEqual(classes.length, 0));
+                it(
+                    'cannot be called with new',
+                    () =>
+                    assert.throws(
+                        () => new classes(), // eslint-disable-line new-cap
+                        TypeError,
+                        /\bis not a constructor\b/
+                    )
+                );
+                it(
+                    'works with a function that is not an instance of Function',
+                    () =>
+                    {
+                        const foo = Function();
+                        Object.setPrototypeOf(foo, { });
+                        assert.doesNotThrow(() => classes(foo));
+                    }
+                );
+                
                 describe(
                     'throws a TypeError',
                     () =>
                     {
+                        it(
+                            'without arguments',
+                            () =>
+                            assert.throws(() => classes(), TypeError, 'No superclasses specified')
+                        );
                         it(
                             'with a null argument',
                             () =>
@@ -531,128 +840,15 @@
                         assert.equal(getCount, 1);
                     }
                 );
-                
-                describe(
-                    'exposes class property',
-                    () =>
-                    {
-                        it(
-                            'prototype',
-                            () =>
-                            {
-                                const { A, _AB } = setupTestData();
-                                const yDescriptor = Object.getOwnPropertyDescriptor(A, 'prototype');
-                                yDescriptor.value = _AB.prototype;
-                                const xDescriptor =
-                                    Object.getOwnPropertyDescriptor(_AB, 'prototype');
-                                assert.deepEqual(xDescriptor, yDescriptor);
-                            }
-                        );
-                        it(
-                            'length',
-                            () =>
-                            {
-                                const { A, _AB } = setupTestData();
-                                const yDescriptor = Object.getOwnPropertyDescriptor(A, 'length');
-                                yDescriptor.value = _AB.length;
-                                const xDescriptor = Object.getOwnPropertyDescriptor(_AB, 'length');
-                                assert.deepEqual(xDescriptor, yDescriptor);
-                            }
-                        );
-                        it(
-                            'constructor',
-                            () =>
-                            {
-                                const { A, _AB } = setupTestData();
-                                const yDescriptor =
-                                    Object.getOwnPropertyDescriptor(A.prototype, 'constructor');
-                                yDescriptor.value = _AB;
-                                const xDescriptor =
-                                    Object.getOwnPropertyDescriptor(_AB.prototype, 'constructor');
-                                assert.deepEqual(xDescriptor, yDescriptor);
-                            }
-                        );
-                    }
-                );
-                
+            }
+        );
+        
+        describe(
+            'classes(...?)',
+            ()  =>
+            {
                 it(
-                    'constructor must be called with new',
-                    () =>
-                    {
-                        const { _AB } = setupTestData();
-                        assert.throws(
-                            () => _AB(),
-                            TypeError,
-                            exactRegExp('Class constructor (A,B) cannot be invoked without \'new\'')
-                        );
-                    }
-                );
-                it(
-                    'instance prototype cannot be modified',
-                    () =>
-                    {
-                        const { _AB } = setupTestData();
-                        assert.throws(() => Object.setPrototypeOf(_AB.prototype, { }), TypeError);
-                    }
-                );
-                it(
-                    'class prototype cannot be modified',
-                    () =>
-                    {
-                        const { _AB } = setupTestData();
-                        assert.throws(() => Object.setPrototypeOf(_AB, { }), TypeError);
-                    }
-                );
-                
-                describe(
-                    'super in constructor',
-                    () =>
-                    {
-                        it(
-                            'invokes a direct super constructor',
-                            () =>
-                            {
-                                const { C, callData } = setupTestData();
-                                new C([42], ['foo', 'bar']);
-                                assert.deepEqual(callData.A.args, [42]);
-                                assert.strictEqual(callData.A.newTarget, C);
-                                assert.instanceOf(callData.A.this, C);
-                                assert.deepEqual(callData.B.args, ['foo', 'bar']);
-                                assert.strictEqual(callData.B.newTarget, C);
-                                assert.instanceOf(callData.B.this, C);
-                            }
-                        );
-                        it(
-                            'throws a TypeError for wrong argument',
-                            () =>
-                            {
-                                const { C } = setupTestData();
-                                assert.throws(() => new C(0), TypeError);
-                            }
-                        );
-                        it(
-                            'sets own properties on this',
-                            () =>
-                            {
-                                const { C } = setupTestData();
-                                const c = new C(undefined, ['foo', 'bar']);
-                                assert.strictEqual(c.foo, 'bar');
-                            }
-                        );
-                        it(
-                            'does not overwrite own properties on this',
-                            () =>
-                            {
-                                const { C } = setupTestData();
-                                const c = new C([42], ['aProp', 13]);
-                                assert.strictEqual(c.aProp, 42);
-                            }
-                        );
-                    }
-                );
-                
-                it(
-                    'name',
+                    'has expected name',
                     () =>
                     {
                         class ぁ1
@@ -664,156 +860,33 @@
                         assert.strictEqual(classes(ぁ1, ぁ2, ぁ3).name, '(ぁ1,ぁ2,ぁ3)');
                     }
                 );
-                
-                describe(
-                    'superclass prototype is treated as immutable',
+                it('has length 0', () => assert.strictEqual(classes(Object).length, 0));
+                it(
+                    'has property \'prototype\'',
                     () =>
                     {
-                        let Foo;
-                        let Bar;
-                        let bar;
-                        beforeEach(
-                            () =>
-                            {
-                                Foo =
-                                    function ()
-                                    { };
-                                Foo.prototype.foo = 42;
-                                Bar =
-                                    class extends classes(Foo)
-                                    {
-                                        bar()
-                                        {
-                                            return super.class(Foo).foo;
-                                        }
-                                    };
-                                Foo.prototype = { };
-                                bar = new Bar();
-                            }
-                        );
-                        it('in prototype proxy', () => assert.strictEqual(bar.foo, 42));
-                        it('in super proxy', () => assert.strictEqual(bar.bar(), 42));
+                        const actualDescriptor =
+                            Object.getOwnPropertyDescriptor(classes(Object), 'prototype');
+                        const expectedDescriptor =
+                        {
+                            configurable: false,
+                            enumerable: false,
+                            value: { },
+                            writable: false,
+                        };
+                        assert.deepEqual(actualDescriptor, expectedDescriptor);
                     }
                 );
-                
-                describe(
-                    'null prototype',
+                it(
+                    'cannot be called without new',
                     () =>
                     {
-                        let Foo;
-                        let bar;
-                        beforeEach(
-                            () =>
-                            {
-                                Foo = createNullPrototypeFunction('Foo');
-                            }
-                        );
-                        describe(
-                            'in this works with',
-                            () =>
-                            {
-                                beforeEach(
-                                    () =>
-                                    {
-                                        class Bar extends classes(Foo)
-                                        {
-                                            get bar()
-                                            {
-                                                return this.foo;
-                                            }
-                                            in()
-                                            {
-                                                return 'foo' in this;
-                                            }
-                                            set bar(value)
-                                            {
-                                                this.foo = value;
-                                            }
-                                        }
-                                        bar = new Bar();
-                                    }
-                                );
-                                it(
-                                    'get',
-                                    () =>
-                                    {
-                                        const foo = 42;
-                                        bar.foo = foo;
-                                        assert.strictEqual(bar.bar, foo);
-                                    }
-                                );
-                                it(
-                                    'in',
-                                    () =>
-                                    {
-                                        const foo = 43;
-                                        bar.foo = foo;
-                                        assert.isTrue(bar.in());
-                                    }
-                                );
-                                it(
-                                    'set',
-                                    () =>
-                                    {
-                                        const foo = 44;
-                                        bar.bar = foo;
-                                        assert.strictEqual(bar.foo, foo);
-                                    }
-                                );
-                            }
-                        );
-                        describe(
-                            'in super throws a TypeError with',
-                            () =>
-                            {
-                                const unprototypedSuperclassErrorRegExp =
-                                    exactRegExp(
-                                        'Property \'prototype\' of superclass is null',
-                                        'undefined is not an object (evaluating \'super.class\')'
-                                    );
-                                beforeEach(
-                                    () =>
-                                    {
-                                        class Bar extends classes(Foo)
-                                        {
-                                            get bar()
-                                            {
-                                                return super.class(Foo).foo;
-                                            }
-                                            set bar(value)
-                                            {
-                                                super.class(Foo).foo = value;
-                                            }
-                                        }
-                                        bar = new Bar();
-                                    }
-                                );
-                                it(
-                                    'get',
-                                    () =>
-                                    {
-                                        assert.throws(
-                                            () => void bar.bar,
-                                            TypeError,
-                                            unprototypedSuperclassErrorRegExp
-                                        );
-                                    }
-                                );
-                                it(
-                                    'set',
-                                    () =>
-                                    {
-                                        assert.throws(
-                                            () =>
-                                            {
-                                                bar.bar = undefined;
-                                            },
-                                            TypeError,
-                                            unprototypedSuperclassErrorRegExp
-                                        );
-                                    }
-                                );
-                            }
+                        assert.throws(
+                            classes(Object),
+                            TypeError,
+                            exactRegExp(
+                                'Class constructor (Object) cannot be invoked without \'new\''
+                            )
                         );
                     }
                 );
@@ -831,6 +904,10 @@
                         it(
                             'has name \'class\'',
                             () => assert.strictEqual(classes(Object).prototype.class.name, 'class')
+                        );
+                        it(
+                            'has length 1',
+                            () => assert.strictEqual(classes(Object).prototype.class.length, 1)
                         );
                         it(
                             'cannot be called with new',
@@ -867,6 +944,66 @@
                                 );
                             }
                         );
+                    }
+                );
+                
+                describe(
+                    'in static context',
+                    () =>
+                    {
+                        it(
+                            'has name \'class\'',
+                            () => assert.strictEqual(classes(Object).class.name, 'class')
+                        );
+                        it(
+                            'has length 1',
+                            () => assert.strictEqual(classes(Object).class.length, 1)
+                        );
+                        it(
+                            'cannot be called with new',
+                            () =>
+                            {
+                                const { A, C } = setupTestData();
+                                assert.throws(
+                                    () => C.newStaticSuper(A),
+                                    TypeError,
+                                    /\bis not a constructor\b/
+                                );
+                            }
+                        );
+                        it(
+                            'returns a proxy for any superclass argument',
+                            () =>
+                            {
+                                const { A, C } = setupTestData();
+                                assert.isNotNull(C.getStaticSuper(A));
+                            }
+                        );
+                        it(
+                            'throws a TypeError for wrong argument',
+                            () =>
+                            {
+                                const { A, E } = setupTestData();
+                                assert.throws(
+                                    () => E.getStaticSuper(A),
+                                    TypeError,
+                                    exactRegExp('Argument is not a direct superclass')
+                                );
+                            }
+                        );
+                    }
+                );
+            }
+        );
+        
+        describe(
+            'super.class(?)',
+            ()  =>
+            {
+                describe(
+                    'in nonstatic context',
+                    () =>
+                    {
                         it(
                             'invokes a direct superclass method',
                             () =>
@@ -1010,42 +1147,6 @@
                     () =>
                     {
                         it(
-                            'has name \'class\'',
-                            () => assert.strictEqual(classes(Object).class.name, 'class')
-                        );
-                        it(
-                            'cannot be called with new',
-                            () =>
-                            {
-                                const { A, C } = setupTestData();
-                                assert.throws(
-                                    () => C.newStaticSuper(A),
-                                    TypeError,
-                                    /\bis not a constructor\b/
-                                );
-                            }
-                        );
-                        it(
-                            'returns a proxy for any superclass argument',
-                            () =>
-                            {
-                                const { A, C } = setupTestData();
-                                assert.isNotNull(C.getStaticSuper(A));
-                            }
-                        );
-                        it(
-                            'throws a TypeError for wrong argument',
-                            () =>
-                            {
-                                const { A, E } = setupTestData();
-                                assert.throws(
-                                    () => E.getStaticSuper(A),
-                                    TypeError,
-                                    exactRegExp('Argument is not a direct superclass')
-                                );
-                            }
-                        );
-                        it(
                             'invokes a direct superclass method',
                             () =>
                             {
@@ -1157,6 +1258,7 @@
                     'has name \'getPrototypeListOf\'',
                     () => assert.strictEqual(Object.getPrototypeListOf.name, 'getPrototypeListOf')
                 );
+                it('has length 1', () => assert.strictEqual(Object.getPrototypeListOf.length, 1));
                 it(
                     'cannot be called with new',
                     () =>
@@ -1235,70 +1337,6 @@
         );
         
         describe(
-            'instanceof',
-            () =>
-            {
-                it(
-                    'works with all base types',
-                    () =>
-                    {
-                        const A = createNullPrototypeFunction('A');
-                        const B =
-                            () =>
-                            { };
-                        B.prototype = { };
-                        const C = Object.create(B);
-                        C.prototype = Object.create(B.prototype);
-                        function D()
-                        { }
-                        Object.setPrototypeOf(D, C);
-                        D.prototype = Object.create(C.prototype);
-                        const _AD = classes(A, D);
-                        class E extends _AD
-                        { }
-                        const e = new E();
-                        assert.instanceOf(e, B);
-                        assert.instanceOf(e, D);
-                        assert.instanceOf(e, _AD);
-                        assert.instanceOf(e, E);
-                        assert.instanceOf(e, Object);
-                    }
-                );
-                it(
-                    'works with bound types',
-                    () =>
-                    {
-                        class A
-                        { }
-                        const Aʼʼ = A.bind(1).bind(2);
-                        class B extends classes(A)
-                        { }
-                        class C extends B
-                        { }
-                        const Cʼʼ = C.bind(3).bind(4);
-                        assert.instanceOf(new Cʼʼ(), Aʼʼ);
-                    }
-                );
-                it(
-                    'works with subclasses of bound types',
-                    () =>
-                    {
-                        class A
-                        { }
-                        const Aʼʼ = A.bind().bind();
-                        class B extends classes(A)
-                        { }
-                        const Bʼʼ = B.bind().bind();
-                        class C extends classes(Bʼʼ)
-                        { }
-                        const Cʼʼ = C.bind().bind();
-                        assert.instanceOf(new Cʼʼ(), Aʼʼ);
-                    }
-                );
-            }
-        );
-        
-        describe(
             '[Symbol.hasInstance]',
             () =>
             {
@@ -1322,6 +1360,7 @@
                     () =>
                     assert.strictEqual(Object[Symbol.hasInstance].name, '[Symbol.hasInstance]')
                 );
+                it('has length 1', () => assert.strictEqual(Object[Symbol.hasInstance].length, 1));
                 it(
                     'cannot be called with new',
                     () =>
@@ -1356,6 +1395,7 @@
                 );
                 test('when this is not callable', { prototype: Object.prototype }, { }, false);
                 test('when this is null', null, { }, false);
+                test('when this has null prototype', Object.create(null), { }, false);
                 test('with null argument', Object, null, false);
                 test('with undefined argument', Object, undefined, false);
                 test('with boolean type argument', Boolean, true, false);
@@ -1366,21 +1406,28 @@
                     () => test('with document.all argument', Object, document.all, true)
                 );
                 test('when the argument is the prototype of this', Symbol, Symbol.prototype, false);
-                it(
-                    'throws a TypeError when this has null prototype',
+                
+                describe(
+                    'when this is a function with property \'prototype\' null',
                     () =>
                     {
-                        const arg = Object.create(null);
-                        const fn =
-                            Object[Symbol.hasInstance].bind(createNullPrototypeFunction(), arg);
-                        assert.throws(fn, TypeError);
+                        test(
+                            'with a primitive argument',
+                            createNullPrototypeFunction(),
+                            1,
+                            false
+                        );
+                        it(
+                            'throws a TypeError with an object argument',
+                            () =>
+                            {
+                                const fn =
+                                    Object[Symbol.hasInstance]
+                                    .bind(createNullPrototypeFunction(), { });
+                                assert.throws(fn, TypeError);
+                            }
+                        );
                     }
-                );
-                test(
-                    'with a primitive argument when this has null prototype',
-                    createNullPrototypeFunction(),
-                    1,
-                    false
                 );
             }
         );
