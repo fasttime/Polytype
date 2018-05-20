@@ -5,6 +5,24 @@
 {
     'use strict';
     
+    function createFunctionWithGetPrototypeCount(name)
+    {
+        const fn = Function();
+        if (name !== undefined)
+            Object.defineProperty(fn, 'name', { value: name });
+        Object.defineProperty(fn, 'getPrototypeCount', { value: 0, writable: true });
+        const get =
+            (target, prop, receiver) =>
+            {
+                if (prop === 'prototype')
+                    ++target.getPrototypeCount;
+                const value = Reflect.get(target, prop, receiver);
+                return value;
+            };
+        const proxy = new Proxy(fn, { get });
+        return proxy;
+    }
+    
     function createNullPrototypeFunction(name)
     {
         const fn = Function();
@@ -541,42 +559,17 @@
                                     () =>
                                     {
                                         const { A, C } = setupTestData();
+                                        const Foo = _ => [] <= _;
+                                        Object.defineProperty(Foo, 'name', { value: '' });
                                         assert.throws(
-                                            () => new C({ super: A }, { super: C }),
+                                            () => new C({ super: A }, { super: Foo }),
                                             TypeError,
-                                            exactRegExp('C is not a direct superclass')
+                                            exactRegExp('_ => [] <= _ is not a direct superclass')
                                         );
                                     }
                                 );
                             }
                         );
-                    }
-                );
-                
-                describe(
-                    'Property \'prototype\' is treated as immutable',
-                    () =>
-                    {
-                        let bar;
-                        beforeEach(
-                            () =>
-                            {
-                                function Foo()
-                                { }
-                                Foo.prototype.foo = 42;
-                                class Bar extends classes(Foo)
-                                {
-                                    bar()
-                                    {
-                                        return super.class(Foo).foo;
-                                    }
-                                }
-                                Foo.prototype = { };
-                                bar = new Bar();
-                            }
-                        );
-                        it('in prototype proxy', () => assert.strictEqual(bar.foo, 42));
-                        it('in super proxy', () => assert.strictEqual(bar.bar(), 42));
                     }
                 );
                 
@@ -734,17 +727,9 @@
                     'gets property \'prototype\' only once',
                     () =>
                     {
-                        function getPrototype()
-                        {
-                            ++getCount;
-                            return null;
-                        }
-                        
-                        let getCount = 0;
-                        const foo = Function().bind();
-                        Object.defineProperty(foo, 'prototype', { get: getPrototype });
-                        classes(foo);
-                        assert.equal(getCount, 1);
+                        const Foo = createFunctionWithGetPrototypeCount();
+                        classes(Foo);
+                        assert.equal(Foo.getPrototypeCount, 1);
                     }
                 );
                 
@@ -852,13 +837,18 @@
                     'has expected name',
                     () =>
                     {
-                        class ぁ1
+                        class ぁ
                         { }
-                        class ぁ2
+                        class A
                         { }
-                        class ぁ3
+                        Object.defineProperty(A, 'name', { value: undefined });
+                        class B
                         { }
-                        assert.strictEqual(classes(ぁ1, ぁ2, ぁ3).name, '(ぁ1,ぁ2,ぁ3)');
+                        Object.defineProperty(B, 'name', { value: null });
+                        class C
+                        { }
+                        Object.defineProperty(C, 'name', { value: '' });
+                        assert.strictEqual(classes(ぁ, A, B, C).name, '(ぁ,undefined,null,)');
                     }
                 );
                 it('has length 0', () => assert.strictEqual(classes(Object).length, 0));
@@ -889,6 +879,17 @@
                                 'Class constructor (Object) cannot be invoked without \'new\''
                             )
                         );
+                    }
+                );
+                it(
+                    'does not get property \'prototype\' of superclasses',
+                    () =>
+                    {
+                        const A = createFunctionWithGetPrototypeCount('A');
+                        const _A = classes(A);
+                        A.getPrototypeCount = 0;
+                        void new _A();
+                        assert.equal(A.getPrototypeCount, 0);
                     }
                 );
             }
@@ -933,15 +934,31 @@
                             }
                         );
                         it(
-                            'throws a TypeError with an invalid superclass',
+                            'throws a TypeError with an invalid argument',
                             () =>
                             {
                                 const { E } = setupTestData();
                                 const e = new E();
                                 assert.throws(
-                                    () => e.getSuper(_ => ({ }) <= _),
+                                    () => e.getSuper({ }),
                                     TypeError,
-                                    exactRegExp('_ => ({ }) <= _ is not a direct superclass')
+                                    exactRegExp('Argument is not a function')
+                                );
+                            }
+                        );
+                        it(
+                            'throws a TypeError with an invalid superclass',
+                            () =>
+                            {
+                                const { A, E } = setupTestData();
+                                const e = new E();
+                                assert.throws(
+                                    () => e.getSuper(A),
+                                    TypeError,
+                                    exactRegExp(
+                                        'Property \'prototype\' of argument does not match any ' +
+                                        'direct superclass'
+                                    )
                                 );
                             }
                         );
@@ -963,7 +980,7 @@
                                     () => bar.bar(),
                                     TypeError,
                                     exactRegExp(
-                                        'Property \'prototype\' of superclass is null',
+                                        'Property \'prototype\' of argument is not an object',
                                         'undefined is not an object (evaluating \'super.class\')'
                                     )
                                 );
@@ -1005,6 +1022,18 @@
                             }
                         );
                         it(
+                            'throws a TypeError with an invalid argument',
+                            () =>
+                            {
+                                const { E } = setupTestData();
+                                assert.throws(
+                                    () => E.getStaticSuper({ }),
+                                    TypeError,
+                                    exactRegExp('Argument is not a function')
+                                );
+                            }
+                        );
+                        it(
                             'throws a TypeError with an invalid superclass',
                             () =>
                             {
@@ -1012,7 +1041,7 @@
                                 assert.throws(
                                     () => E.getStaticSuper(A),
                                     TypeError,
-                                    exactRegExp('A is not a direct superclass')
+                                    exactRegExp('Argument is not a direct superclass')
                                 );
                             }
                         );
@@ -1038,7 +1067,9 @@
                                 c.aProp = 'A';
                                 c.bProp = 'B';
                                 assert.strictEqual(c.getSuper(A).someMethod(), 'A');
-                                assert.strictEqual(c.getSuper(B).someMethod(), 'B');
+                                const Bʼ = Function();
+                                Bʼ.prototype = B.prototype;
+                                assert.strictEqual(c.getSuper(Bʼ).someMethod(), 'B');
                             }
                         );
                         it(
