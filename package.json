@@ -5,11 +5,12 @@
   "keywords": [
     "class",
     "classes",
+    "es2017",
     "es8",
     "inheritance",
+    "multiple-inheritance",
     "proxies",
-    "proxy",
-    "multiple-inheritance"
+    "proxy"
   ],
   "homepage": "https://github.com/fasttime/proxymi",
   "bugs": {
@@ -34,7 +35,7 @@
     "gulp-fasttime-lint": "~0.2.9",
     "gulp-spawn-mocha": "~5.0.1",
     "istanbul": "~0.4.5",
-    "mocha": "~5.1.1",
+    "mocha": "~5.2.0",
     "mocha-matrix": "~0.1.1",
     "run-sequence": "~2.2.1"
   },
