@@ -872,12 +872,12 @@
                     'cannot be called without new',
                     () =>
                     {
+                        const Foo = classes(Object);
+                        delete Foo.name;
                         assert.throws(
-                            classes(Object),
+                            Foo,
                             TypeError,
-                            exactRegExp(
-                                'Class constructor (Object) cannot be invoked without \'new\''
-                            )
+                            exactRegExp('Constructor cannot be invoked without \'new\'')
                         );
                     }
                 );
@@ -1407,7 +1407,7 @@
                         description,
                         () =>
                         {
-                            assert.equal(
+                            assert.strictEqual(
                                 Object[Symbol.hasInstance].call(type, arg),
                                 expectedResult
                             );
