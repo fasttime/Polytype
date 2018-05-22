@@ -156,6 +156,23 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
+If you prefer to keep parameter lists associated to their base classes explicitly without relying on
+order, there is an alternative syntax.
+
+```js
+class ColoredCircle
+extends classes(Circle, ColoredObject)
+{
+    constructor(centerX, centerY, radius, color)
+    {
+        super(
+            { super: ColoredObject, arguments: [color] },
+            { super: Circle, arguments: [centerX, centerY, radius] }
+        );
+    }
+}
+```
+
 There is no need to specify an array of parameters for each base constructor.
 If the parameter arrays are omitted, the base constructors will still be invoked without parameters.
 
