@@ -426,8 +426,11 @@
                 );
                 
                 it(
-                    'clustered prototype is not extensible',
-                    () => assert.isNotExtensible(classes(Object).prototype)
+                    'clustered prototype has unsettable prototype',
+                    () => assert.throws(
+                        () => Object.setPrototypeOf(classes(Object).prototype, { }),
+                        TypeError
+                    )
                 );
                 it(
                     'clustered prototype has property \'constructor\'',
@@ -447,8 +450,11 @@
                     }
                 );
                 it(
-                    'clustered constructor is not extensible',
-                    () => assert.isNotExtensible(classes(Object))
+                    'clustered constructor has unsettable prototype',
+                    () => assert.throws(
+                        () => Object.setPrototypeOf(classes(Object), { }),
+                        TypeError
+                    )
                 );
                 
                 describe(
