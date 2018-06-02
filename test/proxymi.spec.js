@@ -1403,6 +1403,118 @@
         );
         
         describe(
+            'Object.prototype.isPrototypeOf',
+            () =>
+            {
+                function test(argDescription, thisValue, arg, expectedResult)
+                {
+                    let description;
+                    let fn;
+                    if (typeof expectedResult === 'boolean')
+                    {
+                        description = `returns ${expectedResult} ${argDescription}`;
+                        fn =
+                            () =>
+                            {
+                                assert.strictEqual(
+                                    Object.prototype.isPrototypeOf.call(thisValue, arg),
+                                    expectedResult
+                                );
+                            };
+                    }
+                    else
+                    {
+                        description = `throws ${expectedResult.name} ${argDescription}`;
+                        fn =
+                            () =>
+                            {
+                                assert.throws(
+                                    Object.prototype.isPrototypeOf.bind(thisValue, arg),
+                                    expectedResult
+                                );
+                            };
+                    }
+                    it(description, fn);
+                }
+                
+                it(
+                    'has name \'isPrototypeOf\'',
+                    () => assert.strictEqual(Object.prototype.isPrototypeOf.name, 'isPrototypeOf')
+                );
+                it(
+                    'has length 1',
+                    () => assert.strictEqual(Object.prototype.isPrototypeOf.length, 1)
+                );
+                it(
+                    'cannot be called with new',
+                    () =>
+                    assert.throws(
+                        () => new Object.prototype.isPrototypeOf(),
+                        TypeError,
+                        /\bis not a constructor\b/
+                    )
+                );
+                test('with null argument', undefined, null, false);
+                test('with undefined argument', null, undefined, false);
+                test('with boolean type argument', Boolean.prototype, true, false);
+                test('with number type argument', Number.prototype, 1, false);
+                test('with string type argument', String.prototype, 'foo', false);
+                test('with symbol type argument', Symbol.prototype, Symbol.iterator, false);
+                test('when this is null', null, { }, TypeError);
+                test('when this is undefined', undefined, { }, TypeError);
+                test('when this and the argument are the same object', Object, Object, false);
+                test('when this is the argument prototype', Function.prototype, Object, true);
+                test(
+                    'when this is in the argument prototype chain',
+                    Object.prototype,
+                    Object,
+                    true
+                );
+                usingDocumentAll(
+                    () => test('with document.all', Object.prototype, document.all, true)
+                );
+                it(
+                    'works with derived types',
+                    () =>
+                    {
+                        class A
+                        { }
+                        class B
+                        { }
+                        class C extends classes(A, B)
+                        { }
+                        class D extends C
+                        { }
+                        assert(A.isPrototypeOf(D));
+                        assert(B.isPrototypeOf(D));
+                        assert(C.isPrototypeOf(D));
+                        assert(Function.prototype.isPrototypeOf(D));
+                    }
+                );
+                it(
+                    'works with derived prototypes',
+                    () =>
+                    {
+                        class A
+                        { }
+                        class B
+                        { }
+                        class C extends classes(A, B)
+                        { }
+                        class D extends C
+                        { }
+                        const d = new D();
+                        assert(A.prototype.isPrototypeOf(d));
+                        assert(B.prototype.isPrototypeOf(d));
+                        assert(C.prototype.isPrototypeOf(d));
+                        assert(D.prototype.isPrototypeOf(d));
+                        assert(Object.prototype.isPrototypeOf(d));
+                    }
+                );
+            }
+        );
+        
+        describe(
             '[Symbol.hasInstance]',
             () =>
             {
