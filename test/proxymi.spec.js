@@ -670,31 +670,17 @@
                             'works with bound types',
                             () =>
                             {
-                                class A
+                                function A()
                                 { }
-                                const Aʼʼ = A.bind(1).bind(2);
-                                class B extends classes(A)
-                                { }
-                                class C extends B
-                                { }
-                                const Cʼʼ = C.bind(3).bind(4);
-                                assert.instanceOf(new Cʼʼ(), Aʼʼ);
-                            }
-                        );
-                        it(
-                            'works with subclasses of bound types',
-                            () =>
-                            {
-                                class A
-                                { }
+                                Object.setPrototypeOf(A, Object);
                                 const Aʼʼ = A.bind().bind();
-                                class B extends classes(A)
+                                A.prototype = Object.create(null);
+                                class B extends A
                                 { }
                                 const Bʼʼ = B.bind().bind();
-                                class C extends classes(Bʼʼ)
-                                { }
-                                const Cʼʼ = C.bind().bind();
-                                assert.instanceOf(new Cʼʼ(), Aʼʼ);
+                                const a = new A();
+                                assert.instanceOf(a, Aʼʼ);
+                                assert.notInstanceOf(a, Bʼʼ);
                             }
                         );
                     }
