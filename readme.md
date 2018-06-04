@@ -120,6 +120,16 @@ console.log(c instanceof Object);           // true
 console.log(c instanceof Array);            // false
 ```
 
+### `isPrototypeOf` works fine, too
+
+```js
+console.log(Circle.isPrototypeOf(ColoredCircle));               // true
+console.log(ColoredObject.isPrototypeOf(ColoredCircle));        // true
+console.log(ColoredCircle.isPrototypeOf(ColoredCircle));        // false
+console.log(Object.isPrototypeOf(ColoredCircle));               // false
+console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
+```
+
 ### Test for inheritance
 
 In pure JavaScript, the expression
