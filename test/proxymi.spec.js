@@ -1,10 +1,10 @@
 /* eslint-env mocha */
 /* global classes, document, require, self */
 
-(function ()
+'use strict';
+
+(() =>
 {
-    'use strict';
-    
     function createFunctionWithGetPrototypeCount(name)
     {
         const fn = Function();
@@ -12,17 +12,17 @@
             Object.defineProperty(fn, 'name', { value: name });
         Object.defineProperty(fn, 'getPrototypeCount', { value: 0, writable: true });
         const get =
-            (target, prop, receiver) =>
-            {
-                if (prop === 'prototype')
-                    ++target.getPrototypeCount;
-                const value = Reflect.get(target, prop, receiver);
-                return value;
-            };
+        (target, prop, receiver) =>
+        {
+            if (prop === 'prototype')
+                ++target.getPrototypeCount;
+            const value = Reflect.get(target, prop, receiver);
+            return value;
+        };
         const proxy = new Proxy(fn, { get });
         return proxy;
     }
-    
+
     function createNullPrototypeFunction(name)
     {
         const fn = Function();
@@ -31,7 +31,7 @@
         fn.prototype = null;
         return fn;
     }
-    
+
     function exactRegExp(...strs)
     {
         const patterns = strs.map(str => `${str.replace(/[.()[]/g, '\\$&')}`);
@@ -39,7 +39,7 @@
         const regExp = RegExp(`^${pattern}$`);
         return regExp;
     }
-    
+
     function init()
     {
         describe(
@@ -55,14 +55,14 @@
                             {
                                 const expectedClasses = classes;
                                 const promise =
-                                    reloadProxymi()
-                                    .then(() => assert.strictEqual(classes, expectedClasses));
+                                reloadProxymi()
+                                .then(() => assert.strictEqual(classes, expectedClasses));
                                 return promise;
                             }
                         );
                     }
                 );
-                
+
                 describe(
                     'provides instance level inheritance for',
                     () =>
@@ -188,7 +188,7 @@
                         );
                     }
                 );
-                
+
                 it(
                     'allows adding new properties to an instance',
                     () =>
@@ -216,7 +216,7 @@
                         assert.isUndefined(e.unknown);
                     }
                 );
-                
+
                 describe(
                     'provides class level inheritance for',
                     () =>
@@ -333,7 +333,7 @@
                         );
                     }
                 );
-                
+
                 it(
                     'allows adding new properties to a class',
                     () =>
@@ -359,31 +359,29 @@
                         assert.isUndefined(E.unknown);
                     }
                 );
-                
+
                 usingDocumentAll(
                     () =>
                     describe(
                         'works well when document.all is in the prototype chain',
                         () =>
                         {
-                            let Bar;
-                            let Foo;
                             let bar;
                             let foo;
-                            
+
                             beforeEach(
                                 () =>
                                 {
-                                    Foo = Function();
+                                    const Foo = Function();
                                     Foo.prototype = document.all;
-                                    Bar =
-                                        class extends classes(Foo)
+                                    const Bar =
+                                    class extends classes(Foo)
+                                    {
+                                        getFromFoo(prop)
                                         {
-                                            getFromFoo(prop)
-                                            {
-                                                return super.class(Foo)[prop];
-                                            }
-                                        };
+                                            return super.class(Foo)[prop];
+                                        }
+                                    };
                                     bar = new Bar();
                                     foo = undefined;
                                     Object.defineProperty(
@@ -400,9 +398,9 @@
                                     );
                                 }
                             );
-                            
+
                             afterEach(() => delete document.all.foo);
-                            
+
                             it('with getters', () => assert.strictEqual(bar[0], document.all[0]));
                             it(
                                 'with setters',
@@ -424,7 +422,7 @@
                         }
                     )
                 );
-                
+
                 it(
                     'clustered prototype has unsettable prototype',
                     () => assert.throws(
@@ -438,7 +436,7 @@
                     {
                         const constructor = classes(Object);
                         const actualDescriptor =
-                            Object.getOwnPropertyDescriptor(constructor.prototype, 'constructor');
+                        Object.getOwnPropertyDescriptor(constructor.prototype, 'constructor');
                         const expectedDescriptor =
                         {
                             configurable: true,
@@ -456,7 +454,7 @@
                         TypeError
                     )
                 );
-                
+
                 describe(
                     'super in constructor',
                     () =>
@@ -507,7 +505,7 @@
                                 assert.strictEqual(c.aProp, 42);
                             }
                         );
-                        
+
                         describe(
                             'throws a TypeError',
                             () =>
@@ -578,7 +576,7 @@
                         );
                     }
                 );
-                
+
                 describe(
                     'superclass with property \'prototype\' null works with',
                     () =>
@@ -635,7 +633,7 @@
                         );
                     }
                 );
-                
+
                 describe(
                     'instanceof',
                     () =>
@@ -646,8 +644,8 @@
                             {
                                 const A = createNullPrototypeFunction('A');
                                 const B =
-                                    () =>
-                                    { };
+                                () =>
+                                { };
                                 B.prototype = { };
                                 const C = Object.create(B);
                                 C.prototype = Object.create(B.prototype);
@@ -687,7 +685,7 @@
                 );
             }
         );
-        
+
         describe(
             'classes',
             () =>
@@ -724,7 +722,7 @@
                         assert.equal(Foo.getPrototypeCount, 1);
                     }
                 );
-                
+
                 describe(
                     'throws a TypeError',
                     () =>
@@ -820,7 +818,7 @@
                 );
             }
         );
-        
+
         describe(
             'classes(...?)',
             ()  =>
@@ -849,7 +847,7 @@
                     () =>
                     {
                         const actualDescriptor =
-                            Object.getOwnPropertyDescriptor(classes(Object), 'prototype');
+                        Object.getOwnPropertyDescriptor(classes(Object), 'prototype');
                         const expectedDescriptor =
                         {
                             configurable: false,
@@ -886,7 +884,7 @@
                 );
             }
         );
-        
+
         describe(
             'super.class',
             ()  =>
@@ -980,7 +978,7 @@
                         );
                     }
                 );
-                
+
                 describe(
                     'in static context',
                     () =>
@@ -1041,7 +1039,7 @@
                 );
             }
         );
-        
+
         describe(
             'super.class(?)',
             ()  =>
@@ -1146,12 +1144,12 @@
                             {
                                 const { A, B, C, callData } = setupTestData();
                                 const c = new C();
-                                
+
                                 c.getSuper(A).aSetOnly = 42;
                                 assert.deepEqual(callData.A.args, [42]);
                                 assert.strictEqual(callData.A.setter, 'aSetOnly');
                                 assert.strictEqual(callData.A.this, c);
-                                
+
                                 c.getSuper(B).bSetOnly = 'foo';
                                 assert.deepEqual(callData.B.args, ['foo']);
                                 assert.strictEqual(callData.B.setter, 'bSetOnly');
@@ -1164,12 +1162,12 @@
                             {
                                 const { A, B, C, E, callData } = setupTestData();
                                 const e = new E();
-                                
+
                                 e.getSuper(C).getSuper(A).aSetOnly = 42;
                                 assert.deepEqual(callData.A.args, [42]);
                                 assert.strictEqual(callData.A.setter, 'aSetOnly');
                                 assert(isInPrototypeChainOf(e, callData.A.this));
-                                
+
                                 e.getSuper(C).getSuper(B).bSetOnly = 'foo';
                                 assert.deepEqual(callData.B.args, ['foo']);
                                 assert.strictEqual(callData.B.setter, 'bSetOnly');
@@ -1193,7 +1191,7 @@
                         );
                     }
                 );
-                
+
                 describe(
                     'in static context',
                     () =>
@@ -1301,11 +1299,23 @@
                 );
             }
         );
-        
+
         describe(
             'Object.getPrototypeListOf',
             () =>
             {
+                function testGetPrototypeListOf(obj, expected)
+                {
+                    const actual = Object.getPrototypeListOf(obj);
+                    assert.deepEqual(actual, expected);
+                    assert.notStrictEqual(
+                        Object.getPrototypeListOf(obj),
+                        actual,
+                        'Multiple invocations of Object.getPrototypeListOf should not return ' +
+                        'the same object.'
+                    );
+                }
+
                 it(
                     'has name \'getPrototypeListOf\'',
                     () => assert.strictEqual(Object.getPrototypeListOf.name, 'getPrototypeListOf')
@@ -1321,20 +1331,19 @@
                     )
                 );
                 it(
-                    'returns an empty array if an object has null prototype',
-                    () => assert.deepEqual(Object.getPrototypeListOf(Object.create(null)), [])
+                    'returns a new empty array if an object has null prototype',
+                    () => testGetPrototypeListOf(Object.create(null), [])
                 );
                 it(
                     'returns a one element array if an object has a non-null prototype',
-                    () => assert.deepEqual(Object.getPrototypeListOf({ }), [Object.prototype])
+                    () => testGetPrototypeListOf({ }, [Object.prototype])
                 );
                 it(
                     'returns the prototype of a multiple inheritance class',
                     () =>
                     {
                         const { C } = setupTestData();
-                        const actual = Object.getPrototypeListOf(C);
-                        assert.deepEqual(actual, [Object.getPrototypeOf(C)]);
+                        testGetPrototypeListOf(C, [Object.getPrototypeOf(C)]);
                     }
                 );
                 it(
@@ -1342,8 +1351,7 @@
                     () =>
                     {
                         const { C } = setupTestData();
-                        const actual = Object.getPrototypeListOf(new C());
-                        assert.deepEqual(actual, [C.prototype]);
+                        testGetPrototypeListOf(new C(), [C.prototype]);
                     }
                 );
                 it(
@@ -1351,8 +1359,7 @@
                     () =>
                     {
                         const { A, B, _AB } = setupTestData();
-                        const actual = Object.getPrototypeListOf(_AB);
-                        assert.deepEqual(actual, [A, B]);
+                        testGetPrototypeListOf(_AB, [A, B]);
                     }
                 );
                 it(
@@ -1368,26 +1375,19 @@
                         { }
                         D.prototype = A.prototype;
                         const _ABCD = classes(A, B, C, D);
-                        const actual = Object.getPrototypeListOf(_ABCD.prototype);
-                        assert.deepEqual(actual, [A.prototype, C.prototype]);
+                        testGetPrototypeListOf(_ABCD.prototype, [A.prototype, C.prototype]);
                     }
                 );
                 usingDocumentAll(
                     () =>
                     it(
                         'returns a one element array if an object has document.all for prototype',
-                        () =>
-                        {
-                            assert.deepEqual(
-                                Object.getPrototypeListOf(Object.create(document.all)),
-                                [document.all]
-                            );
-                        }
+                        () => testGetPrototypeListOf(Object.create(document.all), [document.all])
                     )
                 );
             }
         );
-        
+
         describe(
             'Object.prototype.isPrototypeOf',
             () =>
@@ -1400,29 +1400,29 @@
                     {
                         description = `returns ${expectedResult} ${argDescription}`;
                         fn =
-                            () =>
-                            {
-                                assert.strictEqual(
-                                    Object.prototype.isPrototypeOf.call(thisValue, arg),
-                                    expectedResult
-                                );
-                            };
+                        () =>
+                        {
+                            assert.strictEqual(
+                                Object.prototype.isPrototypeOf.call(thisValue, arg),
+                                expectedResult
+                            );
+                        };
                     }
                     else
                     {
                         description = `throws ${expectedResult.name} ${argDescription}`;
                         fn =
-                            () =>
-                            {
-                                assert.throws(
-                                    Object.prototype.isPrototypeOf.bind(thisValue, arg),
-                                    expectedResult
-                                );
-                            };
+                        () =>
+                        {
+                            assert.throws(
+                                Object.prototype.isPrototypeOf.bind(thisValue, arg),
+                                expectedResult
+                            );
+                        };
                     }
                     it(description, fn);
                 }
-                
+
                 it(
                     'has name \'isPrototypeOf\'',
                     () => assert.strictEqual(Object.prototype.isPrototypeOf.name, 'isPrototypeOf')
@@ -1499,7 +1499,7 @@
                 );
             }
         );
-        
+
         describe(
             '[Symbol.hasInstance]',
             () =>
@@ -1518,7 +1518,7 @@
                         }
                     );
                 }
-                
+
                 it(
                     'has name \'[Symbol.hasInstance]\'',
                     () =>
@@ -1540,8 +1540,8 @@
                     {
                         const A = createNullPrototypeFunction('A');
                         const B =
-                            () =>
-                            { };
+                        () =>
+                        { };
                         B.prototype = { };
                         const C = Object.create(B);
                         C.prototype = Object.create(B.prototype);
@@ -1570,7 +1570,7 @@
                     () => test('with document.all argument', Object, document.all, true)
                 );
                 test('when the argument is the prototype of this', Symbol, Symbol.prototype, false);
-                
+
                 describe(
                     'when this is a function with property \'prototype\' null',
                     () =>
@@ -1586,8 +1586,7 @@
                             () =>
                             {
                                 const fn =
-                                    Object[Symbol.hasInstance]
-                                    .bind(createNullPrototypeFunction(), { });
+                                Object[Symbol.hasInstance].bind(createNullPrototypeFunction(), { });
                                 assert.throws(fn, TypeError);
                             }
                         );
@@ -1596,7 +1595,7 @@
             }
         );
     }
-    
+
     function isInPrototypeChainOf(obj1, obj2)
     {
         const Temp = Function();
@@ -1604,7 +1603,7 @@
         const result = obj2 instanceof Temp;
         return result;
     }
-    
+
     function setupTestData()
     {
         const callData = { };
@@ -1782,49 +1781,49 @@
         const result = { A, B, _AB, C, D, E, callData };
         return result;
     }
-    
+
     function usingDocumentAll(fn)
     {
         if (typeof document !== 'undefined')
             fn();
     }
-    
+
     function usingReloadProxymi(fn)
     {
         if (typeof require === 'function')
         {
             const reloadProxymi =
-                () =>
-                {
-                    const path = require.resolve('..');
-                    delete require.cache[path];
-                    require(path);
-                    const promise = Promise.resolve();
-                    return promise;
-                };
+            () =>
+            {
+                const path = require.resolve('..');
+                delete require.cache[path];
+                require(path);
+                const promise = Promise.resolve();
+                return promise;
+            };
             fn(reloadProxymi);
         }
         else if (typeof document !== 'undefined')
         {
             const reloadProxymi =
-                () =>
-                {
-                    const promise =
-                        new Promise(
-                            resolve =>
-                            {
-                                const script = document.createElement('script');
-                                script.onload = resolve;
-                                script.src = '../lib/proxymi.js';
-                                document.head.appendChild(script);
-                            }
-                        );
-                    return promise;
-                };
+            () =>
+            {
+                const promise =
+                    new Promise(
+                        resolve =>
+                        {
+                            const script = document.createElement('script');
+                            script.onload = resolve;
+                            script.src = '../lib/proxymi.js';
+                            document.head.appendChild(script);
+                        }
+                    );
+                return promise;
+            };
             fn(reloadProxymi);
         }
     }
-    
+
     let assert;
     {
         let chai;

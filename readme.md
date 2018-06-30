@@ -20,6 +20,17 @@ Safari<sup>[[notes](#compatibility "Safari is only partially supported. See the 
 section for details.")]</sup>, Opera and in Node.js**.
 As JavaScript support in other browsers improves, Proxymi will start to run in those browsers, too.
 
+## Features
+
+* C++ style multiple inheritance
+* Works in Node.js and in most browsers
+* Zero dependencies
+* Qualified or unqualified access to all base class features
+  * constructors
+  * methods, getters and setters – both static and nonstatic
+  * value properties on base classes and base instance prototypes
+* `in`, `instanceof` and `isPrototypeOf` integration
+
 ## Setup Instructions
 
 ### In the Browser
@@ -98,7 +109,7 @@ extends classes(Circle, ColoredObject) // Base classes in a comma-separated list
 ### Use methods and accessors from all base classes
 
 ```js
-let c = new ColoredCircle();
+const c = new ColoredCircle();
 
 c.moveTo(42, 31);
 c.radius = 1;
@@ -111,7 +122,7 @@ c.paint();                          // "painting in red"
 ### `instanceof` works just like it should
 
 ```js
-let c = new ColoredCircle();
+const c = new ColoredCircle();
 
 console.log(c instanceof Circle);           // true
 console.log(c instanceof ColoredObject);    // true
@@ -139,7 +150,7 @@ console.log(Circle.prototype instanceof ColoredObject);         // false
 ### `isPrototypeOf` works fine, too
 
 ```js
-let c = new ColoredCircle();
+const c = new ColoredCircle();
 
 console.log(Circle.prototype.isPrototypeOf(c));         // true
 console.log(ColoredObject.prototype.isPrototypeOf(c));  // true
@@ -239,7 +250,7 @@ extends classes(Circle, ColoredObject)
     toString()
     {
         // Using method toString of base class Circle
-        let circleString = super.class(Circle).toString();
+        const circleString = super.class(Circle).toString();
         return `${circleString} in ${this.color}`;
     }
 }
@@ -261,7 +272,7 @@ If a property in a base class is added, removed or modified at runtime, the chan
 reflected in all derived classes. This is the magic of proxies.
 
 ```js
-let c = new ColoredCircle();
+const c = new ColoredCircle();
 
 Circle.prototype.foo = () => console.log("foo");
 c.foo(); // print "foo"
