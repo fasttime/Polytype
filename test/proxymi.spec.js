@@ -147,9 +147,11 @@
                             {
                                 class A
                                 { }
-                                Object.defineProperty(A.prototype, 'a', { value: 13 });
+
                                 class B extends classes(A)
                                 { }
+
+                                Object.defineProperty(A.prototype, 'a', { value: 13 });
                                 const b = new B();
                                 assert.throws(
                                     () =>
@@ -211,9 +213,11 @@
                     'allows getting undefined properties from an instance',
                     () =>
                     {
-                        const { E } = setupTestData();
-                        const e = new E();
-                        assert.isUndefined(e.unknown);
+                        class A extends classes(Function())
+                        { }
+
+                        const a = new A();
+                        assert.isUndefined(a.unknown);
                     }
                 );
 
@@ -295,9 +299,11 @@
                             {
                                 class A
                                 { }
-                                Object.defineProperty(A, 'aProp', { value: 'A' });
+
                                 class B extends classes(A)
                                 { }
+
+                                Object.defineProperty(A, 'aProp', { value: 'A' });
                                 assert.throws(
                                     () =>
                                     {
@@ -426,7 +432,7 @@
                 it(
                     'clustered prototype has unsettable prototype',
                     () => assert.throws(
-                        () => Object.setPrototypeOf(classes(Object).prototype, { }),
+                        () => Object.setPrototypeOf(classes(Function()).prototype, { }),
                         TypeError
                     )
                 );
@@ -434,7 +440,7 @@
                     'clustered prototype has property \'constructor\'',
                     () =>
                     {
-                        const constructor = classes(Object);
+                        const constructor = classes(Function());
                         const actualDescriptor =
                         Object.getOwnPropertyDescriptor(constructor.prototype, 'constructor');
                         const expectedDescriptor =
@@ -450,7 +456,7 @@
                 it(
                     'clustered constructor has unsettable prototype',
                     () => assert.throws(
-                        () => Object.setPrototypeOf(classes(Object), { }),
+                        () => Object.setPrototypeOf(classes(Function()), { }),
                         TypeError
                     )
                 );
@@ -586,6 +592,7 @@
                             () =>
                             {
                                 const Foo = createNullPrototypeFunction('Foo');
+
                                 class Bar extends classes(Foo)
                                 {
                                     get bar()
@@ -601,6 +608,7 @@
                                         this.foo = value;
                                     }
                                 }
+
                                 bar = new Bar();
                             }
                         );
@@ -649,13 +657,15 @@
                                 B.prototype = { };
                                 const C = Object.create(B);
                                 C.prototype = Object.create(B.prototype);
-                                function D()
-                                { }
+                                const D =
+                                function ()
+                                { };
                                 Object.setPrototypeOf(D, C);
                                 D.prototype = Object.create(C.prototype);
                                 const _AD = classes(A, D);
-                                class E extends _AD
-                                { }
+                                const E =
+                                class extends _AD
+                                { };
                                 const e = new E();
                                 assert.instanceOf(e, B);
                                 assert.instanceOf(e, D);
@@ -668,13 +678,15 @@
                             'works with bound types',
                             () =>
                             {
-                                function A()
-                                { }
+                                const A =
+                                function ()
+                                { };
                                 Object.setPrototypeOf(A, Object);
                                 const Aʼʼ = A.bind().bind();
                                 A.prototype = Object.create(null);
-                                class B extends A
-                                { }
+                                const B =
+                                class extends A
+                                { };
                                 const Bʼʼ = B.bind().bind();
                                 const a = new A();
                                 assert.instanceOf(a, Aʼʼ);
@@ -829,25 +841,29 @@
                     {
                         class ぁ
                         { }
+
                         class A
                         { }
-                        Object.defineProperty(A, 'name', { value: undefined });
+
                         class B
                         { }
-                        Object.defineProperty(B, 'name', { value: null });
+
                         class C
                         { }
+
+                        Object.defineProperty(A, 'name', { value: undefined });
+                        Object.defineProperty(B, 'name', { value: null });
                         Object.defineProperty(C, 'name', { value: '' });
                         assert.strictEqual(classes(ぁ, A, B, C).name, '(ぁ,undefined,null,)');
                     }
                 );
-                it('has length 0', () => assert.strictEqual(classes(Object).length, 0));
+                it('has length 0', () => assert.strictEqual(classes(Function()).length, 0));
                 it(
                     'has property \'prototype\'',
                     () =>
                     {
                         const actualDescriptor =
-                        Object.getOwnPropertyDescriptor(classes(Object), 'prototype');
+                        Object.getOwnPropertyDescriptor(classes(Function()), 'prototype');
                         const expectedDescriptor =
                         {
                             configurable: false,
@@ -861,15 +877,11 @@
                 it(
                     'cannot be called without new',
                     () =>
-                    {
-                        const Foo = classes(Object);
-                        delete Foo.name;
-                        assert.throws(
-                            Foo,
-                            TypeError,
-                            exactRegExp('Constructor cannot be invoked without \'new\'')
-                        );
-                    }
+                    assert.throws(
+                        classes(Function()),
+                        TypeError,
+                        exactRegExp('Constructor cannot be invoked without \'new\'')
+                    )
                 );
                 it(
                     'does not get property \'prototype\' of superclasses',
@@ -895,11 +907,12 @@
                     {
                         it(
                             'has name \'class\'',
-                            () => assert.strictEqual(classes(Object).prototype.class.name, 'class')
+                            () =>
+                            assert.strictEqual(classes(Function()).prototype.class.name, 'class')
                         );
                         it(
                             'has length 1',
-                            () => assert.strictEqual(classes(Object).prototype.class.length, 1)
+                            () => assert.strictEqual(classes(Function()).prototype.class.length, 1)
                         );
                         it(
                             'cannot be called with new',
@@ -958,6 +971,7 @@
                             () =>
                             {
                                 const Foo = createNullPrototypeFunction('Foo');
+
                                 class Bar extends classes(Foo)
                                 {
                                     bar()
@@ -965,6 +979,7 @@
                                         super.class(Foo);
                                     }
                                 }
+
                                 const bar = new Bar();
                                 assert.throws(
                                     () => bar.bar(),
@@ -985,11 +1000,11 @@
                     {
                         it(
                             'has name \'class\'',
-                            () => assert.strictEqual(classes(Object).class.name, 'class')
+                            () => assert.strictEqual(classes(Function()).class.name, 'class')
                         );
                         it(
                             'has length 1',
-                            () => assert.strictEqual(classes(Object).class.length, 1)
+                            () => assert.strictEqual(classes(Function()).class.length, 1)
                         );
                         it(
                             'cannot be called with new',
@@ -1106,14 +1121,14 @@
                                     const actual = e.getSuper(C).getSuper(A).aGetOnly;
                                     assert.deepEqual(callData.A.args, []);
                                     assert.strictEqual(callData.A.getter, 'aGetOnly');
-                                    assert(isInPrototypeChainOf(e, callData.A.this));
+                                    assert(e.isPrototypeOf(callData.A.this));
                                     assert.strictEqual(callData.A.value, actual);
                                 }
                                 {
                                     const actual = e.getSuper(C).getSuper(B).bGetOnly;
                                     assert.deepEqual(callData.B.args, []);
                                     assert.strictEqual(callData.B.getter, 'bGetOnly');
-                                    assert(isInPrototypeChainOf(e, callData.B.this));
+                                    assert(e.isPrototypeOf(callData.B.this));
                                     assert.strictEqual(callData.B.value, actual);
                                 }
                             }
@@ -1166,12 +1181,12 @@
                                 e.getSuper(C).getSuper(A).aSetOnly = 42;
                                 assert.deepEqual(callData.A.args, [42]);
                                 assert.strictEqual(callData.A.setter, 'aSetOnly');
-                                assert(isInPrototypeChainOf(e, callData.A.this));
+                                assert(e.isPrototypeOf(callData.A.this));
 
                                 e.getSuper(C).getSuper(B).bSetOnly = 'foo';
                                 assert.deepEqual(callData.B.args, ['foo']);
                                 assert.strictEqual(callData.B.setter, 'bSetOnly');
-                                assert(isInPrototypeChainOf(e, callData.B.this));
+                                assert(e.isPrototypeOf(callData.B.this));
                             }
                         );
                         it(
@@ -1216,6 +1231,7 @@
                                     const callData = { args: [...args], className, this: target };
                                     return callData;
                                 }
+
                                 class A
                                 {
                                     static get staticCallData()
@@ -1225,6 +1241,7 @@
                                         return callData;
                                     }
                                 }
+
                                 class B
                                 {
                                     static get staticCallData()
@@ -1234,6 +1251,7 @@
                                         return callData;
                                     }
                                 }
+
                                 class C extends classes(A, B)
                                 {
                                     static getStaticCallData(type)
@@ -1241,6 +1259,7 @@
                                         return super.class(type).staticCallData;
                                     }
                                 }
+
                                 {
                                     const actual = C.getStaticCallData(A);
                                     const expected = { args: [], className: 'A', this: C };
@@ -1366,13 +1385,16 @@
                     'returns all prototypes of a clustered prototype excluding null and duplicates',
                     () =>
                     {
-                        class A
-                        { }
+                        const A =
+                        class
+                        { };
                         const B = createNullPrototypeFunction();
-                        class C
-                        { }
-                        function D()
-                        { }
+                        const C =
+                        class
+                        { };
+                        const D =
+                        function ()
+                        { };
                         D.prototype = A.prototype;
                         const _ABCD = classes(A, B, C, D);
                         testGetPrototypeListOf(_ABCD.prototype, [A.prototype, C.prototype]);
@@ -1465,12 +1487,16 @@
                     {
                         class A
                         { }
+
                         class B
                         { }
+
                         class C extends classes(A, B)
                         { }
+
                         class D extends C
                         { }
+
                         assert(A.isPrototypeOf(D));
                         assert(B.isPrototypeOf(D));
                         assert(C.isPrototypeOf(D));
@@ -1483,12 +1509,16 @@
                     {
                         class A
                         { }
+
                         class B
                         { }
+
                         class C extends classes(A, B)
                         { }
+
                         class D extends C
                         { }
+
                         const d = new D();
                         assert(A.prototype.isPrototypeOf(d));
                         assert(B.prototype.isPrototypeOf(d));
@@ -1545,8 +1575,9 @@
                         B.prototype = { };
                         const C = Object.create(B);
                         C.prototype = Object.create(B.prototype);
-                        function D()
-                        { }
+                        const D =
+                        function ()
+                        { };
                         Object.setPrototypeOf(D, C);
                         D.prototype = Object.create(C.prototype);
                         const _AD = classes(A, D);
@@ -1596,17 +1627,10 @@
         );
     }
 
-    function isInPrototypeChainOf(obj1, obj2)
-    {
-        const Temp = Function();
-        Temp.prototype = obj1;
-        const result = obj2 instanceof Temp;
-        return result;
-    }
-
     function setupTestData()
     {
         const callData = { };
+
         class A
         {
             constructor(a)
@@ -1615,7 +1639,7 @@
                 {
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     newTarget: new.target,
-                    this: this
+                    this: this,
                 };
                 if (a !== undefined)
                     this.aProp = a;
@@ -1630,7 +1654,7 @@
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     getter: 'aGetOnly',
                     this: this,
-                    value
+                    value,
                 };
                 return value;
             }
@@ -1640,7 +1664,7 @@
                 {
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     setter: 'aSetOnly',
-                    this: this
+                    this: this,
                 };
             }
             static aStatic()
@@ -1653,7 +1677,7 @@
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     getter: 'aStaticGet',
                     this: this,
-                    value
+                    value,
                 };
                 return value;
             }
@@ -1663,7 +1687,7 @@
                 {
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     setter: 'aStaticSet',
-                    this: this
+                    this: this,
                 };
             }
             someMethod()
@@ -1675,6 +1699,7 @@
                 return this.aProp;
             }
         }
+
         class B
         {
             constructor(b1, b2)
@@ -1683,7 +1708,7 @@
                 {
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     newTarget: new.target,
-                    this: this
+                    this: this,
                 };
                 if (b1 !== undefined || b2 !== undefined)
                     this[b1] = b2;
@@ -1698,7 +1723,7 @@
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     getter: 'bGetOnly',
                     this: this,
-                    value
+                    value,
                 };
                 return value;
             }
@@ -1708,7 +1733,7 @@
                 {
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     setter: 'bSetOnly',
-                    this: this
+                    this: this,
                 };
             }
             static bStatic()
@@ -1721,7 +1746,7 @@
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     getter: 'bStaticGet',
                     this: this,
-                    value
+                    value,
                 };
                 return value;
             }
@@ -1731,7 +1756,7 @@
                 {
                     args: [...arguments], // eslint-disable-line prefer-rest-params
                     setter: 'bStaticSet',
-                    this: this
+                    this: this,
                 };
             }
             someMethod()
@@ -1743,7 +1768,9 @@
                 return this.bProp;
             }
         }
+
         const _AB = classes(A, B);
+
         class C extends _AB
         {
             getSuper(type)
@@ -1765,8 +1792,10 @@
                 new superClass(type); // eslint-disable-line new-cap
             }
         }
+
         class D
         { }
+
         class E extends classes(C, D)
         {
             getSuper(type)
@@ -1778,6 +1807,7 @@
                 return super.class(type);
             }
         }
+
         const result = { A, B, _AB, C, D, E, callData };
         return result;
     }
