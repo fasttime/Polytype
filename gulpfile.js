@@ -11,8 +11,7 @@ gulp.task
     {
         const del = require('del');
 
-        const patterns = ['coverage', 'lib/**/*.min.js'];
-        const stream = del(patterns);
+        const stream = del(['coverage', 'lib/**/*.min.js']);
         return stream;
     }
 );
@@ -24,9 +23,10 @@ gulp.task
     {
         const lint = require('gulp-fasttime-lint');
 
-        const src = ['lib/**/*.js', '!lib/**/*.min.js'];
-        const options = { globals: ['global', 'self'], parserOptions: { ecmaVersion: 8 } };
-        const stream = gulp.src(src).pipe(lint(options));
+        const stream =
+        gulp
+        .src('lib/proxymi.js')
+        .pipe(lint({ globals: ['global', 'self'], parserOptions: { ecmaVersion: 8 } }));
         return stream;
     }
 );
@@ -38,10 +38,9 @@ gulp.task
     {
         const lint = require('gulp-fasttime-lint');
 
-        const src = ['*.js', 'test/**/*.js'];
-        const options =
-        { parserOptions: { ecmaVersion: 8 }, rules: { strict: ['error', 'global'] } };
-        const stream = gulp.src(src).pipe(lint(options));
+        const stream =
+        gulp.src(['*.js', 'test/**/*.js'])
+        .pipe(lint({ parserOptions: { ecmaVersion: 8 }, rules: { strict: ['error', 'global'] } }));
         return stream;
     }
 );
@@ -68,11 +67,21 @@ gulp.task
         const uglifyjs = require('uglify-es');
 
         const minify = composer(uglifyjs, console);
-        const options = { compress: { hoist_funs: true, passes: 2 } };
+        const minifyOpts =
+        {
+            compress: { hoist_funs: true, passes: 2 },
+            output:
+            {
+                comments(node, comment)
+                {
+                    return comment.pos === 0;
+                }
+            },
+        };
         const stream =
         gulp
         .src('lib/proxymi.js')
-        .pipe(minify(options))
+        .pipe(minify(minifyOpts))
         .pipe(rename({ extname: '.min.js' }))
         .pipe(gulp.dest('lib'));
         return stream;
