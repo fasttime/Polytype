@@ -287,7 +287,7 @@ Proxymi was successfully tested in the following browsers / JavaScript engines.
 * Firefox 51+
 * Safari 11 *(Partial support. See notes below.)*
 * Opera 41+
-* Node.js 7+
+* Node.js 8+
 
 Because of poor ECMAScript compliance, Safari accepts non-constructor functions (such as arrow
 functions, generators, etc.) as arguments to `classes`, although it does not allow instantiating
