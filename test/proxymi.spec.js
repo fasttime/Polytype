@@ -1973,7 +1973,7 @@
             const reloadProxymi =
             () =>
             {
-                const path = require.resolve('..');
+                const path = require.resolve(PROXYMI_PATH);
                 delete require.cache[path];
                 require(path);
                 const promise = Promise.resolve();
@@ -1993,7 +1993,7 @@
                     {
                         const script = document.createElement('script');
                         script.onload = resolve;
-                        script.src = '../lib/proxymi.js';
+                        script.src = PROXYMI_PATH;
                         document.head.appendChild(script);
                     }
                 );
@@ -2003,13 +2003,15 @@
         }
     }
 
+    const PROXYMI_PATH = '../lib/proxymi.js';
+
     let assert;
     {
         let chai;
         if (typeof module !== 'undefined')
         {
             chai = require('chai');
-            require('../lib/proxymi.js');
+            require(PROXYMI_PATH);
         }
         else
             ({ chai } = self);
