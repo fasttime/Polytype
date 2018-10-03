@@ -23,10 +23,13 @@ gulp.task
     {
         const lint = require('gulp-fasttime-lint');
 
-        const stream =
-        gulp
-        .src('lib/proxymi.js')
-        .pipe(lint({ globals: ['global', 'self'], parserOptions: { ecmaVersion: 8 } }));
+        const lintOpts =
+        {
+            globals: ['global', 'self'],
+            parserOptions: { ecmaVersion: 8 },
+            rules: { strict: ['error', 'global'] },
+        };
+        const stream = gulp.src('lib/proxymi.js').pipe(lint(lintOpts));
         return stream;
     }
 );
