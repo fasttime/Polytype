@@ -47,22 +47,14 @@
             'Proxymi',
             () =>
             {
-                usingReloadProxymi
+                it
                 (
-                    reloadProxymi =>
+                    'is loaded only once',
+                    async () =>
                     {
-                        it
-                        (
-                            'is loaded only once',
-                            () =>
-                            {
-                                const expectedClasses = classes;
-                                const promise =
-                                reloadProxymi()
-                                .then(() => assert.strictEqual(classes, expectedClasses));
-                                return promise;
-                            }
-                        );
+                        const expectedClasses = classes;
+                        await loadProxymi();
+                        assert.strictEqual(classes, expectedClasses);
                     }
                 );
 
@@ -1966,22 +1958,28 @@
             fn();
     }
 
-    function usingReloadProxymi(fn)
+    let assert;
+    let loadProxymi;
     {
-        if (typeof require === 'function')
+        const PROXYMI_PATH = '../lib/proxymi.js';
+
+        let chai;
+        if (typeof module !== 'undefined')
         {
-            const reloadProxymi =
-            async () =>
+            chai = require('chai');
+
+            loadProxymi =
+            () =>
             {
                 const path = require.resolve(PROXYMI_PATH);
                 delete require.cache[path];
-                await void require(path);
+                require(path);
             };
-            fn(reloadProxymi);
         }
-        else if (typeof document !== 'undefined')
+        else
         {
-            const reloadProxymi =
+            ({ chai } = self);
+            loadProxymi =
             () =>
             {
                 const promise =
@@ -1989,32 +1987,25 @@
                 (
                     resolve =>
                     {
-                        const script = document.createElement('script');
-                        script.onload = resolve;
-                        script.src = PROXYMI_PATH;
-                        document.head.appendChild(script);
+                        {
+                            const script = document.querySelector(`script[src="${PROXYMI_PATH}"]`);
+                            if (script)
+                                script.parentNode.removeChild(script);
+                        }
+                        {
+                            const script = document.createElement('script');
+                            script.onload = resolve;
+                            script.src = PROXYMI_PATH;
+                            document.head.appendChild(script);
+                        }
                     }
                 );
                 return promise;
             };
-            fn(reloadProxymi);
         }
-    }
-
-    const PROXYMI_PATH = '../lib/proxymi.js';
-
-    let assert;
-    {
-        let chai;
-        if (typeof module !== 'undefined')
-        {
-            chai = require('chai');
-            require(PROXYMI_PATH);
-        }
-        else
-            ({ chai } = self);
         ({ assert } = chai);
     }
+    loadProxymi();
     init();
 }
 )();
