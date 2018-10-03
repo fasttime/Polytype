@@ -1971,13 +1971,11 @@
         if (typeof require === 'function')
         {
             const reloadProxymi =
-            () =>
+            async () =>
             {
                 const path = require.resolve(PROXYMI_PATH);
                 delete require.cache[path];
-                require(path);
-                const promise = Promise.resolve();
-                return promise;
+                await void require(path);
             };
             fn(reloadProxymi);
         }
