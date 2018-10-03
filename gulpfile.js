@@ -4,7 +4,8 @@
 
 const gulp = require('gulp');
 
-gulp.task(
+gulp.task
+(
     'lint:lib',
     () =>
     {
@@ -17,7 +18,8 @@ gulp.task(
     }
 );
 
-gulp.task(
+gulp.task
+(
     'lint:other',
     () =>
     {
@@ -31,7 +33,8 @@ gulp.task(
     }
 );
 
-gulp.task(
+gulp.task
+(
     'test',
     () =>
     {
@@ -42,7 +45,8 @@ gulp.task(
     }
 );
 
-gulp.task(
+gulp.task
+(
     'default',
     callback =>
     {
