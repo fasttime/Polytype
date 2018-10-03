@@ -36,9 +36,9 @@ As JavaScript support in other browsers improves, Proxymi will start to run in t
 ### In the Browser
 
 To use Proxymi in your project, download
-[proxymi.js](https://github.com/fasttime/Proxymi/blob/master/lib/proxymi.js) or
-[proxymi.min.js](https://github.com/fasttime/Proxymi/blob/master/lib/proxymi.min.js) from GitHub and
-include it in your HTML file.
+[proxymi.js](https://raw.githubusercontent.com/fasttime/Proxymi/master/lib/proxymi.js) or
+[proxymi.min.js](https://raw.githubusercontent.com/fasttime/Proxymi/master/lib/proxymi.min.js) from
+GitHub and include it in your HTML file.
 
 ```html
 <script src="proxymi.js"></script>
@@ -47,7 +47,7 @@ include it in your HTML file.
 Alternatively, you can hotlink the online file.
 
 ```html
-<script src="https://rawgithub.com/fasttime/Proxymi/master/lib/proxymi.min.js"></script>
+<script src="https://rawgit.com/fasttime/Proxymi/master/lib/proxymi.min.js"></script>
 ```
 
 ### In Node.js
