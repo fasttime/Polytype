@@ -44,7 +44,7 @@ GitHub and include it in your HTML file.
 <script src="proxymi.js"></script>
 ```
 
-Alternatively, you can hotlink the online file.
+Alternatively, you can hotlink the current stable version using a CDN of your choice.
 
 ```html
 <script src="https://rawgit.com/fasttime/Proxymi/master/lib/proxymi.min.js"></script>
