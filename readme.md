@@ -47,7 +47,7 @@ GitHub and include it in your HTML file.
 Alternatively, you can hotlink the current stable version using a CDN of your choice.
 
 ```html
-<script src="https://rawgit.com/fasttime/Proxymi/master/lib/proxymi.min.js"></script>
+<script src="https://gitcdn.xyz/repo/fasttime/Proxymi/master/lib/proxymi.min.js"></script>
 ```
 
 ### In Node.js

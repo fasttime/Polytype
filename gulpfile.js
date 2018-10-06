@@ -23,13 +23,10 @@ gulp.task
     {
         const lint = require('gulp-fasttime-lint');
 
-        const lintOpts =
-        {
-            globals: ['global', 'self'],
-            parserOptions: { ecmaVersion: 8 },
-            rules: { strict: ['error', 'global'] },
-        };
-        const stream = gulp.src('lib/proxymi.js').pipe(lint(lintOpts));
+        const stream =
+        gulp
+        .src('lib/proxymi.js')
+        .pipe(lint({ globals: ['global', 'self'], parserOptions: { ecmaVersion: 8 } }));
         return stream;
     }
 );
@@ -42,8 +39,7 @@ gulp.task
         const lint = require('gulp-fasttime-lint');
 
         const stream =
-        gulp.src(['*.js', 'test/**/*.js'])
-        .pipe(lint({ parserOptions: { ecmaVersion: 8 }, rules: { strict: ['error', 'global'] } }));
+        gulp.src(['*.js', 'test/**/*.js']).pipe(lint({ parserOptions: { ecmaVersion: 8 } }));
         return stream;
     }
 );
@@ -73,13 +69,7 @@ gulp.task
         const minifyOpts =
         {
             compress: { hoist_funs: true, passes: 2 },
-            output:
-            {
-                comments(node, comment)
-                {
-                    return comment.pos === 0;
-                }
-            },
+            output: { comments: (node, comment) => comment.pos === 0 },
         };
         const stream =
         gulp
