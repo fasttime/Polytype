@@ -141,7 +141,7 @@
                                         configurable: true,
                                         enumerable: true,
                                         value: 42,
-                                        writable: true
+                                        writable: true,
                                     }
                                 );
                             }
@@ -211,7 +211,7 @@
                                 configurable: true,
                                 enumerable: true,
                                 value: 42,
-                                writable: true
+                                writable: true,
                             }
                         );
                     }
@@ -306,7 +306,7 @@
                                         configurable: true,
                                         enumerable: true,
                                         value: 'C',
-                                        writable: true
+                                        writable: true,
                                     }
                                 );
                             }
@@ -372,7 +372,7 @@
                                 configurable: true,
                                 enumerable: true,
                                 value: 42,
-                                writable: true
+                                writable: true,
                             }
                         );
                     }
@@ -424,7 +424,7 @@
                                             set: value =>
                                             {
                                                 foo = value;
-                                            }
+                                            },
                                         }
                                     );
                                 }
