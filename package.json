@@ -39,7 +39,7 @@
     "gulp-uglify": "~3.0.1",
     "istanbul": "~0.4.5",
     "mocha": "~5.2.0",
-    "mocha-matrix": "~0.2.1",
+    "mocha-bar": "~0.0.2",
     "run-sequence": "~2.2.1",
     "uglify-es": "~3.3.9"
   },

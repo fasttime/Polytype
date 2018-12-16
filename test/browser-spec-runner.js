@@ -1,7 +1,7 @@
 /* eslint-env browser */
-/* global Matrix, mocha */
+/* global MochaBar, mocha */
 
 'use strict';
 
-mocha.setup({ ignoreLeaks: false, reporter: Matrix, ui: 'bdd' });
+mocha.setup({ ignoreLeaks: false, reporter: MochaBar, ui: 'bdd' });
 addEventListener('load', () => mocha.run());
