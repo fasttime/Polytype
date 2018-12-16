@@ -2,9 +2,9 @@
 
 'use strict';
 
-const gulp = require('gulp');
+const { dest, parallel, series, src, task } = require('gulp');
 
-gulp.task
+task
 (
     'clean',
     () =>
@@ -16,47 +16,43 @@ gulp.task
     }
 );
 
-gulp.task
+task
 (
-    'lint:lib',
+    'lint',
     () =>
     {
         const lint = require('gulp-fasttime-lint');
 
         const stream =
-        gulp
-        .src('lib/proxymi.js')
-        .pipe(lint({ globals: ['global', 'self'], parserOptions: { ecmaVersion: 8 } }));
+        lint
+        (
+            {
+                src: 'lib/proxymi.js',
+                globals: ['global', 'self'],
+                parserOptions: { ecmaVersion: 8 },
+            },
+            {
+                src: ['*.js', 'test/**/*.js'],
+                parserOptions: { ecmaVersion: 8 },
+            }
+        );
         return stream;
     }
 );
 
-gulp.task
-(
-    'lint:other',
-    () =>
-    {
-        const lint = require('gulp-fasttime-lint');
-
-        const stream =
-        gulp.src(['*.js', 'test/**/*.js']).pipe(lint({ parserOptions: { ecmaVersion: 8 } }));
-        return stream;
-    }
-);
-
-gulp.task
+task
 (
     'test',
     () =>
     {
         const mocha = require('gulp-spawn-mocha');
 
-        const stream = gulp.src('test/**/*.spec.js').pipe(mocha({ istanbul: true }));
+        const stream = src('test/**/*.spec.js').pipe(mocha({ istanbul: true }));
         return stream;
     }
 );
 
-gulp.task
+task
 (
     'uglify',
     () =>
@@ -72,22 +68,12 @@ gulp.task
             output: { comments: (node, comment) => comment.pos === 0 },
         };
         const stream =
-        gulp
-        .src('lib/proxymi.js')
+        src('lib/proxymi.js')
         .pipe(minify(minifyOpts))
         .pipe(rename({ extname: '.min.js' }))
-        .pipe(gulp.dest('lib'));
+        .pipe(dest('lib'));
         return stream;
     }
 );
 
-gulp.task
-(
-    'default',
-    callback =>
-    {
-        const runSequence = require('run-sequence');
-
-        runSequence(['clean', 'lint:lib', 'lint:other'], 'test', 'uglify', callback);
-    }
-);
+task('default', series(parallel('clean', 'lint'), 'test', 'uglify'));
