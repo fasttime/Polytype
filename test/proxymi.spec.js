@@ -567,12 +567,14 @@
                                     'with wrong arguments in a super-referencing construct',
                                     () =>
                                     {
-                                        const { A, C } = setupTestData();
+                                        class Foo extends classes(Object)
+                                        { }
+
                                         assert.throws
                                         (
-                                            () => new C({ super: A, arguments: false }),
+                                            () => new Foo({ super: Object, arguments: false }),
                                             TypeError,
-                                            exactRegExp('Invalid arguments for superclass A')
+                                            exactRegExp('Invalid arguments for superclass Object')
                                         );
                                     }
                                 );
@@ -595,12 +597,14 @@
                                     'with a repeated argument',
                                     () =>
                                     {
-                                        const { A, C } = setupTestData();
+                                        class Foo extends classes(Number)
+                                        { }
+
                                         assert.throws
                                         (
-                                            () => new C({ super: A }, { super: A }),
+                                            () => new Foo({ super: Number }, { super: Number }),
                                             TypeError,
-                                            exactRegExp('Duplicate superclass A')
+                                            exactRegExp('Duplicate superclass Number')
                                         );
                                     }
                                 );
@@ -898,12 +902,11 @@
                             'with a repeated argument',
                             () =>
                             {
-                                const { A, B } = setupTestData();
                                 assert.throws
                                 (
-                                    () => classes(A, B, A),
+                                    () => classes(String, Array, String),
                                     TypeError,
-                                    exactRegExp('Duplicate superclass A')
+                                    exactRegExp('Duplicate superclass String')
                                 );
                             }
                         );
