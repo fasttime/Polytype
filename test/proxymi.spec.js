@@ -387,73 +387,70 @@
                     }
                 );
 
-                usingDocumentAll
+                maybeDescribe
                 (
+                    typeof document !== 'undefined',
+                    'works well when document.all is in the prototype chain',
                     () =>
-                    describe
-                    (
-                        'works well when document.all is in the prototype chain',
-                        () =>
-                        {
-                            let bar;
-                            let foo;
+                    {
+                        let bar;
+                        let foo;
 
-                            beforeEach
-                            (
-                                () =>
+                        beforeEach
+                        (
+                            () =>
+                            {
+                                const Foo = Function();
+                                Foo.prototype = document.all;
+                                const Bar =
+                                class extends classes(Foo)
                                 {
-                                    const Foo = Function();
-                                    Foo.prototype = document.all;
-                                    const Bar =
-                                    class extends classes(Foo)
+                                    getFromFoo(prop)
                                     {
-                                        getFromFoo(prop)
+                                        return super.class(Foo)[prop];
+                                    }
+                                };
+                                bar = new Bar();
+                                foo = undefined;
+                                Object.defineProperty
+                                (
+                                    document.all,
+                                    'foo',
+                                    {
+                                        configurable: true,
+                                        get: () => undefined,
+                                        set: value =>
                                         {
-                                            return super.class(Foo)[prop];
-                                        }
-                                    };
-                                    bar = new Bar();
-                                    foo = undefined;
-                                    Object.defineProperty
-                                    (
-                                        document.all,
-                                        'foo',
-                                        {
-                                            configurable: true,
-                                            get: () => undefined,
-                                            set: value =>
-                                            {
-                                                foo = value;
-                                            },
-                                        }
-                                    );
-                                }
-                            );
+                                            foo = value;
+                                        },
+                                    }
+                                );
+                            }
+                        );
 
-                            afterEach(() => delete document.all.foo);
+                        afterEach(() => delete document.all.foo);
 
-                            it('with getters', () => assert.strictEqual(bar[0], document.all[0]));
-                            it
-                            (
-                                'with setters',
-                                () =>
-                                {
-                                    bar.foo = 42;
-                                    assert.strictEqual(foo, 42);
-                                }
-                            );
-                            it
-                            (
-                                'with super',
-                                () =>
-                                {
-                                    const actual = bar.getFromFoo(0);
-                                    const [expected] = document.all;
-                                    assert.strictEqual(actual, expected);
-                                }
-                            );
-                        }
-                    )
+                        it('with getters', () => assert.strictEqual(bar[0], document.all[0]));
+                        it
+                        (
+                            'with setters',
+                            () =>
+                            {
+                                bar.foo = 42;
+                                assert.strictEqual(foo, 42);
+                            }
+                        );
+                        it
+                        (
+                            'with super',
+                            () =>
+                            {
+                                const actual = bar.getFromFoo(0);
+                                const [expected] = document.all;
+                                assert.strictEqual(actual, expected);
+                            }
+                        );
+                    }
                 );
 
                 it
@@ -818,19 +815,16 @@
                                 exactRegExp('null is not a constructor')
                             )
                         );
-                        usingBigInt
+                        maybeIt
                         (
+                            typeof BigInt === 'function',
+                            'with a bigint argument',
                             () =>
-                            it
+                            assert.throws
                             (
-                                'with a bigint argument',
-                                () =>
-                                assert.throws
-                                (
-                                    () => classes(BigInt(42)),
-                                    TypeError,
-                                    exactRegExp('42 is not a constructor')
-                                )
+                                () => classes(BigInt(42)),
+                                TypeError,
+                                exactRegExp('42 is not a constructor')
                             )
                         );
                         it
@@ -1533,14 +1527,11 @@
                         testGetPrototypeListOf(_ABCD.prototype, [A.prototype, C.prototype]);
                     }
                 );
-                usingDocumentAll
+                maybeIt
                 (
-                    () =>
-                    it
-                    (
-                        'returns a one element array if an object has document.all for prototype',
-                        () => testGetPrototypeListOf(Object.create(document.all), [document.all])
-                    )
+                    typeof document !== 'undefined',
+                    'returns a one element array if an object has document.all for prototype',
+                    () => testGetPrototypeListOf(Object.create(document.all), [document.all])
                 );
             }
         );
@@ -1602,8 +1593,16 @@
                 test('with undefined argument', null, undefined, false);
                 test('with boolean type argument', Boolean.prototype, true, false);
                 test('with number type argument', Number.prototype, 1, false);
-                usingBigInt
-                (() => test('with bigint type argument', BigInt.prototype, BigInt(1), false));
+                maybeIt
+                (
+                    typeof BigInt === 'function',
+                    'returns false with bigint type argument',
+                    () =>
+                    {
+                        const expected = BigInt.prototype.isPrototypeOf(BigInt(1));
+                        assert.isFalse(expected);
+                    }
+                );
                 test('with string type argument', String.prototype, 'foo', false);
                 test('with symbol type argument', Symbol.prototype, Symbol.iterator, false);
                 test('when this is null', null, { }, TypeError);
@@ -1617,8 +1616,16 @@
                     Object,
                     true
                 );
-                usingDocumentAll
-                (() => test('with document.all', Object.prototype, document.all, true));
+                maybeIt
+                (
+                    typeof document !== 'undefined',
+                    'returns true with document.all',
+                    () =>
+                    {
+                        const expected = Object.prototype.isPrototypeOf(document.all);
+                        assert.isTrue(expected);
+                    }
+                );
                 it
                 (
                     'works with derived types',
@@ -1735,11 +1742,28 @@
                 test('with undefined argument', Object, undefined, false);
                 test('with boolean type argument', Boolean, true, false);
                 test('with number type argument', Number, 1, false);
-                usingBigInt(() => test('with bigint type argument', BigInt, BigInt(1), false));
+                maybeIt
+                (
+                    typeof BigInt === 'function',
+                    'returns false with bigint type argument',
+                    () =>
+                    {
+                        const expected = Boolean[Symbol.hasInstance](BigInt(1));
+                        assert.isFalse(expected);
+                    }
+                );
                 test('with string type argument', String, 'foo', false);
                 test('with symbol type argument', Symbol, Symbol.iterator, false);
-                usingDocumentAll
-                (() => test('with document.all argument', Object, document.all, true));
+                maybeIt
+                (
+                    typeof document !== 'undefined',
+                    'returns true with document.all',
+                    () =>
+                    {
+                        const expected = Object[Symbol.hasInstance](document.all);
+                        assert.isTrue(expected);
+                    }
+                );
                 test('when the argument is the prototype of this', Symbol, Symbol.prototype, false);
 
                 describe
@@ -1763,6 +1787,10 @@
             }
         );
     }
+
+    const maybeDescribe = (condition, ...args) => (condition ? describe : describe.skip)(...args);
+
+    const maybeIt = (condition, ...args) => (condition ? it : it.skip)(...args);
 
     function setupTestData()
     {
@@ -1947,18 +1975,6 @@
 
         const result = { A, B, _AB, C, D, E, callData };
         return result;
-    }
-
-    function usingBigInt(fn)
-    {
-        if (typeof BigInt === 'function')
-            fn();
-    }
-
-    function usingDocumentAll(fn)
-    {
-        if (typeof document !== 'undefined')
-            fn();
     }
 
     let assert;
