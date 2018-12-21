@@ -285,7 +285,7 @@ Proxymi was successfully tested in the following browsers / JavaScript engines.
 
 * Chrome 54+
 * Firefox 51+
-* Safari 11 *(Partial support. See notes below.)*
+* Safari 12 *(Partial support. See notes below.)*
 * Opera 41+
 * Node.js 8+
 
@@ -295,5 +295,7 @@ classes derived from such functions.
 Also, Safari does not throw a `TypeError` when attempting to assign to a read-only property of a
 Proxymi class or object in strict mode.
 
-Edge with its JavaScript engine Chakra doesn't do well either: for now, Proxymi doesn't run in that
-browser.
+In the current version of Edge, the JavaScript engine Chakra has
+[a serious bug](https://github.com/Microsoft/ChakraCore/issues/5883) that can produce incorrect
+results when the `instanceof` operator is used with bound functions after Proxymi has been loaded.
+For this reason it is recommended not to use Proxymi in Edge as long as this issue persists.
