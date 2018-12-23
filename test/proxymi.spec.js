@@ -521,6 +521,16 @@
                         );
                         it
                         (
+                            'does not iterate over super-referencing arguments',
+                            () =>
+                            {
+                                const { A, C, callData } = setupTestData();
+                                new C({ super: A, arguments: [1, 2, 3][Symbol.iterator]() });
+                                assert.deepEqual(callData.A.args, []);
+                            }
+                        );
+                        it
+                        (
                             'sets own properties on this',
                             () =>
                             {
