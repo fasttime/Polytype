@@ -55,7 +55,7 @@
                         const expectedClasses = classes;
                         await loadProxymi();
                         assert.strictEqual(classes, expectedClasses);
-                    }
+                    },
                 );
 
                 describe
@@ -72,7 +72,7 @@
                                 const c = new C();
                                 assert.property(c, 'aMethod');
                                 assert.property(c, 'bMethod');
-                            }
+                            },
                         );
                         it
                         (
@@ -83,7 +83,7 @@
                                 const c = new C();
                                 assert.strictEqual(c.aMethod, A.prototype.aMethod);
                                 assert.strictEqual(c.bMethod, B.prototype.bMethod);
-                            }
+                            },
                         );
                         it
                         (
@@ -93,7 +93,7 @@
                                 const { C } = setupTestData();
                                 const c = new C();
                                 assert.strictEqual(c.aSetOnly, undefined);
-                            }
+                            },
                         );
                         it
                         (
@@ -106,9 +106,9 @@
                                 assert.deepEqual
                                 (
                                     callData.A,
-                                    { args: [], getter: 'aGetOnly', this: c, value: actual }
+                                    { args: [], getter: 'aGetOnly', this: c, value: actual },
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -121,9 +121,9 @@
                                 assert.deepEqual
                                 (
                                     callData.A,
-                                    { args: [], getter: 'aGetOnly', this: e, value: actual }
+                                    { args: [], getter: 'aGetOnly', this: e, value: actual },
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -142,9 +142,9 @@
                                         enumerable: true,
                                         value: 42,
                                         writable: true,
-                                    }
+                                    },
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -165,9 +165,9 @@
                                     {
                                         b.a = 42;
                                     },
-                                    TypeError
+                                    TypeError,
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -179,7 +179,7 @@
                                 c.aSetOnly = 42;
                                 assert.deepEqual
                                 (callData.A, { args: [42], setter: 'aSetOnly', this: c });
-                            }
+                            },
                         );
                         it
                         (
@@ -191,9 +191,9 @@
                                 e.aSetOnly = 42;
                                 assert.deepEqual
                                 (callData.A, { args: [42], setter: 'aSetOnly', this: e });
-                            }
+                            },
                         );
-                    }
+                    },
                 );
 
                 it
@@ -212,9 +212,9 @@
                                 enumerable: true,
                                 value: 42,
                                 writable: true,
-                            }
+                            },
                         );
-                    }
+                    },
                 );
                 it
                 (
@@ -226,7 +226,7 @@
 
                         const a = new A();
                         assert.isUndefined(a.unknown);
-                    }
+                    },
                 );
 
                 describe
@@ -242,7 +242,7 @@
                                 const { C } = setupTestData();
                                 assert.property(C, 'aStatic');
                                 assert.property(C, 'bStatic');
-                            }
+                            },
                         );
                         it
                         (
@@ -252,7 +252,7 @@
                                 const { A, B, C } = setupTestData();
                                 assert.strictEqual(C.aStatic, A.aStatic);
                                 assert.strictEqual(C.bStatic, B.bStatic);
-                            }
+                            },
                         );
                         it
                         (
@@ -261,7 +261,7 @@
                             {
                                 const { C } = setupTestData();
                                 assert.strictEqual(C.aStaticSet, undefined);
-                            }
+                            },
                         );
                         it
                         (
@@ -273,9 +273,9 @@
                                 assert.deepEqual
                                 (
                                     callData.A,
-                                    { args: [], getter: 'aStaticGet', this: C, value: actual }
+                                    { args: [], getter: 'aStaticGet', this: C, value: actual },
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -287,9 +287,9 @@
                                 assert.deepEqual
                                 (
                                     callData.A,
-                                    { args: [], getter: 'aStaticGet', this: E, value: actual }
+                                    { args: [], getter: 'aStaticGet', this: E, value: actual },
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -307,9 +307,9 @@
                                         enumerable: true,
                                         value: 'C',
                                         writable: true,
-                                    }
+                                    },
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -329,9 +329,9 @@
                                     {
                                         B.aProp = 'B';
                                     },
-                                    TypeError
+                                    TypeError,
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -342,7 +342,7 @@
                                 C.aStaticSet = 42;
                                 assert.deepEqual
                                 (callData.A, { args: [42], setter: 'aStaticSet', this: C });
-                            }
+                            },
                         );
                         it
                         (
@@ -353,9 +353,9 @@
                                 E.aStaticSet = 42;
                                 assert.deepEqual
                                 (callData.A, { args: [42], setter: 'aStaticSet', this: E });
-                            }
+                            },
                         );
-                    }
+                    },
                 );
 
                 it
@@ -373,9 +373,9 @@
                                 enumerable: true,
                                 value: 42,
                                 writable: true,
-                            }
+                            },
                         );
-                    }
+                    },
                 );
                 it
                 (
@@ -384,7 +384,7 @@
                     {
                         const { E } = setupTestData();
                         assert.isUndefined(E.unknown);
-                    }
+                    },
                 );
 
                 maybeDescribe
@@ -423,9 +423,9 @@
                                         {
                                             foo = value;
                                         },
-                                    }
+                                    },
                                 );
-                            }
+                            },
                         );
 
                         afterEach(() => delete document.all.foo);
@@ -438,7 +438,7 @@
                             {
                                 bar.foo = 42;
                                 assert.strictEqual(foo, 42);
-                            }
+                            },
                         );
                         it
                         (
@@ -448,16 +448,16 @@
                                 const actual = bar.getFromFoo(0);
                                 const [expected] = document.all;
                                 assert.strictEqual(actual, expected);
-                            }
+                            },
                         );
-                    }
+                    },
                 );
 
                 it
                 (
                     'clustered prototype has unsettable prototype',
                     () => assert.throws
-                    (() => Object.setPrototypeOf(classes(Function()).prototype, { }), TypeError)
+                    (() => Object.setPrototypeOf(classes(Function()).prototype, { }), TypeError),
                 );
                 it
                 (
@@ -475,13 +475,13 @@
                             writable: true,
                         };
                         assert.deepEqual(actualDescriptor, expectedDescriptor);
-                    }
+                    },
                 );
                 it
                 (
                     'clustered constructor has unsettable prototype',
-                    () => assert.throws
-                    (() => Object.setPrototypeOf(classes(Function()), { }), TypeError)
+                    () =>
+                    assert.throws(() => Object.setPrototypeOf(classes(Function()), { }), TypeError),
                 );
 
                 describe
@@ -502,7 +502,7 @@
                                 assert.deepEqual(callData.B.args, ['foo', 'bar']);
                                 assert.strictEqual(callData.B.newTarget, C);
                                 assert.instanceOf(callData.B.this, C);
-                            }
+                            },
                         );
                         it
                         (
@@ -517,7 +517,7 @@
                                 assert.deepEqual(callData.B.args, [1, 2, 3]);
                                 assert.strictEqual(callData.B.newTarget, C);
                                 assert.instanceOf(callData.B.this, C);
-                            }
+                            },
                         );
                         it
                         (
@@ -527,7 +527,7 @@
                                 const { A, C, callData } = setupTestData();
                                 new C({ super: A, arguments: [1, 2, 3][Symbol.iterator]() });
                                 assert.deepEqual(callData.A.args, []);
-                            }
+                            },
                         );
                         it
                         (
@@ -537,7 +537,7 @@
                                 const { C } = setupTestData();
                                 const c = new C(undefined, ['foo', 'bar']);
                                 assert.strictEqual(c.foo, 'bar');
-                            }
+                            },
                         );
                         it
                         (
@@ -547,7 +547,7 @@
                                 const { C } = setupTestData();
                                 const c = new C([42], ['aProp', 13]);
                                 assert.strictEqual(c.aProp, 42);
-                            }
+                            },
                         );
 
                         describe
@@ -565,9 +565,9 @@
                                         (
                                             () => new C(0),
                                             TypeError,
-                                            exactRegExp('Invalid arguments')
+                                            exactRegExp('Invalid arguments'),
                                         );
-                                    }
+                                    },
                                 );
                                 it
                                 (
@@ -581,9 +581,9 @@
                                         (
                                             () => new Foo({ super: Object, arguments: false }),
                                             TypeError,
-                                            exactRegExp('Invalid arguments for superclass Object')
+                                            exactRegExp('Invalid arguments for superclass Object'),
                                         );
-                                    }
+                                    },
                                 );
                                 it
                                 (
@@ -595,9 +595,9 @@
                                         (
                                             () => new C([], { super: A }),
                                             TypeError,
-                                            exactRegExp('Mixed argument styles')
+                                            exactRegExp('Mixed argument styles'),
                                         );
-                                    }
+                                    },
                                 );
                                 it
                                 (
@@ -611,9 +611,9 @@
                                         (
                                             () => new Foo({ super: Number }, { super: Number }),
                                             TypeError,
-                                            exactRegExp('Duplicate superclass Number')
+                                            exactRegExp('Duplicate superclass Number'),
                                         );
-                                    }
+                                    },
                                 );
                                 it
                                 (
@@ -627,13 +627,13 @@
                                         (
                                             () => new C({ super: A }, { super: Foo }),
                                             TypeError,
-                                            exactRegExp('_ => [] <= _ is not a direct superclass')
+                                            exactRegExp('_ => [] <= _ is not a direct superclass'),
                                         );
-                                    }
+                                    },
                                 );
-                            }
+                            },
                         );
-                    }
+                    },
                 );
 
                 describe
@@ -665,7 +665,7 @@
                                 }
 
                                 bar = new Bar();
-                            }
+                            },
                         );
                         it
                         (
@@ -675,7 +675,7 @@
                                 const foo = 42;
                                 bar.foo = foo;
                                 assert.strictEqual(bar.bar, foo);
-                            }
+                            },
                         );
                         it
                         (
@@ -685,7 +685,7 @@
                                 const foo = 43;
                                 bar.foo = foo;
                                 assert.isTrue(bar.in());
-                            }
+                            },
                         );
                         it
                         (
@@ -695,9 +695,9 @@
                                 const foo = 44;
                                 bar.bar = foo;
                                 assert.strictEqual(bar.foo, foo);
-                            }
+                            },
                         );
-                    }
+                    },
                 );
 
                 describe
@@ -732,7 +732,7 @@
                                 assert.instanceOf(e, _AD);
                                 assert.instanceOf(e, E);
                                 assert.instanceOf(e, Object);
-                            }
+                            },
                         );
                         it
                         (
@@ -752,11 +752,11 @@
                                 const a = new A();
                                 assert.instanceOf(a, Aʼʼ);
                                 assert.notInstanceOf(a, Bʼʼ);
-                            }
+                            },
                         );
-                    }
+                    },
                 );
-            }
+            },
         );
 
         describe
@@ -764,11 +764,7 @@
             'classes',
             () =>
             {
-                it
-                (
-                    'has name \'classes\'',
-                    () => assert.strictEqual(classes.name, 'classes')
-                );
+                it('has name \'classes\'', () => assert.strictEqual(classes.name, 'classes'));
                 it('has length 0', () => assert.strictEqual(classes.length, 0));
                 it
                 (
@@ -778,8 +774,8 @@
                     (
                         () => new classes(), // eslint-disable-line new-cap
                         TypeError,
-                        /\bis not a constructor\b/
-                    )
+                        /\bis not a constructor\b/,
+                    ),
                 );
                 it
                 (
@@ -789,7 +785,7 @@
                         const foo = Function();
                         Object.setPrototypeOf(foo, { });
                         assert.doesNotThrow(() => classes(foo));
-                    }
+                    },
                 );
                 it
                 (
@@ -799,7 +795,7 @@
                         const Foo = createFunctionWithGetPrototypeCount();
                         classes(Foo);
                         assert.equal(Foo.getPrototypeCount, 1);
-                    }
+                    },
                 );
 
                 describe
@@ -812,7 +808,7 @@
                             'without arguments',
                             () =>
                             assert.throws
-                            (() => classes(), TypeError, exactRegExp('No superclasses specified'))
+                            (() => classes(), TypeError, exactRegExp('No superclasses specified')),
                         );
                         it
                         (
@@ -822,8 +818,8 @@
                             (
                                 () => classes(null),
                                 TypeError,
-                                exactRegExp('null is not a constructor')
-                            )
+                                exactRegExp('null is not a constructor'),
+                            ),
                         );
                         maybeIt
                         (
@@ -834,8 +830,8 @@
                             (
                                 () => classes(BigInt(42)),
                                 TypeError,
-                                exactRegExp('42 is not a constructor')
-                            )
+                                exactRegExp('42 is not a constructor'),
+                            ),
                         );
                         it
                         (
@@ -845,8 +841,8 @@
                             (
                                 () => classes(Symbol()),
                                 TypeError,
-                                exactRegExp('Symbol() is not a constructor')
-                            )
+                                exactRegExp('Symbol() is not a constructor'),
+                            ),
                         );
                         it
                         (
@@ -856,8 +852,8 @@
                             (
                                 () => classes({ }),
                                 TypeError,
-                                exactRegExp('[object Object] is not a constructor')
-                            )
+                                exactRegExp('[object Object] is not a constructor'),
+                            ),
                         );
                         it
                         (
@@ -870,9 +866,9 @@
                                 (
                                     () => classes(foo),
                                     TypeError,
-                                    exactRegExp('() => -0 is not a constructor')
+                                    exactRegExp('() => -0 is not a constructor'),
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -882,8 +878,8 @@
                                 () => classes(Array.bind()),
                                 TypeError,
                                 exactRegExp
-                                ('Property \'prototype\' of bound Array is not an object or null')
-                            )
+                                ('Property \'prototype\' of bound Array is not an object or null'),
+                            ),
                         );
                         it
                         (
@@ -897,9 +893,12 @@
                                     () => classes(foo),
                                     TypeError,
                                     exactRegExp
-                                    ('Property \'prototype\' of anonymous is not an object or null')
+                                    (
+                                        'Property \'prototype\' of anonymous is not an object or ' +
+                                        'null',
+                                    ),
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -910,13 +909,13 @@
                                 (
                                     () => classes(String, Array, String),
                                     TypeError,
-                                    exactRegExp('Duplicate superclass String')
+                                    exactRegExp('Duplicate superclass String'),
                                 );
-                            }
+                            },
                         );
-                    }
+                    },
                 );
-            }
+            },
         );
 
         describe
@@ -945,7 +944,7 @@
                         Object.defineProperty(B, 'name', { value: null });
                         Object.defineProperty(C, 'name', { value: '' });
                         assert.strictEqual(classes(ぁ, A, B, C).name, '(ぁ,undefined,null,)');
-                    }
+                    },
                 );
                 it('has length 0', () => assert.strictEqual(classes(Function()).length, 0));
                 it
@@ -963,7 +962,7 @@
                             writable: false,
                         };
                         assert.deepEqual(actualDescriptor, expectedDescriptor);
-                    }
+                    },
                 );
                 it
                 (
@@ -973,8 +972,8 @@
                     (
                         classes(Function()),
                         TypeError,
-                        exactRegExp('Constructor cannot be invoked without \'new\'')
-                    )
+                        exactRegExp('Constructor cannot be invoked without \'new\''),
+                    ),
                 );
                 it
                 (
@@ -986,9 +985,9 @@
                         A.getPrototypeCount = 0;
                         void new _A();
                         assert.equal(A.getPrototypeCount, 0);
-                    }
+                    },
                 );
-            }
+            },
         );
 
         describe
@@ -1005,12 +1004,12 @@
                         (
                             'has name \'class\'',
                             () =>
-                            assert.strictEqual(classes(Function()).prototype.class.name, 'class')
+                            assert.strictEqual(classes(Function()).prototype.class.name, 'class'),
                         );
                         it
                         (
                             'has length 1',
-                            () => assert.strictEqual(classes(Function()).prototype.class.length, 1)
+                            () => assert.strictEqual(classes(Function()).prototype.class.length, 1),
                         );
                         it
                         (
@@ -1021,7 +1020,7 @@
                                 const c = new C();
                                 assert.throws
                                 (() => c.newSuper(A), TypeError, /\bis not a constructor\b/);
-                            }
+                            },
                         );
                         it
                         (
@@ -1031,7 +1030,7 @@
                                 const { A, C } = setupTestData();
                                 const c = new C();
                                 assert.instanceOf(c.getSuper(A), C);
-                            }
+                            },
                         );
                         it
                         (
@@ -1044,9 +1043,9 @@
                                 (
                                     () => e.getSuper({ }),
                                     TypeError,
-                                    exactRegExp('Argument is not a function')
+                                    exactRegExp('Argument is not a function'),
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -1062,10 +1061,10 @@
                                     exactRegExp
                                     (
                                         'Property \'prototype\' of argument does not match any ' +
-                                        'direct superclass'
-                                    )
+                                        'direct superclass',
+                                    ),
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -1090,12 +1089,12 @@
                                     exactRegExp
                                     (
                                         'Property \'prototype\' of argument is not an object',
-                                        'undefined is not an object (evaluating \'super.class\')'
-                                    )
+                                        'undefined is not an object (evaluating \'super.class\')',
+                                    ),
                                 );
-                            }
+                            },
                         );
-                    }
+                    },
                 );
 
                 describe
@@ -1106,12 +1105,12 @@
                         it
                         (
                             'has name \'class\'',
-                            () => assert.strictEqual(classes(Function()).class.name, 'class')
+                            () => assert.strictEqual(classes(Function()).class.name, 'class'),
                         );
                         it
                         (
                             'has length 1',
-                            () => assert.strictEqual(classes(Function()).class.length, 1)
+                            () => assert.strictEqual(classes(Function()).class.length, 1),
                         );
                         it
                         (
@@ -1121,7 +1120,7 @@
                                 const { A, C } = setupTestData();
                                 assert.throws
                                 (() => C.newStaticSuper(A), TypeError, /\bis not a constructor\b/);
-                            }
+                            },
                         );
                         it
                         (
@@ -1130,7 +1129,7 @@
                             {
                                 const { A, C } = setupTestData();
                                 assert.isNotNull(C.getStaticSuper(A));
-                            }
+                            },
                         );
                         it
                         (
@@ -1142,9 +1141,9 @@
                                 (
                                     () => E.getStaticSuper({ }),
                                     TypeError,
-                                    exactRegExp('Argument is not a function')
+                                    exactRegExp('Argument is not a function'),
                                 );
-                            }
+                            },
                         );
                         it
                         (
@@ -1156,13 +1155,13 @@
                                 (
                                     () => E.getStaticSuper(A),
                                     TypeError,
-                                    exactRegExp('Argument is not a direct superclass')
+                                    exactRegExp('Argument is not a direct superclass'),
                                 );
-                            }
+                            },
                         );
-                    }
+                    },
                 );
-            }
+            },
         );
 
         describe
@@ -1188,7 +1187,7 @@
                                 const Bʼ = Function();
                                 Bʼ.prototype = B.prototype;
                                 assert.strictEqual(c.getSuper(Bʼ).someMethod(), 'B');
-                            }
+                            },
                         );
                         it
                         (
@@ -1201,7 +1200,7 @@
                                 e.bProp = 'B';
                                 assert.strictEqual(e.getSuper(C).getSuper(A).someMethod(), 'A');
                                 assert.strictEqual(e.getSuper(C).getSuper(B).someMethod(), 'B');
-                            }
+                            },
                         );
                         it
                         (
@@ -1224,7 +1223,7 @@
                                     assert.strictEqual(callData.B.this, c);
                                     assert.strictEqual(callData.B.value, actual);
                                 }
-                            }
+                            },
                         );
                         it
                         (
@@ -1247,7 +1246,7 @@
                                     assert(e.isPrototypeOf(callData.B.this));
                                     assert.strictEqual(callData.B.value, actual);
                                 }
-                            }
+                            },
                         );
                         it
                         (
@@ -1268,7 +1267,7 @@
                                     assert.strictEqual(actual, undefined);
                                     assert.isEmpty(callData);
                                 }
-                            }
+                            },
                         );
                         it
                         (
@@ -1287,7 +1286,7 @@
                                 assert.deepEqual(callData.B.args, ['foo']);
                                 assert.strictEqual(callData.B.setter, 'bSetOnly');
                                 assert.strictEqual(callData.B.this, c);
-                            }
+                            },
                         );
                         it
                         (
@@ -1306,7 +1305,7 @@
                                 assert.deepEqual(callData.B.args, ['foo']);
                                 assert.strictEqual(callData.B.setter, 'bSetOnly');
                                 assert(e.isPrototypeOf(callData.B.this));
-                            }
+                            },
                         );
                         it
                         (
@@ -1322,9 +1321,9 @@
                                 assert.ownProperty(c, 'aSetOnly');
                                 assert.ownProperty(c, 'bSetOnly');
                                 assert.isEmpty(callData);
-                            }
+                            },
                         );
-                    }
+                    },
                 );
 
                 describe
@@ -1342,7 +1341,7 @@
                                 B.bProp = Symbol();
                                 assert.strictEqual(C.getStaticSuper(A).someStaticMethod(), A.aProp);
                                 assert.strictEqual(C.getStaticSuper(B).someStaticMethod(), B.bProp);
-                            }
+                            },
                         );
                         it
                         (
@@ -1393,7 +1392,7 @@
                                     const expected = { args: [], className: 'B', this: C };
                                     assert.deepEqual(actual, expected);
                                 }
-                            }
+                            },
                         );
                         it
                         (
@@ -1411,7 +1410,7 @@
                                     assert.strictEqual(actual, undefined);
                                     assert.isEmpty(callData);
                                 }
-                            }
+                            },
                         );
                         it
                         (
@@ -1427,7 +1426,7 @@
                                 assert.deepEqual(callData.B.args, [42]);
                                 assert.strictEqual(callData.B.setter, 'bStaticSet');
                                 assert.strictEqual(callData.B.this.name, 'C');
-                            }
+                            },
                         );
                         it
                         (
@@ -1438,11 +1437,11 @@
                                 E.getStaticSuper(C).getStaticSuper(A).bStaticSet = 42;
                                 E.getStaticSuper(C).getStaticSuper(B).aStaticSet = 13;
                                 assert.isEmpty(callData);
-                            }
+                            },
                         );
-                    }
+                    },
                 );
-            }
+            },
         );
 
         describe
@@ -1458,15 +1457,15 @@
                     (
                         Object.getPrototypeListOf(obj),
                         actual,
-                        'Multiple invocations of Object.getPrototypeListOf should not return ' +
-                        'the same object.'
+                        'Multiple invocations of Object.getPrototypeListOf should not return the ' +
+                        'same object.',
                     );
                 }
 
                 it
                 (
                     'has name \'getPrototypeListOf\'',
-                    () => assert.strictEqual(Object.getPrototypeListOf.name, 'getPrototypeListOf')
+                    () => assert.strictEqual(Object.getPrototypeListOf.name, 'getPrototypeListOf'),
                 );
                 it('has length 1', () => assert.strictEqual(Object.getPrototypeListOf.length, 1));
                 it
@@ -1477,18 +1476,18 @@
                     (
                         () => new Object.getPrototypeListOf(), // eslint-disable-line new-cap
                         TypeError,
-                        /\bis not a constructor\b/
-                    )
+                        /\bis not a constructor\b/,
+                    ),
                 );
                 it
                 (
                     'returns a new empty array if an object has null prototype',
-                    () => testGetPrototypeListOf(Object.create(null), [])
+                    () => testGetPrototypeListOf(Object.create(null), []),
                 );
                 it
                 (
                     'returns a one element array if an object has a non-null prototype',
-                    () => testGetPrototypeListOf({ }, [Object.prototype])
+                    () => testGetPrototypeListOf({ }, [Object.prototype]),
                 );
                 it
                 (
@@ -1497,7 +1496,7 @@
                     {
                         const { C } = setupTestData();
                         testGetPrototypeListOf(C, [Object.getPrototypeOf(C)]);
-                    }
+                    },
                 );
                 it
                 (
@@ -1506,7 +1505,7 @@
                     {
                         const { C } = setupTestData();
                         testGetPrototypeListOf(new C(), [C.prototype]);
-                    }
+                    },
                 );
                 it
                 (
@@ -1515,7 +1514,7 @@
                     {
                         const { A, B, _AB } = setupTestData();
                         testGetPrototypeListOf(_AB, [A, B]);
-                    }
+                    },
                 );
                 it
                 (
@@ -1535,15 +1534,15 @@
                         D.prototype = A.prototype;
                         const _ABCD = classes(A, B, C, D);
                         testGetPrototypeListOf(_ABCD.prototype, [A.prototype, C.prototype]);
-                    }
+                    },
                 );
                 maybeIt
                 (
                     typeof document !== 'undefined',
                     'returns a one element array if an object has document.all for prototype',
-                    () => testGetPrototypeListOf(Object.create(document.all), [document.all])
+                    () => testGetPrototypeListOf(Object.create(document.all), [document.all]),
                 );
-            }
+            },
         );
 
         describe
@@ -1581,12 +1580,12 @@
                 it
                 (
                     'has name \'isPrototypeOf\'',
-                    () => assert.strictEqual(Object.prototype.isPrototypeOf.name, 'isPrototypeOf')
+                    () => assert.strictEqual(Object.prototype.isPrototypeOf.name, 'isPrototypeOf'),
                 );
                 it
                 (
                     'has length 1',
-                    () => assert.strictEqual(Object.prototype.isPrototypeOf.length, 1)
+                    () => assert.strictEqual(Object.prototype.isPrototypeOf.length, 1),
                 );
                 it
                 (
@@ -1596,8 +1595,8 @@
                     (
                         () => new Object.prototype.isPrototypeOf(),
                         TypeError,
-                        /\bis not a constructor\b/
-                    )
+                        /\bis not a constructor\b/,
+                    ),
                 );
                 test('with null argument', undefined, null, false);
                 test('with undefined argument', null, undefined, false);
@@ -1611,7 +1610,7 @@
                     {
                         const expected = BigInt.prototype.isPrototypeOf(BigInt(1));
                         assert.isFalse(expected);
-                    }
+                    },
                 );
                 test('with string type argument', String.prototype, 'foo', false);
                 test('with symbol type argument', Symbol.prototype, Symbol.iterator, false);
@@ -1624,7 +1623,7 @@
                     'when this is in the argument prototype chain',
                     Object.prototype,
                     Object,
-                    true
+                    true,
                 );
                 maybeIt
                 (
@@ -1634,7 +1633,7 @@
                     {
                         const expected = Object.prototype.isPrototypeOf(document.all);
                         assert.isTrue(expected);
-                    }
+                    },
                 );
                 it
                 (
@@ -1657,7 +1656,7 @@
                         assert(B.isPrototypeOf(D));
                         assert(C.isPrototypeOf(D));
                         assert(Function.prototype.isPrototypeOf(D));
-                    }
+                    },
                 );
                 it
                 (
@@ -1682,9 +1681,9 @@
                         assert(C.prototype.isPrototypeOf(d));
                         assert(D.prototype.isPrototypeOf(d));
                         assert(Object.prototype.isPrototypeOf(d));
-                    }
+                    },
                 );
-            }
+            },
         );
 
         describe
@@ -1702,7 +1701,7 @@
                         {
                             assert.strictEqual
                             (Object[Symbol.hasInstance].call(type, arg), expectedResult);
-                        }
+                        },
                     );
                 }
 
@@ -1710,7 +1709,7 @@
                 (
                     'has name \'[Symbol.hasInstance]\'',
                     () =>
-                    assert.strictEqual(Object[Symbol.hasInstance].name, '[Symbol.hasInstance]')
+                    assert.strictEqual(Object[Symbol.hasInstance].name, '[Symbol.hasInstance]'),
                 );
                 it('has length 1', () => assert.strictEqual(Object[Symbol.hasInstance].length, 1));
                 it
@@ -1718,7 +1717,7 @@
                     'cannot be called with new',
                     () =>
                     assert.throws
-                    (() => new Object[Symbol.hasInstance](), TypeError, /\bis not a constructor\b/)
+                    (() => new Object[Symbol.hasInstance](), TypeError, /\bis not a constructor\b/),
                 );
                 it
                 (
@@ -1743,7 +1742,7 @@
                         assert.notOwnProperty(C, Symbol.hasInstance);
                         assert.notOwnProperty(D, Symbol.hasInstance);
                         assert.notOwnProperty(_AD, Symbol.hasInstance);
-                    }
+                    },
                 );
                 test('when this is not callable', { prototype: Object.prototype }, { }, false);
                 test('when this is null', null, { }, false);
@@ -1760,7 +1759,7 @@
                     {
                         const expected = Boolean[Symbol.hasInstance](BigInt(1));
                         assert.isFalse(expected);
-                    }
+                    },
                 );
                 test('with string type argument', String, 'foo', false);
                 test('with symbol type argument', Symbol, Symbol.iterator, false);
@@ -1772,7 +1771,7 @@
                     {
                         const expected = Object[Symbol.hasInstance](document.all);
                         assert.isTrue(expected);
-                    }
+                    },
                 );
                 test('when the argument is the prototype of this', Symbol, Symbol.prototype, false);
 
@@ -1790,11 +1789,11 @@
                                 const fn =
                                 Object[Symbol.hasInstance].bind(createNullPrototypeFunction(), { });
                                 assert.throws(fn, TypeError);
-                            }
+                            },
                         );
-                    }
+                    },
                 );
-            }
+            },
         );
     }
 
@@ -2027,7 +2026,7 @@
                             script.src = PROXYMI_PATH;
                             document.head.appendChild(script);
                         }
-                    }
+                    },
                 );
                 return promise;
             };

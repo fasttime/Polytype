@@ -1,6 +1,4 @@
-# Proxymi
-
-[![NPM](https://nodei.co/npm/proxymi.png?compact=true)](https://nodei.co/npm/proxymi/)
+# Proxymi · [![npm version][npm badge]][npm url]
 
 **Proxy-based multiple inheritance for JavaScript. Without mixins.**
 
@@ -9,14 +7,13 @@
 simple syntax.
 “Dynamic” means that changes to base classes at runtime are reflected immediately in all derived
 classes just like programmers would expect when working with single prototype inheritance.
-So easy.
 
 Proxymi uses
 [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
 along with other relatively new language features to provide multiple inheritance.
 Some of these features are not yet well supported in all browsers.
 As of today, Proxymi runs in **current versions of Chrome, Firefox,
-Safari<sup>[[notes](#compatibility "Safari is only partially supported. See the Compatibility
+Safari<sup>[[*notes*](#compatibility "Safari is only partially supported. See the Compatibility
 section for details.")]</sup>, Opera and in Node.js**.
 As JavaScript support in other browsers improves, Proxymi will start to run in those browsers, too.
 
@@ -290,12 +287,17 @@ Proxymi was successfully tested in the following browsers / JavaScript engines.
 * Node.js 8+
 
 Because of poor ECMAScript compliance, Safari accepts non-constructor functions (such as arrow
-functions, generators, etc.) as arguments to `classes`, although it does not allow instantiating
-classes derived from such functions.
+functions, generators, etc.) as arguments to
+`classes`,<sup>[[*issue*](https://bugs.webkit.org/show_bug.cgi?id=193057)]</sup> although it does
+not allow instantiating classes derived from such functions.
 Also, Safari does not throw a `TypeError` when attempting to assign to a read-only property of a
-Proxymi class or object in strict mode.
+Proxymi class or object in strict
+mode.<sup>[[*issue*](https://bugs.webkit.org/show_bug.cgi?id=177398)]</sup>
 
 In the current version of Edge, the JavaScript engine Chakra has
 [a serious bug](https://github.com/Microsoft/ChakraCore/issues/5883) that can produce incorrect
 results when the `instanceof` operator is used with bound functions after Proxymi has been loaded.
 For this reason it is recommended not to use Proxymi in Edge as long as this issue persists.
+
+[npm badge]: https://badge.fury.io/js/proxymi.svg
+[npm url]: https://www.npmjs.com/package/proxymi

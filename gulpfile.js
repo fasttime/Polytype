@@ -7,13 +7,12 @@ const { dest, parallel, series, src, task } = require('gulp');
 task
 (
     'clean',
-    () =>
+    async () =>
     {
         const del = require('del');
 
-        const stream = del(['coverage', 'lib/**/*.min.js']);
-        return stream;
-    }
+        await del(['coverage', 'lib/**/*.min.js']);
+    },
 );
 
 task
@@ -29,15 +28,15 @@ task
             {
                 src: 'lib/proxymi.js',
                 globals: ['global', 'self'],
-                parserOptions: { ecmaVersion: 8 },
+                parserOptions: { ecmaVersion: 7 },
             },
             {
                 src: ['*.js', 'test/**/*.js'],
                 parserOptions: { ecmaVersion: 8 },
-            }
+            },
         );
         return stream;
-    }
+    },
 );
 
 task
@@ -49,7 +48,7 @@ task
 
         const stream = src('test/**/*.spec.js').pipe(mocha({ istanbul: true }));
         return stream;
-    }
+    },
 );
 
 task
@@ -73,7 +72,7 @@ task
         .pipe(rename({ extname: '.min.js' }))
         .pipe(dest('lib'));
         return stream;
-    }
+    },
 );
 
 task('default', series(parallel('clean', 'lint'), 'test', 'uglify'));
