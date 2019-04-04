@@ -74,7 +74,7 @@ Proxymi.Like<{{joinTs this '&'}}>
         args{{this}}?: ConstructorParameters<T{{this}}>,
 {{/each}}
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<{{joinTs this '|'}}>;
 
     new
     (
@@ -85,7 +85,7 @@ Proxymi.Like<{{joinTs this '&'}}>
 {{/each}}
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<{{joinTs this '|'}}>;
 }
 &
 (

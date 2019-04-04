@@ -67,7 +67,7 @@ Proxymi.Like<T1>
     (
         args1?: ConstructorParameters<T1>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1>;
 
     new
     (
@@ -76,7 +76,7 @@ Proxymi.Like<T1>
             | Proxymi.SuperConstructorInvokeInfo<T1>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1>;
 }
 &
 (
@@ -107,7 +107,7 @@ Proxymi.Like<T1 & T2>
         args1?: ConstructorParameters<T1>,
         args2?: ConstructorParameters<T2>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2>;
 
     new
     (
@@ -117,7 +117,7 @@ Proxymi.Like<T1 & T2>
             | Proxymi.SuperConstructorInvokeInfo<T2>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2>;
 }
 &
 (
@@ -152,7 +152,7 @@ Proxymi.Like<T1 & T2 & T3>
         args2?: ConstructorParameters<T2>,
         args3?: ConstructorParameters<T3>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3>;
 
     new
     (
@@ -163,7 +163,7 @@ Proxymi.Like<T1 & T2 & T3>
             | Proxymi.SuperConstructorInvokeInfo<T3>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3>;
 }
 &
 (
@@ -202,7 +202,7 @@ Proxymi.Like<T1 & T2 & T3 & T4>
         args3?: ConstructorParameters<T3>,
         args4?: ConstructorParameters<T4>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4>;
 
     new
     (
@@ -214,7 +214,7 @@ Proxymi.Like<T1 & T2 & T3 & T4>
             | Proxymi.SuperConstructorInvokeInfo<T4>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4>;
 }
 &
 (
@@ -257,7 +257,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5>
         args4?: ConstructorParameters<T4>,
         args5?: ConstructorParameters<T5>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5>;
 
     new
     (
@@ -270,7 +270,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5>
             | Proxymi.SuperConstructorInvokeInfo<T5>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5>;
 }
 &
 (
@@ -317,7 +317,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6>
         args5?: ConstructorParameters<T5>,
         args6?: ConstructorParameters<T6>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6>;
 
     new
     (
@@ -331,7 +331,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6>
             | Proxymi.SuperConstructorInvokeInfo<T6>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6>;
 }
 &
 (
@@ -382,7 +382,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7>
         args6?: ConstructorParameters<T6>,
         args7?: ConstructorParameters<T7>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
 
     new
     (
@@ -397,7 +397,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7>
             | Proxymi.SuperConstructorInvokeInfo<T7>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
 }
 &
 (
@@ -452,7 +452,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8>
         args7?: ConstructorParameters<T7>,
         args8?: ConstructorParameters<T8>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
 
     new
     (
@@ -468,7 +468,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8>
             | Proxymi.SuperConstructorInvokeInfo<T8>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
 }
 &
 (
@@ -527,7 +527,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9>
         args8?: ConstructorParameters<T8>,
         args9?: ConstructorParameters<T9>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
 
     new
     (
@@ -544,7 +544,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9>
             | Proxymi.SuperConstructorInvokeInfo<T9>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
 }
 &
 (
@@ -607,7 +607,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10>
         args9?: ConstructorParameters<T9>,
         args10?: ConstructorParameters<T10>,
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
 
     new
     (
@@ -625,7 +625,7 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10>
             | Proxymi.SuperConstructorInvokeInfo<T10>
         )[]
     ):
-    Proxymi.ClusteredPrototype<any>;
+    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
 }
 &
 (

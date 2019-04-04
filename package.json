@@ -20,6 +20,7 @@
     "lib/*.{js,ts}"
   ],
   "main": "lib/proxymi.js",
+  "types": "lib/proxymi.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/fasttime/proxymi.git"
