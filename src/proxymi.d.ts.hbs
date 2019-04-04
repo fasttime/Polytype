@@ -1,0 +1,100 @@
+declare namespace Proxymi
+{
+    type Like<T> = { [key in keyof T]: T[key]; };
+
+    type SuperConstructor =
+    {
+        new (...args: any[]): any;
+        prototype: object | null;
+    };
+
+    type ClusteredConstructor<T extends SuperConstructor> =
+    {
+        /**
+         * Allows accessing a property or calling a method in a specified base class, eliminating
+         * ambiguity when multiple base classes share a property with the same key.
+         *
+         * @param type
+         * The referenced base class.
+         */
+        class<U extends T>(type: U): U;
+    };
+
+    type ClusteredPrototype<T extends SuperConstructor> =
+    {
+        /**
+         * Allows accessing a property or calling a method in a specified base class, eliminating
+         * ambiguity when multiple base classes share a property with the same key.
+         *
+         * @param type
+         * The referenced base class.
+         */
+        class<U extends T>(type: U): InstanceType<U>;
+    };
+
+    type SuperConstructorInvokeInfo<T extends SuperConstructor> =
+    {
+        super: T;
+        arguments?: ConstructorParameters<T>;
+    };
+}
+
+interface ObjectConstructor
+{
+    /**
+     * Returns the list of prototypes of an object.
+     *
+     * @param o
+     * The object that references the prototypes.
+     */
+    getPrototypeListOf(o: any): any[];
+}
+{{#each indexesList}}
+
+/**
+ * Allows defining a derived class that inherits from multiple base classes.
+ */
+declare function classes
+<
+{{#each this}}
+    T{{this}} extends Proxymi.SuperConstructor,
+{{/each}}
+>
+(
+{{#each this}}
+    type{{this}}: T{{this}},
+{{/each}}
+):
+Proxymi.Like<{{joinTs this '&'}}>
+&
+{
+    new
+    (
+{{#each this}}
+        args{{this}}?: ConstructorParameters<T{{this}}>,
+{{/each}}
+    ):
+    Proxymi.ClusteredPrototype<any>;
+
+    new
+    (
+        ...args:
+        (
+{{#each this}}
+            | Proxymi.SuperConstructorInvokeInfo<T{{this}}>
+{{/each}}
+        )[]
+    ):
+    Proxymi.ClusteredPrototype<any>;
+}
+&
+(
+    new (...args: any[]) =>
+{{#each this}}
+    & InstanceType<T{{this}}>
+{{/each}}
+    & Proxymi.ClusteredPrototype<{{joinTs this '|'}}>
+)
+&
+Proxymi.ClusteredConstructor<{{joinTs this '|'}}>;
+{{/each}}

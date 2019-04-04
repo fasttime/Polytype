@@ -21,6 +21,7 @@ As JavaScript support in other browsers improves, Proxymi will start to run in t
 
 * C++ style multiple inheritance
 * Works in Node.js and in most browsers
+* Full TypeScript support
 * Zero dependencies
 * Qualified or unqualified access to all base class features
   * constructors
