@@ -40,6 +40,7 @@
     "istanbul": "~0.4.5",
     "mocha": "~6.0.2",
     "mocha-bar": "~0.0.3",
+    "typescript": "~3.4.1",
     "uglify-es": "~3.3.9"
   },
   "engines": {
