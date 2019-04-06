@@ -2,8 +2,6 @@
 
 'use strict';
 
-const ts = require('typescript');
-
 const testCases =
 [
     {
@@ -140,28 +138,39 @@ class extends classes(B)
 const actualize =
 () =>
 {
-    const fileNameToTestCaseMap = { };
+    const
+    {
+        createCompilerHost,
+        createProgram,
+        createSourceFile,
+        flattenDiagnosticMessageText,
+        getPreEmitDiagnostics,
+    } =
+    require('typescript');
+
+    const fileNames = [];
     testCases.forEach
     (
         (testCase, index) =>
         {
             testCase.actualMessages = [];
-            fileNameToTestCaseMap[`:${index}.ts`] = testCase;
+            fileNames.push(`:${index}`);
         },
     );
     const sourceFiles = [];
-    const host = ts.createCompilerHost({ });
+    const host = createCompilerHost({ });
     {
         const { getSourceFile } = host;
         host.getSourceFile =
         (fileName, languageVersion, onError) =>
         {
             let sourceFile;
-            if (fileNameToTestCaseMap.hasOwnProperty(fileName))
+            const match = /(?<=^:)\d+(?=\.ts$)/.exec(fileName);
+            if (match)
             {
-                const testCase = fileNameToTestCaseMap[fileName];
+                const testCase = testCases[match[0]];
                 const sourceText = `{\n${testCase.code}\n}`;
-                sourceFile = ts.createSourceFile(fileName, sourceText);
+                sourceFile = createSourceFile(fileName, sourceText);
                 sourceFile.testCase = testCase;
                 sourceFiles.push(sourceFile);
             }
@@ -171,19 +180,16 @@ const actualize =
         };
     }
     const path = require.resolve('..');
-    const program =
-    ts.createProgram
-    (Object.keys(fileNameToTestCaseMap), { noEmit: true, strict: true, types: [path] }, host);
+    const program = createProgram(fileNames, { noEmit: true, strict: true, types: [path] }, host);
     for (const sourceFile of sourceFiles)
     {
         const { actualMessages } = sourceFile.testCase;
-        ts
-        .getPreEmitDiagnostics(program, sourceFile)
+        getPreEmitDiagnostics(program, sourceFile)
         .forEach
         (
             ({ messageText }) =>
             {
-                const message = ts.flattenDiagnosticMessageText(messageText, '\n');
+                const message = flattenDiagnosticMessageText(messageText, '\n');
                 actualMessages.push(message);
             },
         );

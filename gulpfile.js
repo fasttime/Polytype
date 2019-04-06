@@ -62,7 +62,7 @@ task
             },
             {
                 src: ['*.js', 'test/**/*.js'],
-                parserOptions: { ecmaVersion: 8 },
+                parserOptions: { ecmaVersion: 9 },
             },
         );
         return stream;
