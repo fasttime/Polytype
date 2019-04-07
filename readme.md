@@ -283,7 +283,7 @@ Proxymi was successfully tested in the following browsers / JavaScript engines.
 
 * Chrome 54+
 * Firefox 51+
-* Safari 12 *(Partial support. See notes below.)*
+* Safari 11 *(Partial support. See notes below.)*
 * Opera 41+
 * Node.js 8+
 
