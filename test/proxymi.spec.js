@@ -453,37 +453,6 @@
                     },
                 );
 
-                it
-                (
-                    'clustered prototype has unsettable prototype',
-                    () => assert.throws
-                    (() => Object.setPrototypeOf(classes(Function()).prototype, { }), TypeError),
-                );
-                it
-                (
-                    'clustered prototype has property \'constructor\'',
-                    () =>
-                    {
-                        const constructor = classes(Function());
-                        const actualDescriptor =
-                        Object.getOwnPropertyDescriptor(constructor.prototype, 'constructor');
-                        const expectedDescriptor =
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: constructor,
-                            writable: true,
-                        };
-                        assert.deepEqual(actualDescriptor, expectedDescriptor);
-                    },
-                );
-                it
-                (
-                    'clustered constructor has unsettable prototype',
-                    () =>
-                    assert.throws(() => Object.setPrototypeOf(classes(Function()), { }), TypeError),
-                );
-
                 describe
                 (
                     'super in constructor',
@@ -920,9 +889,100 @@
 
         describe
         (
-            'classes(...?)',
-            ()  =>
+            'Clustered prototype [classes(...?).prototype]',
+            () =>
             {
+                it
+                (
+                    'has unsettable prototype',
+                    () => assert.throws
+                    (() => Object.setPrototypeOf(classes(Function()).prototype, { }), TypeError),
+                );
+                it
+                (
+                    'has expected own properties',
+                    () =>
+                    {
+                        const constructor = classes(Function());
+                        const { prototype } = constructor;
+                        const actualDescriptors = Object.getOwnPropertyDescriptors(prototype);
+                        const expectedDescriptors =
+                        {
+                            class:
+                            {
+                                configurable: false,
+                                enumerable: false,
+                                value: prototype.class,
+                                writable: false,
+                            },
+                            constructor:
+                            {
+                                configurable: true,
+                                enumerable: false,
+                                value: constructor,
+                                writable: true,
+                            },
+                        };
+                        assert.deepEqual(actualDescriptors, expectedDescriptors);
+                        assert.isEmpty(Object.getOwnPropertySymbols(prototype));
+                    },
+                );
+            },
+        );
+
+        describe
+        (
+            'Clustered constructor [classes(...?)]',
+            () =>
+            {
+                it
+                (
+                    'has unsettable prototype',
+                    () =>
+                    assert.throws(() => Object.setPrototypeOf(classes(Function()), { }), TypeError),
+                );
+                it
+                (
+                    'has expected own properties',
+                    () =>
+                    {
+                        const constructor = classes(Function());
+                        const actualDescriptors = Object.getOwnPropertyDescriptors(constructor);
+                        const expectedDescriptors =
+                        {
+                            class:
+                            {
+                                configurable: false,
+                                enumerable: false,
+                                value: constructor.class,
+                                writable: false,
+                            },
+                            length:
+                            {
+                                configurable: true,
+                                enumerable: false,
+                                value: 0,
+                                writable: false,
+                            },
+                            name:
+                            {
+                                configurable: true,
+                                enumerable: false,
+                                get: actualDescriptors.name.get,
+                                set: undefined,
+                            },
+                            prototype:
+                            {
+                                configurable: false,
+                                enumerable: false,
+                                value: { },
+                                writable: false,
+                            },
+                        };
+                        assert.deepEqual(actualDescriptors, expectedDescriptors);
+                        assert.isEmpty(Object.getOwnPropertySymbols(constructor));
+                    },
+                );
                 it
                 (
                     'has expected name',
@@ -946,24 +1006,6 @@
                         assert.strictEqual(classes(ぁ, A, B, C).name, '(ぁ,undefined,null,)');
                     },
                 );
-                it('has length 0', () => assert.strictEqual(classes(Function()).length, 0));
-                it
-                (
-                    'has property \'prototype\'',
-                    () =>
-                    {
-                        const actualDescriptor =
-                        Object.getOwnPropertyDescriptor(classes(Function()), 'prototype');
-                        const expectedDescriptor =
-                        {
-                            configurable: false,
-                            enumerable: false,
-                            value: { },
-                            writable: false,
-                        };
-                        assert.deepEqual(actualDescriptor, expectedDescriptor);
-                    },
-                );
                 it
                 (
                     'cannot be called without new',
@@ -977,7 +1019,7 @@
                 );
                 it
                 (
-                    'does not get property \'prototype\' of superclasses',
+                    'does not get property \'prototype\' of superclasses when called with new',
                     () =>
                     {
                         const A = createFunctionWithGetPrototypeCount('A');
