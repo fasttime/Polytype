@@ -34,6 +34,26 @@ class extends classes(A, B)
         super();
     }
 };
+
+void
+class extends classes(A, B)
+{
+    constructor()
+    {
+        const args1 = ['foo'] as const;
+        super(args1);
+    }
+};
+
+void
+class extends classes(A, B)
+{
+    constructor()
+    {
+        const args1 = { super: A, arguments: ['foo'] } as const;
+        super(args1);
+    }
+};
         `,
     },
     {
@@ -59,9 +79,10 @@ class extends classes(B)
 };
         `,
         expectedMessage:
-        'Argument of type \'{ super: typeof A; }\' is not assignable to parameter of type \'[]\'.' +
-        '\n  Object literal may only specify known properties, and \'super\' does not exist in ' +
-        'type \'[]\'.',
+        'Argument of type \'{ super: typeof A; }\' is not assignable to parameter of type ' +
+        '\'readonly []\'.\n' +
+        '  Object literal may only specify known properties, and \'super\' does not exist in ' +
+        'type \'readonly []\'.',
     },
     {
         title: 'super.class in nonstatic context with indirect superclass',
@@ -132,6 +153,23 @@ class extends classes(B)
         code: 'classes(null);',
         expectedMessage:
         'Argument of type \'null\' is not assignable to parameter of type \'SuperConstructor\'.',
+    },
+    {
+        title: 'Assignment to property \'prototype\' of a clustered constuctor',
+        code:
+        `
+class A
+{ }
+
+class B extends A
+{
+    b(): void
+    { }
+}
+
+const b: B = classes(A).prototype;
+        `,
+        expectedMessage: 'Property \'b\' is missing in type \'A\' but required in type \'B\'.',
     },
 ];
 

@@ -2,9 +2,14 @@ declare namespace Proxymi
 {
     type Like<T> = { [key in keyof T]: T[key]; };
 
+    type ProtoType<T> = T extends { prototype: infer U } ? U : never;
+
+    type ReadonlyConstructorParameters<T extends new (...args: any) => any> =
+    Readonly<ConstructorParameters<T>>;
+
     type SuperConstructor =
     {
-        new (...args: any[]): any;
+        new (...args: any): any;
         prototype: object | null;
     };
 
@@ -35,7 +40,7 @@ declare namespace Proxymi
     type SuperConstructorInvokeInfo<T extends SuperConstructor> =
     {
         super: T;
-        arguments?: ConstructorParameters<T>;
+        arguments?: ReadonlyConstructorParameters<T>;
     };
 }
 
@@ -65,9 +70,10 @@ Proxymi.Like<T1>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
     ):
-    Proxymi.ClusteredPrototype<T1>;
+    & InstanceType<T1>
+    & Proxymi.ClusteredPrototype<T1>;
 
     new
     (
@@ -76,14 +82,11 @@ Proxymi.Like<T1>
             | Proxymi.SuperConstructorInvokeInfo<T1>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
-    & Proxymi.ClusteredPrototype<T1>
-)
+    & Proxymi.ClusteredPrototype<T1>;
+
+    readonly prototype: Proxymi.ProtoType<T1>;
+}
 &
 Proxymi.ClusteredConstructor<T1>;
 
@@ -104,10 +107,12 @@ Proxymi.Like<T1 & T2>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
-        args2?: ConstructorParameters<T2>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
+        args2?: Proxymi.ReadonlyConstructorParameters<T2>,
     ):
-    Proxymi.ClusteredPrototype<T1 | T2>;
+    & InstanceType<T1>
+    & InstanceType<T2>
+    & Proxymi.ClusteredPrototype<T1 | T2>;
 
     new
     (
@@ -117,15 +122,12 @@ Proxymi.Like<T1 & T2>
             | Proxymi.SuperConstructorInvokeInfo<T2>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1 | T2>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
     & InstanceType<T2>
-    & Proxymi.ClusteredPrototype<T1 | T2>
-)
+    & Proxymi.ClusteredPrototype<T1 | T2>;
+
+    readonly prototype: Proxymi.ProtoType<T1 | T2>;
+}
 &
 Proxymi.ClusteredConstructor<T1 | T2>;
 
@@ -148,11 +150,14 @@ Proxymi.Like<T1 & T2 & T3>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
-        args2?: ConstructorParameters<T2>,
-        args3?: ConstructorParameters<T3>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
+        args2?: Proxymi.ReadonlyConstructorParameters<T2>,
+        args3?: Proxymi.ReadonlyConstructorParameters<T3>,
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3>;
+    & InstanceType<T1>
+    & InstanceType<T2>
+    & InstanceType<T3>
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3>;
 
     new
     (
@@ -163,16 +168,13 @@ Proxymi.Like<T1 & T2 & T3>
             | Proxymi.SuperConstructorInvokeInfo<T3>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
     & InstanceType<T2>
     & InstanceType<T3>
-    & Proxymi.ClusteredPrototype<T1 | T2 | T3>
-)
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3>;
+
+    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3>;
+}
 &
 Proxymi.ClusteredConstructor<T1 | T2 | T3>;
 
@@ -197,12 +199,16 @@ Proxymi.Like<T1 & T2 & T3 & T4>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
-        args2?: ConstructorParameters<T2>,
-        args3?: ConstructorParameters<T3>,
-        args4?: ConstructorParameters<T4>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
+        args2?: Proxymi.ReadonlyConstructorParameters<T2>,
+        args3?: Proxymi.ReadonlyConstructorParameters<T3>,
+        args4?: Proxymi.ReadonlyConstructorParameters<T4>,
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4>;
+    & InstanceType<T1>
+    & InstanceType<T2>
+    & InstanceType<T3>
+    & InstanceType<T4>
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4>;
 
     new
     (
@@ -214,17 +220,14 @@ Proxymi.Like<T1 & T2 & T3 & T4>
             | Proxymi.SuperConstructorInvokeInfo<T4>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
     & InstanceType<T2>
     & InstanceType<T3>
     & InstanceType<T4>
-    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4>
-)
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4>;
+
+    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4>;
+}
 &
 Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4>;
 
@@ -251,13 +254,18 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
-        args2?: ConstructorParameters<T2>,
-        args3?: ConstructorParameters<T3>,
-        args4?: ConstructorParameters<T4>,
-        args5?: ConstructorParameters<T5>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
+        args2?: Proxymi.ReadonlyConstructorParameters<T2>,
+        args3?: Proxymi.ReadonlyConstructorParameters<T3>,
+        args4?: Proxymi.ReadonlyConstructorParameters<T4>,
+        args5?: Proxymi.ReadonlyConstructorParameters<T5>,
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5>;
+    & InstanceType<T1>
+    & InstanceType<T2>
+    & InstanceType<T3>
+    & InstanceType<T4>
+    & InstanceType<T5>
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5>;
 
     new
     (
@@ -270,18 +278,15 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5>
             | Proxymi.SuperConstructorInvokeInfo<T5>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
     & InstanceType<T2>
     & InstanceType<T3>
     & InstanceType<T4>
     & InstanceType<T5>
-    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5>
-)
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5>;
+
+    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5>;
+}
 &
 Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5>;
 
@@ -310,14 +315,20 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
-        args2?: ConstructorParameters<T2>,
-        args3?: ConstructorParameters<T3>,
-        args4?: ConstructorParameters<T4>,
-        args5?: ConstructorParameters<T5>,
-        args6?: ConstructorParameters<T6>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
+        args2?: Proxymi.ReadonlyConstructorParameters<T2>,
+        args3?: Proxymi.ReadonlyConstructorParameters<T3>,
+        args4?: Proxymi.ReadonlyConstructorParameters<T4>,
+        args5?: Proxymi.ReadonlyConstructorParameters<T5>,
+        args6?: Proxymi.ReadonlyConstructorParameters<T6>,
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6>;
+    & InstanceType<T1>
+    & InstanceType<T2>
+    & InstanceType<T3>
+    & InstanceType<T4>
+    & InstanceType<T5>
+    & InstanceType<T6>
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6>;
 
     new
     (
@@ -331,19 +342,16 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6>
             | Proxymi.SuperConstructorInvokeInfo<T6>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
     & InstanceType<T2>
     & InstanceType<T3>
     & InstanceType<T4>
     & InstanceType<T5>
     & InstanceType<T6>
-    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6>
-)
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6>;
+
+    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6>;
+}
 &
 Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6>;
 
@@ -374,15 +382,22 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
-        args2?: ConstructorParameters<T2>,
-        args3?: ConstructorParameters<T3>,
-        args4?: ConstructorParameters<T4>,
-        args5?: ConstructorParameters<T5>,
-        args6?: ConstructorParameters<T6>,
-        args7?: ConstructorParameters<T7>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
+        args2?: Proxymi.ReadonlyConstructorParameters<T2>,
+        args3?: Proxymi.ReadonlyConstructorParameters<T3>,
+        args4?: Proxymi.ReadonlyConstructorParameters<T4>,
+        args5?: Proxymi.ReadonlyConstructorParameters<T5>,
+        args6?: Proxymi.ReadonlyConstructorParameters<T6>,
+        args7?: Proxymi.ReadonlyConstructorParameters<T7>,
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
+    & InstanceType<T1>
+    & InstanceType<T2>
+    & InstanceType<T3>
+    & InstanceType<T4>
+    & InstanceType<T5>
+    & InstanceType<T6>
+    & InstanceType<T7>
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
 
     new
     (
@@ -397,11 +412,6 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7>
             | Proxymi.SuperConstructorInvokeInfo<T7>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
     & InstanceType<T2>
     & InstanceType<T3>
@@ -409,8 +419,10 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7>
     & InstanceType<T5>
     & InstanceType<T6>
     & InstanceType<T7>
-    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7>
-)
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
+
+    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
+}
 &
 Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
 
@@ -443,16 +455,24 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
-        args2?: ConstructorParameters<T2>,
-        args3?: ConstructorParameters<T3>,
-        args4?: ConstructorParameters<T4>,
-        args5?: ConstructorParameters<T5>,
-        args6?: ConstructorParameters<T6>,
-        args7?: ConstructorParameters<T7>,
-        args8?: ConstructorParameters<T8>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
+        args2?: Proxymi.ReadonlyConstructorParameters<T2>,
+        args3?: Proxymi.ReadonlyConstructorParameters<T3>,
+        args4?: Proxymi.ReadonlyConstructorParameters<T4>,
+        args5?: Proxymi.ReadonlyConstructorParameters<T5>,
+        args6?: Proxymi.ReadonlyConstructorParameters<T6>,
+        args7?: Proxymi.ReadonlyConstructorParameters<T7>,
+        args8?: Proxymi.ReadonlyConstructorParameters<T8>,
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
+    & InstanceType<T1>
+    & InstanceType<T2>
+    & InstanceType<T3>
+    & InstanceType<T4>
+    & InstanceType<T5>
+    & InstanceType<T6>
+    & InstanceType<T7>
+    & InstanceType<T8>
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
 
     new
     (
@@ -468,11 +488,6 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8>
             | Proxymi.SuperConstructorInvokeInfo<T8>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
     & InstanceType<T2>
     & InstanceType<T3>
@@ -481,8 +496,10 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8>
     & InstanceType<T6>
     & InstanceType<T7>
     & InstanceType<T8>
-    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>
-)
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
+
+    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
+}
 &
 Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
 
@@ -517,17 +534,26 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
-        args2?: ConstructorParameters<T2>,
-        args3?: ConstructorParameters<T3>,
-        args4?: ConstructorParameters<T4>,
-        args5?: ConstructorParameters<T5>,
-        args6?: ConstructorParameters<T6>,
-        args7?: ConstructorParameters<T7>,
-        args8?: ConstructorParameters<T8>,
-        args9?: ConstructorParameters<T9>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
+        args2?: Proxymi.ReadonlyConstructorParameters<T2>,
+        args3?: Proxymi.ReadonlyConstructorParameters<T3>,
+        args4?: Proxymi.ReadonlyConstructorParameters<T4>,
+        args5?: Proxymi.ReadonlyConstructorParameters<T5>,
+        args6?: Proxymi.ReadonlyConstructorParameters<T6>,
+        args7?: Proxymi.ReadonlyConstructorParameters<T7>,
+        args8?: Proxymi.ReadonlyConstructorParameters<T8>,
+        args9?: Proxymi.ReadonlyConstructorParameters<T9>,
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
+    & InstanceType<T1>
+    & InstanceType<T2>
+    & InstanceType<T3>
+    & InstanceType<T4>
+    & InstanceType<T5>
+    & InstanceType<T6>
+    & InstanceType<T7>
+    & InstanceType<T8>
+    & InstanceType<T9>
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
 
     new
     (
@@ -544,11 +570,6 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9>
             | Proxymi.SuperConstructorInvokeInfo<T9>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
     & InstanceType<T2>
     & InstanceType<T3>
@@ -558,8 +579,10 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9>
     & InstanceType<T7>
     & InstanceType<T8>
     & InstanceType<T9>
-    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>
-)
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
+
+    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
+}
 &
 Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
 
@@ -596,18 +619,28 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10>
 {
     new
     (
-        args1?: ConstructorParameters<T1>,
-        args2?: ConstructorParameters<T2>,
-        args3?: ConstructorParameters<T3>,
-        args4?: ConstructorParameters<T4>,
-        args5?: ConstructorParameters<T5>,
-        args6?: ConstructorParameters<T6>,
-        args7?: ConstructorParameters<T7>,
-        args8?: ConstructorParameters<T8>,
-        args9?: ConstructorParameters<T9>,
-        args10?: ConstructorParameters<T10>,
+        args1?: Proxymi.ReadonlyConstructorParameters<T1>,
+        args2?: Proxymi.ReadonlyConstructorParameters<T2>,
+        args3?: Proxymi.ReadonlyConstructorParameters<T3>,
+        args4?: Proxymi.ReadonlyConstructorParameters<T4>,
+        args5?: Proxymi.ReadonlyConstructorParameters<T5>,
+        args6?: Proxymi.ReadonlyConstructorParameters<T6>,
+        args7?: Proxymi.ReadonlyConstructorParameters<T7>,
+        args8?: Proxymi.ReadonlyConstructorParameters<T8>,
+        args9?: Proxymi.ReadonlyConstructorParameters<T9>,
+        args10?: Proxymi.ReadonlyConstructorParameters<T10>,
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
+    & InstanceType<T1>
+    & InstanceType<T2>
+    & InstanceType<T3>
+    & InstanceType<T4>
+    & InstanceType<T5>
+    & InstanceType<T6>
+    & InstanceType<T7>
+    & InstanceType<T8>
+    & InstanceType<T9>
+    & InstanceType<T10>
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
 
     new
     (
@@ -625,11 +658,6 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10>
             | Proxymi.SuperConstructorInvokeInfo<T10>
         )[]
     ):
-    Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
-}
-&
-(
-    new (...args: any[]) =>
     & InstanceType<T1>
     & InstanceType<T2>
     & InstanceType<T3>
@@ -640,7 +668,9 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10>
     & InstanceType<T8>
     & InstanceType<T9>
     & InstanceType<T10>
-    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>
-)
+    & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
+
+    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
+}
 &
 Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;

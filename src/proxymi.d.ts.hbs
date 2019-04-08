@@ -2,9 +2,14 @@ declare namespace Proxymi
 {
     type Like<T> = { [key in keyof T]: T[key]; };
 
+    type ProtoType<T> = T extends { prototype: infer U } ? U : never;
+
+    type ReadonlyConstructorParameters<T extends new (...args: any) => any> =
+    Readonly<ConstructorParameters<T>>;
+
     type SuperConstructor =
     {
-        new (...args: any[]): any;
+        new (...args: any): any;
         prototype: object | null;
     };
 
@@ -35,7 +40,7 @@ declare namespace Proxymi
     type SuperConstructorInvokeInfo<T extends SuperConstructor> =
     {
         super: T;
-        arguments?: ConstructorParameters<T>;
+        arguments?: ReadonlyConstructorParameters<T>;
     };
 }
 
@@ -71,10 +76,13 @@ Proxymi.Like<{{joinTs this '&'}}>
     new
     (
 {{#each this}}
-        args{{this}}?: ConstructorParameters<T{{this}}>,
+        args{{this}}?: Proxymi.ReadonlyConstructorParameters<T{{this}}>,
 {{/each}}
     ):
-    Proxymi.ClusteredPrototype<{{joinTs this '|'}}>;
+{{#each this}}
+    & InstanceType<T{{this}}>
+{{/each}}
+    & Proxymi.ClusteredPrototype<{{joinTs this '|'}}>;
 
     new
     (
@@ -85,16 +93,13 @@ Proxymi.Like<{{joinTs this '&'}}>
 {{/each}}
         )[]
     ):
-    Proxymi.ClusteredPrototype<{{joinTs this '|'}}>;
-}
-&
-(
-    new (...args: any[]) =>
 {{#each this}}
     & InstanceType<T{{this}}>
 {{/each}}
-    & Proxymi.ClusteredPrototype<{{joinTs this '|'}}>
-)
+    & Proxymi.ClusteredPrototype<{{joinTs this '|'}}>;
+
+    readonly prototype: Proxymi.ProtoType<{{joinTs this '|'}}>;
+}
 &
 Proxymi.ClusteredConstructor<{{joinTs this '|'}}>;
 {{/each}}

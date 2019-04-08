@@ -176,7 +176,8 @@ extends classes(Circle, ColoredObject)
 {
     constructor(centerX, centerY, radius, color)
     {
-        super(
+        super
+        (
             [centerX, centerY, radius], // Circle constructor params
             [color]                     // ColoredObject constructor params
         );
@@ -193,7 +194,8 @@ extends classes(Circle, ColoredObject)
 {
     constructor(centerX, centerY, radius, color)
     {
-        super(
+        super
+        (
             { super: ColoredObject, arguments: [color] },
             { super: Circle, arguments: [centerX, centerY, radius] }
         );
