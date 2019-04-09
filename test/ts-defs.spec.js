@@ -193,6 +193,21 @@ class extends classes(B)
         expectedMessage: 'Cannot assign to \'prototype\' because it is a read-only property.',
     },
     {
+        title: 'Type of property \'prototype\' of a clustered constuctor',
+        code:
+        `
+interface Test
+{
+    new(): Test;
+    readonly prototype: { };
+}
+
+const prototype: Test = classes(<Test>{ }).prototype;
+        `,
+        expectedMessage:
+        'Property \'prototype\' is missing in type \'{}\' but required in type \'Test\'.',
+    },
+    {
         title: 'Hidden static overload',
         code:
         `
@@ -252,7 +267,7 @@ const actualize =
             if (match)
             {
                 const testCase = testCases[match[0]];
-                const sourceText = `{\n${testCase.code}\n}`;
+                const sourceText = `export { };\n${testCase.code}`;
                 sourceFile = createSourceFile(fileName, sourceText);
                 sourceFile.testCase = testCase;
                 sourceFiles.push(sourceFile);

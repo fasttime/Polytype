@@ -733,8 +733,33 @@
             'classes',
             () =>
             {
-                it('has name \'classes\'', () => assert.strictEqual(classes.name, 'classes'));
-                it('has length 0', () => assert.strictEqual(classes.length, 0));
+                it
+                (
+                    'has expected own properties',
+                    () =>
+                    {
+                        const actualDescriptors = Object.getOwnPropertyDescriptors(classes);
+                        const expectedDescriptors =
+                        {
+                            length:
+                            {
+                                configurable: true,
+                                enumerable: false,
+                                value: 0,
+                                writable: false,
+                            },
+                            name:
+                            {
+                                configurable: true,
+                                enumerable: false,
+                                value: 'classes',
+                                writable: false,
+                            },
+                        };
+                        assert.deepEqual(actualDescriptors, expectedDescriptors);
+                        assert.isEmpty(Object.getOwnPropertySymbols(classes));
+                    },
+                );
                 it
                 (
                     'cannot be called with new',
