@@ -11,7 +11,7 @@ task
     {
         const del = require('del');
 
-        await del(['coverage', 'lib/**/*.{d.ts,min.js}']);
+        await del(['.nyc_output', 'coverage', 'lib/**/*.{d.ts,min.js}']);
     },
 );
 
@@ -71,12 +71,29 @@ task
 task
 (
     'test',
-    () =>
+    callback =>
     {
-        const mocha = require('gulp-spawn-mocha');
+        const { fork } = require('child_process');
 
-        const stream = src('test/**/*.spec.js').pipe(mocha({ istanbul: true }));
-        return stream;
+        const { resolve } = require;
+        const nycPath = resolve('nyc/bin/nyc');
+        const mochaPath = resolve('mocha/bin/mocha');
+        const cmd = fork(nycPath, [mochaPath, 'test/**/*.spec.js']);
+        cmd.on('exit', code => callback(code && 'Test failed'));
+    },
+);
+
+task
+(
+    'coverage',
+    callback =>
+    {
+        const NYC = require('nyc');
+
+        const argv = { cwd: __dirname, reporter: 'lcov' };
+        const nyc = new NYC(argv);
+        nyc.report();
+        callback();
     },
 );
 
@@ -102,4 +119,9 @@ task
     },
 );
 
-task('default', series(parallel(series('clean', 'create-ts-defs'), 'lint'), 'test', 'minify'));
+task
+(
+    'default',
+    series
+    (parallel(series('clean', 'create-ts-defs'), 'lint'), 'test', parallel('coverage', 'minify')),
+);
