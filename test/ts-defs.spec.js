@@ -172,7 +172,7 @@ class extends classes(B)
     {
         title: 'classes without arguments',
         code: 'classes();',
-        expectedMessage: 'Expected 1-10 arguments, but got 0.',
+        expectedMessage: 'Expected at least 1 arguments, but got 0.',
     },
     {
         title: 'classes with an undefined argument',

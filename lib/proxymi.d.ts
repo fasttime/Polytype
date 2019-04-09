@@ -4,13 +4,13 @@ declare namespace Proxymi
 
     type ProtoType<T> = T extends { prototype: infer U } ? U : never;
 
-    type ReadonlyConstructorParameters<T extends new (...args: any) => any> =
+    type ReadonlyConstructorParameters<T extends new (...args: unknown[]) => unknown> =
     Readonly<ConstructorParameters<T>>;
 
     type SuperConstructor =
     {
-        new (...args: any): any;
-        prototype: object | null;
+        new (...args: unknown[]): unknown;
+        readonly prototype: object | null;
     };
 
     type ClusteredConstructor<T extends SuperConstructor> =
@@ -719,3 +719,15 @@ Proxymi.Enrich<
 Proxymi.Enrich<
 Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>,
 T1>, T2>, T3>, T4>, T5>, T6>, T7>, T8>, T9>, T10>;
+
+/**
+ * Allows defining a derived class that inherits from multiple base classes.
+ */
+declare function classes(type1: Proxymi.SuperConstructor, ...types: Proxymi.SuperConstructor[]):
+{
+    new (args: unknown): Proxymi.ClusteredPrototype<Proxymi.SuperConstructor>;
+
+    readonly prototype: object | null;
+}
+&
+Proxymi.Enrich<Proxymi.ClusteredConstructor<Proxymi.SuperConstructor>, Proxymi.SuperConstructor>;
