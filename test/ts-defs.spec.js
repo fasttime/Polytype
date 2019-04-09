@@ -15,6 +15,9 @@ class A
 
     a(): void
     { }
+
+    static sa(): void
+    { }
 }
 
 class B
@@ -23,6 +26,9 @@ class B
     { }
 
     b(): void
+    { }
+
+    static sb(): void
     { }
 }
 
@@ -54,6 +60,33 @@ class extends classes(A, B)
         super(args1);
     }
 };
+
+void
+class extends classes(A, B)
+{
+    c()
+    {
+        this.a();
+        this.b();
+        super.a();
+        super.b();
+        super.class(A).a();
+        super.class(B).b();
+    }
+
+    static sc()
+    {
+        this.sa();
+        this.sb();
+        super.sa();
+        super.sb();
+        super.class(A).sa();
+        super.class(B).sb();
+    }
+};
+
+const a: A = classes(A, B).prototype;
+const b: B = classes(A, B).prototype;
         `,
     },
     {
@@ -156,26 +189,38 @@ class extends classes(B)
     },
     {
         title: 'Assignment to property \'prototype\' of a clustered constuctor',
+        code: 'classes(Object).prototype = null;',
+        expectedMessage: 'Cannot assign to \'prototype\' because it is a read-only property.',
+    },
+    {
+        title: 'Hidden static overload',
         code:
         `
 class A
-{ }
-
-class B extends A
 {
-    b(): void
+    static x(x: any): void
     { }
 }
 
-const b: B = classes(A).prototype;
+class B
+{
+    static x(): void
+    { }
+}
+
+class C extends classes(A, B)
+{ }
+
+C.x();
         `,
-        expectedMessage: 'Property \'b\' is missing in type \'A\' but required in type \'B\'.',
+        expectedMessage: 'Expected 1 arguments, but got 0.',
     },
 ];
 
 const actualize =
 () =>
 {
+    const { compilerOptions } = require('../tsconfig.json');
     const
     {
         createCompilerHost,
@@ -217,8 +262,7 @@ const actualize =
             return sourceFile;
         };
     }
-    const path = require.resolve('..');
-    const program = createProgram(fileNames, { noEmit: true, strict: true, types: [path] }, host);
+    const program = createProgram(fileNames, compilerOptions, host);
     for (const sourceFile of sourceFiles)
     {
         const { actualMessages } = sourceFile.testCase;
@@ -241,7 +285,14 @@ describe
     {
         const assert = require('assert');
 
-        before(actualize);
+        before
+        (
+            function ()
+            {
+                this.timeout(10000);
+                actualize();
+            },
+        );
 
         testCases.forEach
         (

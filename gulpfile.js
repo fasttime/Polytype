@@ -33,8 +33,7 @@ task
             }
         }
 
-        const joinTs =
-        (indexes, operator) => indexes.map(index => `T${index}`).join(` ${operator} `);
+        const joinTs = (indexes, separator) => indexes.map(index => `T${index}`).join(separator);
 
         const stream =
         src('src/*.hbs')

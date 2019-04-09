@@ -1,6 +1,6 @@
 declare namespace Proxymi
 {
-    type Like<T> = { [key in keyof T]: T[key]; };
+    type Enrich<T, U> = T & Pick<U, Exclude<keyof U, keyof T>>;
 
     type ProtoType<T> = T extends { prototype: infer U } ? U : never;
 
@@ -70,8 +70,6 @@ declare function classes
     type{{this}}: T{{this}},
 {{/each}}
 ):
-Proxymi.Like<{{joinTs this '&'}}>
-&
 {
     new
     (
@@ -82,7 +80,7 @@ Proxymi.Like<{{joinTs this '&'}}>
 {{#each this}}
     & InstanceType<T{{this}}>
 {{/each}}
-    & Proxymi.ClusteredPrototype<{{joinTs this '|'}}>;
+    & Proxymi.ClusteredPrototype<{{joinTs this ' | '}}>;
 
     new
     (
@@ -96,10 +94,14 @@ Proxymi.Like<{{joinTs this '&'}}>
 {{#each this}}
     & InstanceType<T{{this}}>
 {{/each}}
-    & Proxymi.ClusteredPrototype<{{joinTs this '|'}}>;
+    & Proxymi.ClusteredPrototype<{{joinTs this ' | '}}>;
 
-    readonly prototype: Proxymi.ProtoType<{{joinTs this '|'}}>;
+    readonly prototype: Proxymi.ProtoType<{{joinTs this ' & '}}>;
 }
 &
-Proxymi.ClusteredConstructor<{{joinTs this '|'}}>;
+{{#each this}}
+Proxymi.Enrich<
+{{/each}}
+Proxymi.ClusteredConstructor<{{joinTs this ' | '}}>,
+{{joinTs this '>, '}}>;
 {{/each}}

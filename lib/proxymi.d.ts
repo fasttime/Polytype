@@ -1,6 +1,6 @@
 declare namespace Proxymi
 {
-    type Like<T> = { [key in keyof T]: T[key]; };
+    type Enrich<T, U> = T & Pick<U, Exclude<keyof U, keyof T>>;
 
     type ProtoType<T> = T extends { prototype: infer U } ? U : never;
 
@@ -65,8 +65,6 @@ declare function classes
 (
     type1: T1,
 ):
-Proxymi.Like<T1>
-&
 {
     new
     (
@@ -88,7 +86,9 @@ Proxymi.Like<T1>
     readonly prototype: Proxymi.ProtoType<T1>;
 }
 &
-Proxymi.ClusteredConstructor<T1>;
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1>,
+T1>;
 
 /**
  * Allows defining a derived class that inherits from multiple base classes.
@@ -102,8 +102,6 @@ declare function classes
     type1: T1,
     type2: T2,
 ):
-Proxymi.Like<T1 & T2>
-&
 {
     new
     (
@@ -126,10 +124,13 @@ Proxymi.Like<T1 & T2>
     & InstanceType<T2>
     & Proxymi.ClusteredPrototype<T1 | T2>;
 
-    readonly prototype: Proxymi.ProtoType<T1 | T2>;
+    readonly prototype: Proxymi.ProtoType<T1 & T2>;
 }
 &
-Proxymi.ClusteredConstructor<T1 | T2>;
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1 | T2>,
+T1>, T2>;
 
 /**
  * Allows defining a derived class that inherits from multiple base classes.
@@ -145,8 +146,6 @@ declare function classes
     type2: T2,
     type3: T3,
 ):
-Proxymi.Like<T1 & T2 & T3>
-&
 {
     new
     (
@@ -173,10 +172,14 @@ Proxymi.Like<T1 & T2 & T3>
     & InstanceType<T3>
     & Proxymi.ClusteredPrototype<T1 | T2 | T3>;
 
-    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3>;
+    readonly prototype: Proxymi.ProtoType<T1 & T2 & T3>;
 }
 &
-Proxymi.ClusteredConstructor<T1 | T2 | T3>;
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1 | T2 | T3>,
+T1>, T2>, T3>;
 
 /**
  * Allows defining a derived class that inherits from multiple base classes.
@@ -194,8 +197,6 @@ declare function classes
     type3: T3,
     type4: T4,
 ):
-Proxymi.Like<T1 & T2 & T3 & T4>
-&
 {
     new
     (
@@ -226,10 +227,15 @@ Proxymi.Like<T1 & T2 & T3 & T4>
     & InstanceType<T4>
     & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4>;
 
-    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4>;
+    readonly prototype: Proxymi.ProtoType<T1 & T2 & T3 & T4>;
 }
 &
-Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4>;
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4>,
+T1>, T2>, T3>, T4>;
 
 /**
  * Allows defining a derived class that inherits from multiple base classes.
@@ -249,8 +255,6 @@ declare function classes
     type4: T4,
     type5: T5,
 ):
-Proxymi.Like<T1 & T2 & T3 & T4 & T5>
-&
 {
     new
     (
@@ -285,10 +289,16 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5>
     & InstanceType<T5>
     & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5>;
 
-    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5>;
+    readonly prototype: Proxymi.ProtoType<T1 & T2 & T3 & T4 & T5>;
 }
 &
-Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5>;
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5>,
+T1>, T2>, T3>, T4>, T5>;
 
 /**
  * Allows defining a derived class that inherits from multiple base classes.
@@ -310,8 +320,6 @@ declare function classes
     type5: T5,
     type6: T6,
 ):
-Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6>
-&
 {
     new
     (
@@ -350,10 +358,17 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6>
     & InstanceType<T6>
     & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6>;
 
-    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6>;
+    readonly prototype: Proxymi.ProtoType<T1 & T2 & T3 & T4 & T5 & T6>;
 }
 &
-Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6>;
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6>,
+T1>, T2>, T3>, T4>, T5>, T6>;
 
 /**
  * Allows defining a derived class that inherits from multiple base classes.
@@ -377,8 +392,6 @@ declare function classes
     type6: T6,
     type7: T7,
 ):
-Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7>
-&
 {
     new
     (
@@ -421,10 +434,18 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7>
     & InstanceType<T7>
     & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
 
-    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
+    readonly prototype: Proxymi.ProtoType<T1 & T2 & T3 & T4 & T5 & T6 & T7>;
 }
 &
-Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7>,
+T1>, T2>, T3>, T4>, T5>, T6>, T7>;
 
 /**
  * Allows defining a derived class that inherits from multiple base classes.
@@ -450,8 +471,6 @@ declare function classes
     type7: T7,
     type8: T8,
 ):
-Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8>
-&
 {
     new
     (
@@ -498,10 +517,19 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8>
     & InstanceType<T8>
     & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
 
-    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
+    readonly prototype: Proxymi.ProtoType<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8>;
 }
 &
-Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>,
+T1>, T2>, T3>, T4>, T5>, T6>, T7>, T8>;
 
 /**
  * Allows defining a derived class that inherits from multiple base classes.
@@ -529,8 +557,6 @@ declare function classes
     type8: T8,
     type9: T9,
 ):
-Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9>
-&
 {
     new
     (
@@ -581,10 +607,20 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9>
     & InstanceType<T9>
     & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
 
-    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
+    readonly prototype: Proxymi.ProtoType<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9>;
 }
 &
-Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>,
+T1>, T2>, T3>, T4>, T5>, T6>, T7>, T8>, T9>;
 
 /**
  * Allows defining a derived class that inherits from multiple base classes.
@@ -614,8 +650,6 @@ declare function classes
     type9: T9,
     type10: T10,
 ):
-Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10>
-&
 {
     new
     (
@@ -670,7 +704,18 @@ Proxymi.Like<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10>
     & InstanceType<T10>
     & Proxymi.ClusteredPrototype<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
 
-    readonly prototype: Proxymi.ProtoType<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
+    readonly prototype: Proxymi.ProtoType<T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10>;
 }
 &
-Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.Enrich<
+Proxymi.ClusteredConstructor<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>,
+T1>, T2>, T3>, T4>, T5>, T6>, T7>, T8>, T9>, T10>;
