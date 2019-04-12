@@ -57,28 +57,28 @@ declare namespace Proxymi
     }
     &
     (
-    T extends
-    [
-        SuperConstructor,
-        SuperConstructor,
-        SuperConstructor,
-        SuperConstructor,
-        SuperConstructor,
-        SuperConstructor,
-        SuperConstructor,
-        SuperConstructor,
-        SuperConstructor,
-        SuperConstructor,
-        SuperConstructor,
-        ...SuperConstructor[]
-    ]
-    ?
-    Enrich<SuperConstructorSelector<UnionOf<T>>, SuperConstructor>
-    :
-    EnrichTimes<
-        SuperConstructorSelector<UnionOf<T>>,
-        T[0], T[1], T[2], T[3], T[4], T[5], T[6], T[7], T[8], T[9]
-    >
+        T extends
+        [
+            SuperConstructor,
+            SuperConstructor,
+            SuperConstructor,
+            SuperConstructor,
+            SuperConstructor,
+            SuperConstructor,
+            SuperConstructor,
+            SuperConstructor,
+            SuperConstructor,
+            SuperConstructor,
+            SuperConstructor,
+            ...SuperConstructor[]
+        ]
+        ?
+        Enrich<SuperConstructorSelector<UnionOf<T>>, SuperConstructor>
+        :
+        EnrichTimes<
+            SuperConstructorSelector<UnionOf<T>>,
+            T[0], T[1], T[2], T[3], T[4], T[5], T[6], T[7], T[8], T[9]
+        >
     );
 
     type ClusteredPrototype<T extends SuperConstructor[]> =

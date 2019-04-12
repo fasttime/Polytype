@@ -49,22 +49,13 @@ task
         const { resolve } = require;
         const nycPath = resolve('nyc/bin/nyc');
         const mochaPath = resolve('mocha/bin/mocha');
-        const cmd = fork(nycPath, [mochaPath, 'test/**/*.spec.js']);
+        const cmd =
+        fork
+        (
+            nycPath,
+            ['--reporter=html', '--reporter=text-summary', '--', mochaPath, 'test/**/*.spec.js'],
+        );
         cmd.on('exit', code => callback(code && 'Test failed'));
-    },
-);
-
-task
-(
-    'coverage',
-    callback =>
-    {
-        const NYC = require('nyc');
-
-        const argv = { cwd: __dirname, reporter: 'lcov' };
-        const nyc = new NYC(argv);
-        nyc.report();
-        callback();
     },
 );
 
@@ -90,4 +81,4 @@ task
     },
 );
 
-task('default', series(parallel('clean', 'lint'), 'test', parallel('coverage', 'minify')));
+task('default', series(parallel('clean', 'lint'), 'test', 'minify'));
