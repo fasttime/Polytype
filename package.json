@@ -33,13 +33,12 @@
     "del": "~4.1.0",
     "gulp": "~4.0.0",
     "gulp-fasttime-lint": "~0.8.1",
-    "gulp-hb": "~8.0.0",
     "gulp-rename": "~1.4.0",
     "gulp-terser": "~1.1.7",
     "mocha": "~6.1.0",
     "mocha-bar": "~0.0.3",
     "nyc": "~13.3.0",
-    "typescript": "~3.4.1"
+    "typescript": "~3.4.3"
   },
   "engines": {
     "node": ">=8.0.0"

@@ -11,36 +11,7 @@ task
     {
         const del = require('del');
 
-        await del(['.nyc_output', 'coverage', 'lib/**/*.{d.ts,min.js}']);
-    },
-);
-
-task
-(
-    'create-ts-defs',
-    () =>
-    {
-        const hb = require('gulp-hb');
-        const rename = require('gulp-rename');
-
-        const indexesList = [];
-        {
-            let indexes = [];
-            for (let index = 1; index <= 10; ++index)
-            {
-                indexes = [...indexes, index];
-                indexesList.push(indexes);
-            }
-        }
-
-        const joinTs = (indexes, separator) => indexes.map(index => `T${index}`).join(separator);
-
-        const stream =
-        src('src/*.hbs')
-        .pipe(hb({ compileOptions: { noEscape: true } }).data({ indexesList }).helpers({ joinTs }))
-        .pipe(rename({ extname: '' }))
-        .pipe(dest('lib'));
-        return stream;
+        await del(['.nyc_output', 'coverage', 'lib/**/*.{min.js}']);
     },
 );
 
@@ -119,9 +90,4 @@ task
     },
 );
 
-task
-(
-    'default',
-    series
-    (parallel(series('clean', 'create-ts-defs'), 'lint'), 'test', parallel('coverage', 'minify')),
-);
+task('default', series(parallel('clean', 'lint'), 'test', parallel('coverage', 'minify')));

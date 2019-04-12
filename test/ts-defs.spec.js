@@ -56,6 +56,16 @@ class extends classes(A, B)
 {
     constructor()
     {
+        const args1 = ['foo'] as const;
+        super(undefined, args1);
+    }
+};
+
+void
+class extends classes(A, B)
+{
+    constructor()
+    {
         const args1 = { super: A, arguments: ['foo'] } as const;
         super(args1);
     }
@@ -172,7 +182,8 @@ class extends classes(B)
     {
         title: 'classes without arguments',
         code: 'classes();',
-        expectedMessage: 'Expected at least 1 arguments, but got 0.',
+        expectedMessage:
+        'Argument of type \'[]\' is not assignable to parameter of type \'never\'.',
     },
     {
         title: 'classes with an undefined argument',
