@@ -47,13 +47,13 @@ declare namespace Proxymi
 
     type ClusteredConstructor<T extends SuperConstructor[]> =
     {
+        readonly prototype: ProtoType<IntersectionOf<T>>;
+
         new (...args: MapTupleTypesToOptionalReadonlyConstructorParameters<T>):
         ClusteredPrototype<T>;
 
         new (...args: UnionOf<MapTupleTypesToSuperConstructorInvokeInfo<T>>[]):
-        ClusteredPrototype<T>
-
-        readonly prototype: ProtoType<IntersectionOf<T>>;
+        ClusteredPrototype<T>;
     }
     &
     (
@@ -91,11 +91,11 @@ declare namespace Proxymi
     type MapTupleTypesToSuperConstructorInvokeInfo<T extends SuperConstructor[]> =
     { [key in keyof T]: SuperConstructorInvokeInfo<AsSuperConstructor<T[key]>>; };
 
-    type SuperConstructor =
+    interface SuperConstructor
     {
-        new (...args: unknown[]): unknown;
         readonly prototype: object | null;
-    };
+        new (...args: unknown[]): unknown;
+    }
 
     interface SuperConstructorInvokeInfo<T extends SuperConstructor>
     {
@@ -103,7 +103,7 @@ declare namespace Proxymi
         arguments?: ReadonlyConstructorParameters<T>;
     }
 
-    type SuperConstructorSelector<T extends SuperConstructor> =
+    interface SuperConstructorSelector<T extends SuperConstructor>
     {
         /**
          * Allows accessing a property or calling a method in a specified base class, eliminating
@@ -113,9 +113,9 @@ declare namespace Proxymi
          * The referenced base class.
          */
         class<U extends T>(type: U): U;
-    };
+    }
 
-    type SuperPrototypeSelector<T extends SuperConstructor> =
+    interface SuperPrototypeSelector<T extends SuperConstructor>
     {
         /**
          * Allows accessing a property or calling a method in a specified base class, eliminating
@@ -125,7 +125,7 @@ declare namespace Proxymi
          * The referenced base class.
          */
         class<U extends T>(type: U): InstanceType<U>;
-    };
+    }
 }
 
 interface ObjectConstructor

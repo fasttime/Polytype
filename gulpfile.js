@@ -31,6 +31,10 @@ task
                 parserOptions: { ecmaVersion: 7 },
             },
             {
+                src: 'lib/proxymi.d.ts',
+                parserOptions: { project: 'tsconfig.json' },
+            },
+            {
                 src: ['*.js', 'test/**/*.js'],
                 parserOptions: { ecmaVersion: 9 },
             },
