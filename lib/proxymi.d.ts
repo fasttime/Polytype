@@ -73,7 +73,10 @@ declare namespace Proxymi
             ...SuperConstructor[]
         ]
         ?
-        Enrich<SuperConstructorSelector<UnionOf<T>>, SuperConstructor>
+        Enrich<
+            SuperConstructorSelector<UnionOf<T>>,
+            UnboxedIntersectionOf<{ [key in keyof T]: T[key]; }>
+        >
         :
         EnrichTimes<
             SuperConstructorSelector<UnionOf<T>>,

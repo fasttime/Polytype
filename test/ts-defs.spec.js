@@ -5,7 +5,7 @@
 const testCases =
 [
     {
-        title: 'OK',
+        title: 'ordinary multiple inheritance',
         code:
         `
 class A
@@ -97,6 +97,37 @@ class extends classes(A, B)
 
 const a: A = classes(A, B).prototype;
 const b: B = classes(A, B).prototype;
+        `,
+    },
+    {
+        title: 'hyperinheritance',
+        code:
+        `
+class T1 { static st1(): void { } }
+class T2 { static st2(): void { } }
+class T3 { static st3(): void { } }
+class T4 { static st4(): void { } }
+class T5 { static st5(): void { } }
+class T6 { static st6(): void { } }
+class T7 { static st7(): void { } }
+class T8 { static st8(): void { } }
+class T9 { static st9(): void { } }
+class T10 { static st10(): void { } }
+class T11 { static st11(): void { } }
+
+void
+class extends classes(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
+{
+    static st()
+    {
+        this.st1();
+        this.st11();
+        super.st1();
+        super.st11();
+        super.class(T1).st1();
+        super.class(T11).st11();
+    }
+};
         `,
     },
     {
