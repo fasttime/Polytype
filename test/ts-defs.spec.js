@@ -5,7 +5,7 @@
 const testCases =
 [
     {
-        title: 'ordinary multiple inheritance',
+        title: 'Ordinary multiple inheritance',
         code:
         `
 class A
@@ -71,8 +71,7 @@ class extends classes(A, B)
     }
 };
 
-void
-class extends classes(A, B)
+class C extends classes(A, B)
 {
     c()
     {
@@ -93,14 +92,16 @@ class extends classes(A, B)
         super.class(A).sa();
         super.class(B).sb();
     }
-};
+}
 
-const a: A = classes(A, B).prototype;
-const b: B = classes(A, B).prototype;
+void (C.prototype as A);
+void (C.prototype as B);
+void (C as typeof A);
+void (C as typeof B);
         `,
     },
     {
-        title: 'hyperinheritance',
+        title: 'Hyperinheritance',
         code:
         `
 class T1 { static st1(): void { } }
@@ -115,8 +116,7 @@ class T9 { static st9(): void { } }
 class T10 { static st10(): void { } }
 class T11 { static st11(): void { } }
 
-void
-class extends classes(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
+class U extends classes(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
 {
     static st()
     {
@@ -127,7 +127,12 @@ class extends classes(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
         super.class(T1).st1();
         super.class(T11).st11();
     }
-};
+}
+
+void (U.prototype as T1);
+void (U.prototype as T11);
+void (U as typeof T1);
+void (U as typeof T11);
         `,
     },
     {
@@ -271,6 +276,27 @@ class C extends classes(A, B)
 C.x();
         `,
         expectedMessage: 'Expected 1 arguments, but got 0.',
+    },
+    {
+        title: 'Union superclass',
+        code:
+        `
+class A
+{ }
+
+class B
+{ }
+
+void
+(
+    (C: typeof A | typeof B) =>
+    class extends classes(C)
+    { }
+);
+        `,
+        expectedMessage:
+        'Base constructor return type \'ClusteredPrototype<[typeof A | typeof B]>\' is not an ' +
+        'object type or intersection of object types with statically known members.',
     },
 ];
 

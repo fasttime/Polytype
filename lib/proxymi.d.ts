@@ -24,7 +24,7 @@ declare namespace Proxymi
     U1>, U2>, U3>, U4>, U5>, U6>, U7>, U8>, U9>, U10>;
 
     type IntersectionOf<T extends unknown[]> =
-    UnboxedIntersectionOf<{ [key in keyof T]: [T[key]]; }> extends [infer U] ? U : never;
+    UnboxedIntersectionOf<{ [key in keyof T]: [T[key]]; }> extends { 0: infer U; } ? U : never;
 
     type ProtoType<T> = T extends { prototype: infer U; } ? U : never;
 
@@ -57,26 +57,9 @@ declare namespace Proxymi
     }
     &
     (
-        T extends
-        [
-            SuperConstructor,
-            SuperConstructor,
-            SuperConstructor,
-            SuperConstructor,
-            SuperConstructor,
-            SuperConstructor,
-            SuperConstructor,
-            SuperConstructor,
-            SuperConstructor,
-            SuperConstructor,
-            SuperConstructor,
-            ...SuperConstructor[]
-        ]
+        T extends { 10: unknown; }
         ?
-        Enrich<
-            SuperConstructorSelector<UnionOf<T>>,
-            UnboxedIntersectionOf<{ [key in keyof T]: T[key]; }>
-        >
+        Enrich<SuperConstructorSelector<UnionOf<T>>, IntersectionOf<T>>
         :
         EnrichTimes<
             SuperConstructorSelector<UnionOf<T>>,
@@ -86,7 +69,7 @@ declare namespace Proxymi
 
     type ClusteredPrototype<T extends SuperConstructor[]> =
     SuperPrototypeSelector<UnionOf<T>> &
-    UnboxedIntersectionOf<{ [key in keyof T]: InstanceType<AsSuperConstructor<T[key]>>; }>;
+    IntersectionOf<{ [key in keyof T]: InstanceType<AsSuperConstructor<T[key]>>; }>;
 
     type MapTupleTypesToOptionalReadonlyConstructorParameters<T extends SuperConstructor[]> =
     { [key in keyof T]?: ReadonlyConstructorParameters<AsSuperConstructor<T[key]>>; };
