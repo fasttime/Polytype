@@ -80,7 +80,7 @@ declare namespace Proxymi
     interface SuperConstructor
     {
         readonly prototype: object | null;
-        new (...args: unknown[]): unknown;
+        new (...args: any): unknown;
     }
 
     interface SuperConstructorSelector<T extends SuperConstructor>

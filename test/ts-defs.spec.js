@@ -20,7 +20,7 @@ void Object.getPrototypeListOf;
         `
 class A
 {
-    constructor(a: any)
+    constructor(a: object)
     { }
 
     a(): void
@@ -32,7 +32,7 @@ class A
 
 class B
 {
-    constructor(b: any)
+    constructor(b: object)
     { }
 
     b(): void
@@ -56,7 +56,7 @@ class extends classes(A, B)
 {
     constructor()
     {
-        const args1 = ['foo'] as const;
+        const args1 = [{ }] as const;
         super(args1);
     }
 };
@@ -66,7 +66,7 @@ class extends classes(A, B)
 {
     constructor()
     {
-        const args1 = ['foo'] as const;
+        const args1 = [{ }] as const;
         super(undefined, args1);
     }
 };
@@ -76,7 +76,7 @@ class extends classes(A, B)
 {
     constructor()
     {
-        const args1 = { super: A, arguments: ['foo'] } as const;
+        const args1 = { super: A, arguments: [{ }] } as const;
         super(args1);
     }
 };

@@ -11,7 +11,7 @@ task
     {
         const del = require('del');
 
-        await del(['.nyc_output', 'coverage', 'lib/**/*.{min.js}']);
+        await del(['.nyc_output', 'coverage', 'lib/**/*.min.js']);
     },
 );
 

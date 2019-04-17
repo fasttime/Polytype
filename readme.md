@@ -1,6 +1,6 @@
 # Proxymi · [![npm version][npm badge]][npm url]
 
-**Proxy-based multiple inheritance for JavaScript. Without mixins.**
+**Proxy-based multiple inheritance for JavaScript and TypeScript. Without mixins.**
 
 **Proxymi** is a library that adds support for dynamic
 [multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance) to JavaScript and
@@ -31,15 +31,15 @@ As JavaScript support in other browsers improves, Proxymi will start to run in t
 
 ## Setup Instructions
 
-### In the Browser
+### As a vanilla script
 
-To use Proxymi in your project, download
-[proxymi.js](https://raw.githubusercontent.com/fasttime/Proxymi/master/lib/proxymi.js) or
-[proxymi.min.js](https://raw.githubusercontent.com/fasttime/Proxymi/master/lib/proxymi.min.js) from
-GitHub and include it in your HTML file.
+In an HTML-based application Proxymi can be embedded as a plain JavaScript library.
+Just download [proxymi.js](https://raw.githubusercontent.com/fasttime/Proxymi/master/lib/proxymi.js)
+or [proxymi.min.js](https://raw.githubusercontent.com/fasttime/Proxymi/master/lib/proxymi.min.js)
+from GitHub and include it in your HTML file.
 
 ```html
-<script src="proxymi.js"></script>
+<script src="proxymi.min.js"></script>
 ```
 
 Alternatively, you can hotlink the current stable version using a CDN of your choice.
@@ -48,19 +48,32 @@ Alternatively, you can hotlink the current stable version using a CDN of your ch
 <script src="https://gitcdn.xyz/repo/fasttime/Proxymi/master/lib/proxymi.min.js"></script>
 ```
 
-### In Node.js
+### As a module
 
-If you are using Node.js 8 or later, you can install Proxymi with [npm](https://www.npmjs.org).
+If you are using Node.js, you can install Proxymi with [npm](https://www.npmjs.org).
 
 ```console
 npm install proxymi
 ```
 
-Then you can use it in your code.
+Then you can import it in your code like any dependency.
 
 ```js
-require("proxymi");
+require("proxymi"); // CommonJS syntax
 ```
+or
+```js
+import "proxymi"; // ECMAScript module syntax
+```
+
+In TypeScript you can also import certain types where necessary.
+
+```ts
+import { SuperConstructorInvokeInfo } from "proxymi";
+```
+
+If you are not using TypeScript or don't need to explicitly reference any exported type, you only
+need to add a single import statement in a central location in your code.
 
 ## Usage
 
@@ -92,14 +105,14 @@ class Circle
 
 class ColoredObject
 {
-    static areSameColor(obj1, obj2) { return obj1.color === obj2.color; }
     constructor(color) { this.color = color; }
+    static areSameColor(obj1, obj2) { return obj1.color === obj2.color; }
     paint() { console.log(`painting in ${this.color}`); }
     toString() { return `${this.color} object`; }
 }
 
 class ColoredCircle
-extends classes(Circle, ColoredObject) // Base classes in a comma-separated list
+extends classes(Circle, ColoredObject) // Base classes as comma-separated params
 {
     // Add methods here.
 }
@@ -112,7 +125,7 @@ const c = new ColoredCircle();
 
 c.moveTo(42, 31);
 c.radius = 1;
-c.color = 'red';
+c.color = "red";
 console.log(c.centerX, c.centerY);  // 42, 31
 console.log(c.diameter);            // 2
 c.paint();                          // "painting in red"
@@ -189,14 +202,14 @@ If you prefer to keep parameter lists associated to their base classes explicitl
 order, there is an alternative syntax.
 
 ```js
-class ColoredCircle
+class GreenCircle
 extends classes(Circle, ColoredObject)
 {
-    constructor(centerX, centerY, radius, color)
+    constructor(centerX, centerY, radius)
     {
         super
         (
-            { super: ColoredObject, arguments: [color] },
+            { super: ColoredObject, arguments: ["green"] },
             { super: Circle, arguments: [centerX, centerY, radius] }
         );
     }
@@ -207,7 +220,7 @@ There is no need to specify an array of parameters for each base constructor.
 If the parameter arrays are omitted, the base constructors will still be invoked without parameters.
 
 ```js
-class ColoredCircle
+class WhiteUnitCircle
 extends classes(Circle, ColoredObject)
 {
     constructor()
@@ -216,7 +229,7 @@ extends classes(Circle, ColoredObject)
         this.centerX    = 0;
         this.centerY    = 0;
         this.radius     = 1;
-        this.color      = 'white';
+        this.color      = "white";
     }
 }
 ```
@@ -275,8 +288,8 @@ reflected in all derived classes. This is the magic of proxies.
 ```js
 const c = new ColoredCircle();
 
-Circle.prototype.foo = () => console.log("foo");
-c.foo(); // print "foo"
+Circle.prototype.sayHello = () => console.log("Hello!");
+c.sayHello(); // print "Hello!"
 ```
 
 ## Compatibility
