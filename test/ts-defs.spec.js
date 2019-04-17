@@ -5,6 +5,16 @@
 const testCases =
 [
     {
+        title: 'Exports and globals',
+        code:
+        `
+import { SuperConstructorInvokeInfo } from '.';
+
+void classes;
+void Object.getPrototypeListOf;
+        `,
+    },
+    {
         title: 'Ordinary multiple inheritance',
         code:
         `

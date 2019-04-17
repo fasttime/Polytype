@@ -83,12 +83,6 @@ declare namespace Proxymi
         new (...args: unknown[]): unknown;
     }
 
-    interface SuperConstructorInvokeInfo<T extends SuperConstructor>
-    {
-        super: T;
-        arguments?: ReadonlyConstructorParameters<T>;
-    }
-
     interface SuperConstructorSelector<T extends SuperConstructor>
     {
         /**
@@ -114,20 +108,38 @@ declare namespace Proxymi
     }
 }
 
-interface ObjectConstructor
+declare global
 {
-    /**
-     * Returns the list of prototypes of an object.
-     *
-     * @param o
-     * The object that references the prototypes.
-     */
-    getPrototypeListOf(o: any): any[];
+    /** Allows defining a derived class that inherits from multiple base classes. */
+    function classes
+    <T extends Proxymi.SuperConstructor[]>(...types: Proxymi.RequireNonEmpty<T>):
+    Proxymi.ClusteredConstructor<T>;
+
+    interface ObjectConstructor
+    {
+        /**
+         * Returns a list of prototypes of an object.
+         * * For regular objects with a non-null prototype, an array containing the prototype as its
+         * only element is returned.
+         * * For regular objects with a null prototype, an empty array is returned.
+         * * For Proxymi clustered objects, an array containing all zero or more prototypes of the
+         * object is returned.
+         * @param o
+         * The object that references the prototypes.
+         */
+        getPrototypeListOf(o: any): any[];
+    }
 }
 
-/**
- * Allows defining a derived class that inherits from multiple base classes.
- */
-declare function classes
-<T extends Proxymi.SuperConstructor[]>(...types: Proxymi.RequireNonEmpty<T>):
-Proxymi.ClusteredConstructor<T>;
+/** Specifies the arguments used to call a base class constructor. */
+export interface SuperConstructorInvokeInfo<T extends Proxymi.SuperConstructor>
+{
+    /** The base class being referenced. */
+    super: T;
+
+    /**
+     * An array specifying the arguments with which the base class constructor should be called.
+     * If undefined, the base class constructor will be called without any arguments.
+     */
+    arguments?: Proxymi.ReadonlyConstructorParameters<T>;
+}

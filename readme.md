@@ -3,8 +3,8 @@
 **Proxy-based multiple inheritance for JavaScript. Without mixins.**
 
 **Proxymi** is a library that adds support for dynamic
-[multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance) to JavaScript with a
-simple syntax.
+[multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance) to JavaScript and
+TypeScript with a simple syntax.
 “Dynamic” means that changes to base classes at runtime are reflected immediately in all derived
 classes just like programmers would expect when working with single prototype inheritance.
 
