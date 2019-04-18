@@ -45,12 +45,11 @@ extends classes(Circle, ColoredObject) // Base classes as comma-separated params
     }
     public paint(): void
     {
-        console.log("Using method paint of some base class");
-        super.paint();
+        super.paint(); // Using method paint from some base class
     }
     public toString(): string
     {
-        // Using method toString of base class Circle
+        // Using method toString from base class Circle
         const circleString = super.class(Circle).toString();
         return `${circleString} in ${this.color}`;
     }
@@ -117,4 +116,4 @@ console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
 
 type Hello<T> = T & { sayHello(): void; };
 (Circle.prototype as Hello<Circle>).sayHello = (): void => console.log("Hello!");
-(c as Hello<ColoredCircle>).sayHello(); // print "Hello!"
+(c as Hello<ColoredCircle>).sayHello(); // "Hello!"

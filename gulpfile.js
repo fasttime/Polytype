@@ -38,6 +38,18 @@ task
                 src: ['*.js', 'test/**/*.js'],
                 parserOptions: { ecmaVersion: 9 },
             },
+            {
+                src: 'example/**/*.{js,ts}',
+                globals: ['classes', 'console'],
+                parserOptions: { ecmaVersion: 7, project: 'tsconfig.json', sourceType: 'module' },
+                rules:
+                {
+                    'brace-style': 'off',
+                    'no-unused-vars':
+                    ['error', { varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$' }],
+                    'quotes': ['error', 'double'],
+                },
+            },
         );
         return stream;
     },
