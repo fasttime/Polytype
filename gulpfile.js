@@ -11,7 +11,7 @@ task
     {
         const del = require('del');
 
-        await del(['.nyc_output', 'coverage', 'lib/**/*.min.js']);
+        await del(['.nyc_output', 'coverage', 'lib/**/*.min.js', 'readme.md']);
     },
 );
 
@@ -97,4 +97,22 @@ task
     },
 );
 
-task('default', series(parallel('clean', 'lint'), 'test', 'minify'));
+task
+(
+    'make-toc',
+    async () =>
+    {
+        const Handlebars = require('handlebars');
+        const { readFile, writeFile } = require('fs').promises;
+        const toc = require('markdown-toc');
+
+        const input = String(await readFile('readme.md.hbs'));
+        const { content } = toc(input, { firsth1: false });
+        const template = Handlebars.compile(input, { noEscape: true });
+        const output = template({ toc: content });
+        const promise = writeFile('readme.md', output);
+        return promise;
+    },
+);
+
+task('default', series(parallel('clean', 'lint'), 'test', parallel('minify', 'make-toc')));
