@@ -26,7 +26,13 @@ class A
     a(): void
     { }
 
+    protected _a(): void
+    { }
+
     static sa(): void
+    { }
+
+    protected static _sa(): void
     { }
 }
 
@@ -38,7 +44,13 @@ class B
     b(): void
     { }
 
+    protected _b(): void
+    { }
+
     static sb(): void
+    { }
+
+    protected static _sb(): void
     { }
 }
 
@@ -93,8 +105,18 @@ class C extends classes(A, B)
         super.class(B).b();
     }
 
+    protected _c()
+    {
+        this._a();
+        this._b();
+        super._a();
+        super._b();
+    }
+
     static sc()
     {
+        C.sa();
+        C.sb();
         this.sa();
         this.sb();
         super.sa();
@@ -102,12 +124,16 @@ class C extends classes(A, B)
         super.class(A).sa();
         super.class(B).sb();
     }
+
+    protected static _sc()
+    {
+        super.class(A)._sa();
+        super.class(B)._sb();
+    }
 }
 
 void (C.prototype as A);
 void (C.prototype as B);
-void (C as typeof A);
-void (C as typeof B);
         `,
     },
     {
@@ -307,6 +333,32 @@ void
         expectedMessage:
         'Base constructor return type \'ClusteredPrototype<[typeof A | typeof B]>\' is not an ' +
         'object type or intersection of object types with statically known members.',
+    },
+    {
+        title: 'base class selector in nonstatic context out of class body',
+        code:
+        `
+class Test extends classes(Object)
+{ }
+
+(new Test).class(Object).valueOf();
+        `,
+        expectedMessage:
+        'Property \'class\' is protected and only accessible within class ' +
+        '\'SuperPrototypeSelector<T>\' and its subclasses.',
+    },
+    {
+        title: 'base class selector in static context out of class body',
+        code:
+        `
+class Test extends classes(Object)
+{ }
+
+Test.class(Object).create(null);
+        `,
+        expectedMessage:
+        'Property \'class\' is protected and only accessible within class ' +
+        '\'SuperConstructorSelector<T>\' and its subclasses.',
     },
 ];
 

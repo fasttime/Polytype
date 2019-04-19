@@ -83,7 +83,7 @@ declare namespace Proxymi
         new (...args: any): unknown;
     }
 
-    interface SuperConstructorSelector<T extends SuperConstructor>
+    class SuperConstructorSelector<T extends SuperConstructor>
     {
         /**
          * Allows accessing a property or calling a method in a specified base class, eliminating
@@ -92,10 +92,10 @@ declare namespace Proxymi
          * @param type
          * The referenced base class.
          */
-        class<U extends T>(type: U): U;
+        protected class<U extends T>(type: U): U;
     }
 
-    interface SuperPrototypeSelector<T extends SuperConstructor>
+    class SuperPrototypeSelector<T extends SuperConstructor>
     {
         /**
          * Allows accessing a property or calling a method in a specified base class, eliminating
@@ -104,7 +104,7 @@ declare namespace Proxymi
          * @param type
          * The referenced base class.
          */
-        class<U extends T>(type: U): InstanceType<U>;
+        protected class<U extends T>(type: U): InstanceType<U>;
     }
 }
 
