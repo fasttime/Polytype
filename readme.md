@@ -22,14 +22,15 @@ As JavaScript support in other browsers improves, Proxymi will start to run in t
   * [As a vanilla script](#as-a-vanilla-script)
   * [As a module](#as-a-module)
 - [Usage](#usage)
-  * [Inherit from more than one base class](#inherit-from-more-than-one-base-class)
-  * [Use methods and accessors from all base classes](#use-methods-and-accessors-from-all-base-classes)
-  * [`instanceof` works just like it should](#instanceof-works-just-like-it-should)
-  * [`isPrototypeOf` works fine, too](#isprototypeof-works-fine-too)
-  * [Invoke multiple base constructors](#invoke-multiple-base-constructors)
-  * [Use base class methods and accessors](#use-base-class-methods-and-accessors)
-  * [Static methods and accessors are inherited, too](#static-methods-and-accessors-are-inherited-too)
+  * [Inheriting from multiple base classes](#inheriting-from-multiple-base-classes)
+  * [Using methods and accessors from multiple base classes](#using-methods-and-accessors-from-multiple-base-classes)
+  * [Static methods and accessors](#static-methods-and-accessors)
+  * [Invoking multiple base constructors](#invoking-multiple-base-constructors)
+  * [`instanceof`](#instanceof)
+  * [`in`](#in)
+  * [`isPrototypeOf`](#isprototypeof)
   * [Dynamic base class changes](#dynamic-base-class-changes)
+- [TypeScript support](#typescript-support)
 - [Compatibility](#compatibility)
 
 ## Features
@@ -87,12 +88,12 @@ In TypeScript you can also import certain types where necessary.
 import { SuperConstructorInvokeInfo } from "proxymi";
 ```
 
-If you are not using TypeScript or don't need to explicitly reference any exported type, you only
+If you are not using TypeScript or don’t need to explicitly reference any exported types, you only
 need to add a single import statement in a central location in your code.
 
 ## Usage
 
-### Inherit from more than one base class
+### Inheriting from multiple base classes
 
 For example, declare a derived class `ColoredCircle` that inherits from both base classes `Circle`
 and `ColoredObject`.
@@ -133,7 +134,7 @@ extends classes(Circle, ColoredObject) // Base classes as comma-separated params
 }
 ```
 
-### Use methods and accessors from all base classes
+### Using methods and accessors from multiple base classes
 
 ```js
 const c = new ColoredCircle();
@@ -146,55 +147,52 @@ console.log(c.diameter);            // 2
 c.paint();                          // "painting in red"
 ```
 
-### `instanceof` works just like it should
+As usual, the keyword `super` invokes a base class method or accessor when used inside a derived
+class.
 
 ```js
-const c = new ColoredCircle();
-
-console.log(c instanceof Circle);           // true
-console.log(c instanceof ColoredObject);    // true
-console.log(c instanceof ColoredCircle);    // true
-console.log(c instanceof Object);           // true
-console.log(c instanceof Array);            // false
+class ColoredCircle
+extends classes(Circle, ColoredObject)
+{
+    paint()
+    {
+        super.paint(); // Using method paint from some base class
+    }
+}
 ```
 
-In pure JavaScript, the expression
+If different base classes include a method or accessor with the same name, the syntax
 ```js
-B.prototype instanceof A
+super.class(DirectBaseClass).methodOrAccessor
 ```
-determines if `A` is a base class of class `B`.
-
-Proxymi takes care that this test still works well with multiple inheritance.
-
-```js
-console.log(ColoredCircle.prototype instanceof Circle);         // true
-console.log(ColoredCircle.prototype instanceof ColoredObject);  // true
-console.log(ColoredCircle.prototype instanceof ColoredCircle);  // false
-console.log(ColoredCircle.prototype instanceof Object);         // true
-console.log(Circle.prototype instanceof ColoredObject);         // false
-```
-
-### `isPrototypeOf` works fine, too
+can be used to make the invocation unambiguous.
 
 ```js
-const c = new ColoredCircle();
-
-console.log(Circle.prototype.isPrototypeOf(c));         // true
-console.log(ColoredObject.prototype.isPrototypeOf(c));  // true
-console.log(ColoredCircle.prototype.isPrototypeOf(c));  // true
-console.log(Object.prototype.isPrototypeOf(c));         // true
-console.log(Array.prototype.isPrototypeOf(c));          // false
+class ColoredCircle
+extends classes(Circle, ColoredObject)
+{
+    toString()
+    {
+        // Using method toString from base class Circle
+        const circleString = super.class(Circle).toString();
+        return `${circleString} in ${this.color}`;
+    }
+}
 ```
+
+### Static methods and accessors
+
+Static methods and accessors are inherited, too.
 
 ```js
-console.log(Circle.isPrototypeOf(ColoredCircle));               // true
-console.log(ColoredObject.isPrototypeOf(ColoredCircle));        // true
-console.log(ColoredCircle.isPrototypeOf(ColoredCircle));        // false
-console.log(Object.isPrototypeOf(ColoredCircle));               // false
-console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
+ColoredCircle.areSameColor(c1, c2)
+```
+same as
+```js
+ColoredObject.areSameColor(c1, c2)
 ```
 
-### Invoke multiple base constructors
+### Invoking multiple base constructors
 
 Use arrays to group together parameters for each base constructor in the derived class constructor.
 
@@ -249,49 +247,75 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
-### Use base class methods and accessors
+### `instanceof`
 
-As usual, the keyword `super` invokes a base class method or accessor when used inside a derived
-class.
+The `instanceof` operator works just like it should.
 
 ```js
-class ColoredCircle
-extends classes(Circle, ColoredObject)
-{
-    paint()
-    {
-        super.paint(); // Using method paint from some base class
-    }
-}
+const c = new ColoredCircle();
+
+console.log(c instanceof Circle);           // true
+console.log(c instanceof ColoredObject);    // true
+console.log(c instanceof ColoredCircle);    // true
+console.log(c instanceof Object);           // true
+console.log(c instanceof Array);            // false
 ```
 
-If different base classes include a method or accessor with the same name, the syntax
+In pure JavaScript, the expression
 ```js
-super.class(DirectBaseClass).methodOrAccessor
+B.prototype instanceof A
 ```
-can be used to make the invocation unambiguous.
+determines if `A` is a base class of class `B`.
+
+Proxymi takes care that this test still works well with multiple inheritance.
 
 ```js
-class ColoredCircle
-extends classes(Circle, ColoredObject)
-{
-    toString()
-    {
-        // Using method toString from base class Circle
-        const circleString = super.class(Circle).toString();
-        return `${circleString} in ${this.color}`;
-    }
-}
+console.log(ColoredCircle.prototype instanceof Circle);         // true
+console.log(ColoredCircle.prototype instanceof ColoredObject);  // true
+console.log(ColoredCircle.prototype instanceof ColoredCircle);  // false
+console.log(ColoredCircle.prototype instanceof Object);         // true
+console.log(Circle.prototype instanceof ColoredObject);         // false
 ```
 
-### Static methods and accessors are inherited, too
+### `in`
+
+The `in` operator determines whether a property is in an object or in its prototype chain.
+In the case of multiple inheritance, the prototype “chain” looks more like a directed graph, yet the
+function of the `in` operator is the same.
 
 ```js
-ColoredCircle.areSameColor(c1, c2)
+const c = new ColoredCircle();
+
+console.log("moveTo" in c); // true
+console.log("paint" in c);  // true
 ```
-same as
+
 ```js
-ColoredObject.areSameColor(c1, c2)
+console.log("areSameColor" in ColoredCircle);   // true
+console.log("areSameColor" in Circle);          // false
+console.log("areSameColor" in ColoredObject);   // true
+```
+
+### `isPrototypeOf`
+
+`isPrototypeOf` works fine, too.
+
+```js
+const c = new ColoredCircle();
+
+console.log(Circle.prototype.isPrototypeOf(c));         // true
+console.log(ColoredObject.prototype.isPrototypeOf(c));  // true
+console.log(ColoredCircle.prototype.isPrototypeOf(c));  // true
+console.log(Object.prototype.isPrototypeOf(c));         // true
+console.log(Array.prototype.isPrototypeOf(c));          // false
+```
+
+```js
+console.log(Circle.isPrototypeOf(ColoredCircle));               // true
+console.log(ColoredObject.isPrototypeOf(ColoredCircle));        // true
+console.log(ColoredCircle.isPrototypeOf(ColoredCircle));        // false
+console.log(Object.isPrototypeOf(ColoredCircle));               // false
+console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
 ```
 
 ### Dynamic base class changes
@@ -306,6 +330,13 @@ Circle.prototype.sayHello = () => console.log("Hello!");
 c.sayHello(); // "Hello!"
 ```
 
+## TypeScript support
+
+Proxymi has built-in TypeScript support: you can take advantage of type checking while working with
+multiple inheritance without installing any additional packages.
+If you are using an IDE that supports TypeScript code completion like Visual Studio Code, you will
+get multiple inheritance sensitive suggestions as you type.
+
 ## Compatibility
 
 Proxymi was successfully tested in the following browsers / JavaScript engines.
@@ -315,6 +346,8 @@ Proxymi was successfully tested in the following browsers / JavaScript engines.
 * Safari 11 *(Partial support. See notes below.)*
 * Opera 41+
 * Node.js 8+
+
+The minimum supported TypeScript version is 3.4.
 
 Because of poor ECMAScript compliance, Safari accepts non-constructor functions (such as arrow
 functions, generators, etc.) as arguments to

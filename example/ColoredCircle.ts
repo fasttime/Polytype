@@ -1,4 +1,4 @@
-import "proxymi";
+import "..";
 
 class Circle
 {
@@ -101,6 +101,13 @@ console.log(ColoredCircle.prototype instanceof ColoredObject);  // true
 console.log(ColoredCircle.prototype instanceof ColoredCircle);  // false
 console.log(ColoredCircle.prototype instanceof Object);         // true
 console.log(Circle.prototype instanceof ColoredObject);         // false
+
+console.log("moveTo" in c); // true
+console.log("paint" in c);  // true
+
+console.log("areSameColor" in ColoredCircle);   // true
+console.log("areSameColor" in Circle);          // false
+console.log("areSameColor" in ColoredObject);   // true
 
 console.log(Circle.prototype.isPrototypeOf(c));         // true
 console.log(ColoredObject.prototype.isPrototypeOf(c));  // true
