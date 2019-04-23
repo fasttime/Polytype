@@ -52,7 +52,7 @@ declare namespace Proxymi
         new (...args: MapTupleTypesToOptionalReadonlyConstructorParameters<T>):
         ClusteredPrototype<T>;
 
-        new (...args: UnionOf<MapTupleTypesToSuperConstructorInvokeInfo<T>>[]):
+        new (...args: UnionOf<MapTupleTypesToReadonlySuperConstructorInvokeInfo<T>>[]):
         ClusteredPrototype<T>;
     }
     &
@@ -62,8 +62,8 @@ declare namespace Proxymi
         Enrich<SuperConstructorSelector<UnionOf<T>>, IntersectionOf<T>>
         :
         EnrichTimes<
-            SuperConstructorSelector<UnionOf<T>>,
-            T[0], T[1], T[2], T[3], T[4], T[5], T[6], T[7], T[8], T[9]
+        SuperConstructorSelector<UnionOf<T>>,
+        T[0], T[1], T[2], T[3], T[4], T[5], T[6], T[7], T[8], T[9]
         >
     );
 
@@ -74,8 +74,8 @@ declare namespace Proxymi
     type MapTupleTypesToOptionalReadonlyConstructorParameters<T extends SuperConstructor[]> =
     { [key in keyof T]?: ReadonlyConstructorParameters<AsSuperConstructor<T[key]>>; };
 
-    type MapTupleTypesToSuperConstructorInvokeInfo<T extends SuperConstructor[]> =
-    { [key in keyof T]: SuperConstructorInvokeInfo<AsSuperConstructor<T[key]>>; };
+    type MapTupleTypesToReadonlySuperConstructorInvokeInfo<T extends SuperConstructor[]> =
+    { [key in keyof T]: Readonly<SuperConstructorInvokeInfo<AsSuperConstructor<T[key]>>>; };
 
     interface SuperConstructor
     {

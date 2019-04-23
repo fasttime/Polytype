@@ -23,8 +23,8 @@ As JavaScript support in other browsers improves, Proxymi will start to run in t
   * [As a module](#as-a-module)
 - [Usage](#usage)
   * [Inheriting from multiple base classes](#inheriting-from-multiple-base-classes)
-  * [Using methods and accessors from multiple base classes](#using-methods-and-accessors-from-multiple-base-classes)
-  * [Static methods and accessors](#static-methods-and-accessors)
+  * [Using methods and properties from multiple base classes](#using-methods-and-properties-from-multiple-base-classes)
+  * [Static methods and properties](#static-methods-and-properties)
   * [Invoking multiple base constructors](#invoking-multiple-base-constructors)
   * [`instanceof`](#instanceof)
   * [`in`](#in)
@@ -134,7 +134,7 @@ extends classes(Circle, ColoredObject) // Base classes as comma-separated params
 }
 ```
 
-### Using methods and accessors from multiple base classes
+### Using methods and properties from multiple base classes
 
 ```js
 const c = new ColoredCircle();
@@ -147,8 +147,8 @@ console.log(c.diameter);            // 2
 c.paint();                          // "painting in red"
 ```
 
-As usual, the keyword `super` invokes a base class method or accessor when used inside a derived
-class.
+As usual, the keyword `super` invokes a base class method or property accessor when used inside a
+derived class.
 
 ```js
 class ColoredCircle
@@ -161,11 +161,11 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
-If different base classes include a method or accessor with the same name, the syntax
+If different base classes include a member with the same name, the syntax
 ```js
-super.class(DirectBaseClass).methodOrAccessor
+super.class(DirectBaseClass).member
 ```
-can be used to make the invocation unambiguous.
+can be used to make the member access unambiguous.
 
 ```js
 class ColoredCircle
@@ -180,9 +180,13 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
-### Static methods and accessors
+**Note:** In TypeScript, the syntax `super.class(DirectBaseClass).member` cannot be used to access
+protected instance members, so it is currently not possible to disambiguate between protected
+instance members having the same name in different base classes.
 
-Static methods and accessors are inherited, too.
+### Static methods and properties
+
+Static methods and property accessors are inherited, too.
 
 ```js
 ColoredCircle.areSameColor(c1, c2)
@@ -336,6 +340,8 @@ Proxymi has built-in TypeScript support: you can take advantage of type checking
 multiple inheritance without installing any additional packages.
 If you are using an IDE that supports TypeScript code completion like Visual Studio Code, you will
 get multiple inheritance sensitive suggestions as you type.
+A TypeScript version of the `ColoredCircle` sample code above can be found in
+[ColoredCircle.ts](example/ColoredCircle.ts) in the example folder.
 
 ## Compatibility
 
