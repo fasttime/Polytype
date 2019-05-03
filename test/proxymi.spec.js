@@ -738,25 +738,26 @@
                     'has expected own properties',
                     () =>
                     {
-                        const actualDescriptors = Object.getOwnPropertyDescriptors(classes);
-                        const expectedDescriptors =
-                        {
-                            length:
+                        assert.hasOwnPropertyDescriptors
+                        (
+                            classes,
                             {
-                                configurable: true,
-                                enumerable: false,
-                                value: 0,
-                                writable: false,
+                                length:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: 0,
+                                    writable: false,
+                                },
+                                name:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: 'classes',
+                                    writable: false,
+                                },
                             },
-                            name:
-                            {
-                                configurable: true,
-                                enumerable: false,
-                                value: 'classes',
-                                writable: false,
-                            },
-                        };
-                        assert.deepEqual(actualDescriptors, expectedDescriptors);
+                        );
                         assert.isEmpty(Object.getOwnPropertySymbols(classes));
                     },
                 );
@@ -930,25 +931,26 @@
                     {
                         const constructor = classes(Function());
                         const { prototype } = constructor;
-                        const actualDescriptors = Object.getOwnPropertyDescriptors(prototype);
-                        const expectedDescriptors =
-                        {
-                            class:
+                        assert.hasOwnPropertyDescriptors
+                        (
+                            prototype,
                             {
-                                configurable: false,
-                                enumerable: false,
-                                value: prototype.class,
-                                writable: false,
+                                class:
+                                {
+                                    configurable: false,
+                                    enumerable: false,
+                                    value: prototype.class,
+                                    writable: false,
+                                },
+                                constructor:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: constructor,
+                                    writable: true,
+                                },
                             },
-                            constructor:
-                            {
-                                configurable: true,
-                                enumerable: false,
-                                value: constructor,
-                                writable: true,
-                            },
-                        };
-                        assert.deepEqual(actualDescriptors, expectedDescriptors);
+                        );
                         assert.isEmpty(Object.getOwnPropertySymbols(prototype));
                     },
                 );
@@ -972,39 +974,41 @@
                     () =>
                     {
                         const constructor = classes(Function());
-                        const actualDescriptors = Object.getOwnPropertyDescriptors(constructor);
-                        const expectedDescriptors =
-                        {
-                            class:
+                        const { get } = Object.getOwnPropertyDescriptor(constructor, 'name');
+                        assert.hasOwnPropertyDescriptors
+                        (
+                            constructor,
                             {
-                                configurable: false,
-                                enumerable: false,
-                                value: constructor.class,
-                                writable: false,
+                                class:
+                                {
+                                    configurable: false,
+                                    enumerable: false,
+                                    value: constructor.class,
+                                    writable: false,
+                                },
+                                length:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: 0,
+                                    writable: false,
+                                },
+                                name:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    get,
+                                    set: undefined,
+                                },
+                                prototype:
+                                {
+                                    configurable: false,
+                                    enumerable: false,
+                                    value: { },
+                                    writable: false,
+                                },
                             },
-                            length:
-                            {
-                                configurable: true,
-                                enumerable: false,
-                                value: 0,
-                                writable: false,
-                            },
-                            name:
-                            {
-                                configurable: true,
-                                enumerable: false,
-                                get: actualDescriptors.name.get,
-                                set: undefined,
-                            },
-                            prototype:
-                            {
-                                configurable: false,
-                                enumerable: false,
-                                value: { },
-                                writable: false,
-                            },
-                        };
-                        assert.deepEqual(actualDescriptors, expectedDescriptors);
+                        );
                         assert.isEmpty(Object.getOwnPropertySymbols(constructor));
                     },
                 );
@@ -1069,14 +1073,32 @@
                     {
                         it
                         (
-                            'has name \'class\'',
+                            'has expected own properties',
                             () =>
-                            assert.strictEqual(classes(Function()).prototype.class.name, 'class'),
-                        );
-                        it
-                        (
-                            'has length 1',
-                            () => assert.strictEqual(classes(Function()).prototype.class.length, 1),
+                            {
+                                const classValue = classes(Function()).prototype.class;
+                                assert.hasOwnPropertyDescriptors
+                                (
+                                    classValue,
+                                    {
+                                        length:
+                                        {
+                                            configurable: true,
+                                            enumerable: false,
+                                            value: 1,
+                                            writable: false,
+                                        },
+                                        name:
+                                        {
+                                            configurable: true,
+                                            enumerable: false,
+                                            value: 'class',
+                                            writable: false,
+                                        },
+                                    },
+                                );
+                                assert.isEmpty(Object.getOwnPropertySymbols(classValue));
+                            },
                         );
                         it
                         (
@@ -1171,13 +1193,32 @@
                     {
                         it
                         (
-                            'has name \'class\'',
-                            () => assert.strictEqual(classes(Function()).class.name, 'class'),
-                        );
-                        it
-                        (
-                            'has length 1',
-                            () => assert.strictEqual(classes(Function()).class.length, 1),
+                            'has expected own properties',
+                            () =>
+                            {
+                                const classValue = classes(Function()).class;
+                                assert.hasOwnPropertyDescriptors
+                                (
+                                    classValue,
+                                    {
+                                        length:
+                                        {
+                                            configurable: true,
+                                            enumerable: false,
+                                            value: 1,
+                                            writable: false,
+                                        },
+                                        name:
+                                        {
+                                            configurable: true,
+                                            enumerable: false,
+                                            value: 'class',
+                                            writable: false,
+                                        },
+                                    },
+                                );
+                                assert.isEmpty(Object.getOwnPropertySymbols(classValue));
+                            },
                         );
                         it
                         (
@@ -1531,10 +1572,32 @@
 
                 it
                 (
-                    'has name \'getPrototypeListOf\'',
-                    () => assert.strictEqual(Object.getPrototypeListOf.name, 'getPrototypeListOf'),
+                    'has expected own properties',
+                    () =>
+                    {
+                        assert.hasOwnPropertyDescriptors
+                        (
+                            Object.getPrototypeListOf,
+                            {
+                                length:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: 1,
+                                    writable: false,
+                                },
+                                name:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: 'getPrototypeListOf',
+                                    writable: false,
+                                },
+                            },
+                        );
+                        assert.isEmpty(Object.getOwnPropertySymbols(Object.getPrototypeListOf));
+                    },
                 );
-                it('has length 1', () => assert.strictEqual(Object.getPrototypeListOf.length, 1));
                 it
                 (
                     'cannot be called with new',
@@ -1646,13 +1709,32 @@
 
                 it
                 (
-                    'has name \'isPrototypeOf\'',
-                    () => assert.strictEqual(Object.prototype.isPrototypeOf.name, 'isPrototypeOf'),
-                );
-                it
-                (
-                    'has length 1',
-                    () => assert.strictEqual(Object.prototype.isPrototypeOf.length, 1),
+                    'has expected own properties',
+                    () =>
+                    {
+                        assert.hasOwnPropertyDescriptors
+                        (
+                            Object.prototype.isPrototypeOf,
+                            {
+                                length:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: 1,
+                                    writable: false,
+                                },
+                                name:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: 'isPrototypeOf',
+                                    writable: false,
+                                },
+                            },
+                        );
+                        assert.isEmpty
+                        (Object.getOwnPropertySymbols(Object.prototype.isPrototypeOf));
+                    },
                 );
                 it
                 (
@@ -1774,11 +1856,32 @@
 
                 it
                 (
-                    'has name \'[Symbol.hasInstance]\'',
+                    'has expected own properties',
                     () =>
-                    assert.strictEqual(Object[Symbol.hasInstance].name, '[Symbol.hasInstance]'),
+                    {
+                        assert.hasOwnPropertyDescriptors
+                        (
+                            Object[Symbol.hasInstance],
+                            {
+                                length:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: 1,
+                                    writable: false,
+                                },
+                                name:
+                                {
+                                    configurable: true,
+                                    enumerable: false,
+                                    value: '[Symbol.hasInstance]',
+                                    writable: false,
+                                },
+                            },
+                        );
+                        assert.isEmpty(Object.getOwnPropertySymbols(Object[Symbol.hasInstance]));
+                    },
                 );
-                it('has length 1', () => assert.strictEqual(Object[Symbol.hasInstance].length, 1));
                 it
                 (
                     'cannot be called with new',
@@ -2058,6 +2161,7 @@
     {
         const PROXYMI_PATH = '../lib/proxymi.js';
 
+        let Assertion;
         let chai;
         if (typeof module !== 'undefined')
         {
@@ -2098,7 +2202,18 @@
                 return promise;
             };
         }
-        ({ assert } = chai);
+        ({ Assertion, assert } = chai);
+        assert.hasOwnPropertyDescriptors =
+        (obj, expDescs, msg) =>
+        {
+            const keys =
+            [...Object.getOwnPropertyNames(expDescs), ...Object.getOwnPropertySymbols(expDescs)];
+            for (const key of keys)
+            {
+                new Assertion(obj, msg, assert.hasOwnPropertyDescriptors, true)
+                .ownPropertyDescriptor(key, expDescs[key]);
+            }
+        };
     }
     loadProxymi();
     init();

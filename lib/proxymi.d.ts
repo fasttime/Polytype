@@ -90,6 +90,7 @@ declare namespace Proxymi
          * ambiguity when multiple base classes share a property with the same key.
          *
          * @param type
+         *
          * The referenced base class.
          */
         protected class<U extends T>(type: U): U;
@@ -102,6 +103,7 @@ declare namespace Proxymi
          * ambiguity when multiple base classes share a property with the same key.
          *
          * @param type
+         *
          * The referenced base class.
          */
         protected class<U extends T>(type: U): InstanceType<U>;
@@ -124,7 +126,9 @@ declare global
          * * For regular objects with a null prototype, an empty array is returned.
          * * For Proxymi clustered objects, an array containing all zero or more prototypes of the
          * object is returned.
+         *
          * @param o
+         *
          * The object that references the prototypes.
          */
         getPrototypeListOf(o: any): any[];
