@@ -44,7 +44,7 @@
     {
         describe
         (
-            'Proxymi',
+            'Polytype',
             () =>
             {
                 it
@@ -53,7 +53,7 @@
                     async () =>
                     {
                         const expectedClasses = classes;
-                        await loadProxymi();
+                        await loadPolytype();
                         assert.strictEqual(classes, expectedClasses);
                     },
                 );
@@ -2157,9 +2157,9 @@
     }
 
     let assert;
-    let loadProxymi;
+    let loadPolytype;
     {
-        const PROXYMI_PATH = '../lib/proxymi.js';
+        const POLYTYPE_PATH = '../lib/polytype.js';
 
         let Assertion;
         let chai;
@@ -2167,10 +2167,10 @@
         {
             chai = require('chai');
 
-            loadProxymi =
+            loadPolytype =
             () =>
             {
-                const path = require.resolve(PROXYMI_PATH);
+                const path = require.resolve(POLYTYPE_PATH);
                 delete require.cache[path];
                 require(path);
             };
@@ -2178,7 +2178,7 @@
         else
         {
             ({ chai } = self);
-            loadProxymi =
+            loadPolytype =
             () =>
             {
                 const promise =
@@ -2187,14 +2187,14 @@
                     resolve =>
                     {
                         {
-                            const script = document.querySelector(`script[src="${PROXYMI_PATH}"]`);
+                            const script = document.querySelector(`script[src="${POLYTYPE_PATH}"]`);
                             if (script)
                                 script.parentNode.removeChild(script);
                         }
                         {
                             const script = document.createElement('script');
                             script.onload = resolve;
-                            script.src = PROXYMI_PATH;
+                            script.src = POLYTYPE_PATH;
                             document.head.appendChild(script);
                         }
                     },
@@ -2215,7 +2215,7 @@
             }
         };
     }
-    loadProxymi();
+    loadPolytype();
     init();
 }
 )();

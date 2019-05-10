@@ -1,21 +1,21 @@
-# Proxymi · [![npm version][npm badge]][npm url]
+# Polytype · [![npm version][npm badge]][npm url]
 
-**Proxy-based multiple inheritance for JavaScript and TypeScript. Without mixins.**
+**Dynamic multiple inheritance for JavaScript and TypeScript. Without mixins.**
 
-**Proxymi** is a library that adds support for dynamic
+**Polytype** is a library that adds support for dynamic
 [multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance) to JavaScript and
 TypeScript with a simple syntax.
 “Dynamic” means that changes to base classes at runtime are reflected immediately in all derived
 classes just like programmers would expect when working with single prototype inheritance.
 
-Proxymi uses
+Polytype uses
 [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
 along with other relatively new language features to provide multiple inheritance.
 Some of these features are not yet well supported in all browsers.
-As of today, Proxymi runs in **current versions of Chrome, Firefox,
+As of today, Polytype runs in **current versions of Chrome, Firefox,
 Safari<sup>[[*notes*](#compatibility "Safari is only partially supported. See the Compatibility
 section for details.")]</sup>, Opera and in Node.js**.
-As JavaScript support in other browsers improves, Proxymi will start to run in those browsers, too.
+As JavaScript support in other browsers improves, Polytype will start to run in those browsers, too.
 
 {{toc}}
 
@@ -29,49 +29,52 @@ As JavaScript support in other browsers improves, Proxymi will start to run in t
   * constructors
   * methods, getters and setters – both static and nonstatic
   * value properties on base classes and base instance prototypes
+  * public [class fields](https://github.com/tc39/proposal-class-fields) (in engines that support
+    them)
 * `in`, `instanceof` and `isPrototypeOf` integration
 
 ## Setup Instructions
 
 ### As a vanilla script
 
-In an HTML-based application Proxymi can be embedded as a plain JavaScript library.
-Just download [proxymi.js](https://raw.githubusercontent.com/fasttime/Proxymi/master/lib/proxymi.js)
-or [proxymi.min.js](https://raw.githubusercontent.com/fasttime/Proxymi/master/lib/proxymi.min.js)
+In an HTML-based application Polytype can be embedded as a plain JavaScript library.
+Just download
+[polytype.js](https://raw.githubusercontent.com/fasttime/Polytype/master/lib/polytype.js) or
+[polytype.min.js](https://raw.githubusercontent.com/fasttime/Polytype/master/lib/polytype.min.js)
 from GitHub and include it in your HTML file.
 
 ```html
-<script src="proxymi.min.js"></script>
+<script src="polytype.min.js"></script>
 ```
 
 Alternatively, you can hotlink the current stable version using a CDN of your choice.
 
 ```html
-<script src="https://gitcdn.xyz/repo/fasttime/Proxymi/master/lib/proxymi.min.js"></script>
+<script src="https://gitcdn.xyz/repo/fasttime/Polytype/master/lib/polytype.min.js"></script>
 ```
 
 ### As a module
 
-If you are using Node.js, you can install Proxymi with [npm](https://www.npmjs.org).
+If you are using Node.js, you can install Polytype with [npm](https://www.npmjs.org).
 
 ```console
-npm install proxymi
+npm install polytype
 ```
 
 Then you can import it in your code like any dependency.
 
 ```js
-require("proxymi"); // CommonJS syntax
+require("polytype"); // CommonJS syntax
 ```
 or
 ```js
-import "proxymi"; // ECMAScript module syntax
+import "polytype"; // ECMAScript module syntax
 ```
 
 In TypeScript you can also import certain types where necessary.
 
 ```ts
-import { SuperConstructorInvokeInfo } from "proxymi";
+import { SuperConstructorInvokeInfo } from "polytype";
 ```
 
 If you are not using TypeScript or don’t need to explicitly reference any exported types, you only
@@ -257,7 +260,7 @@ B.prototype instanceof A
 ```
 determines if `A` is a base class of class `B`.
 
-Proxymi takes care that this test still works well with multiple inheritance.
+Polytype takes care that this test still works well with multiple inheritance.
 
 ```js
 console.log(ColoredCircle.prototype instanceof Circle);         // true
@@ -311,7 +314,8 @@ console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
 ### Dynamic base class changes
 
 If a property in a base class is added, removed or modified at runtime, the changes are immediately
-reflected in all derived classes. This is the magic of proxies.
+reflected in all derived classes.
+This is the magic of proxies.
 
 ```js
 const c = new ColoredCircle();
@@ -322,7 +326,7 @@ c.sayHello(); // "Hello!"
 
 ## TypeScript support
 
-Proxymi has built-in TypeScript support: you can take advantage of type checking while working with
+Polytype has built-in TypeScript support: you can take advantage of type checking while working with
 multiple inheritance without installing any additional packages.
 If you are using an IDE that supports TypeScript code completion like Visual Studio Code, you will
 get multiple inheritance sensitive suggestions as you type.
@@ -331,7 +335,7 @@ A TypeScript version of the `ColoredCircle` sample code above can be found in
 
 ## Compatibility
 
-Proxymi was successfully tested in the following browsers / JavaScript engines.
+Polytype was successfully tested in the following browsers / JavaScript engines.
 
 * Chrome 54+
 * Firefox 51+
@@ -346,13 +350,13 @@ functions, generators, etc.) as arguments to
 `classes`,<sup>[[*issue*](https://bugs.webkit.org/show_bug.cgi?id=193057)]</sup> although it does
 not allow instantiating classes derived from such functions.
 Also, Safari does not throw a `TypeError` when attempting to assign to a read-only property of a
-Proxymi class or object in strict
+Polytype class or object in strict
 mode.<sup>[[*issue*](https://bugs.webkit.org/show_bug.cgi?id=177398)]</sup>
 
 In the current version of Edge, the JavaScript engine Chakra has
 [a serious bug](https://github.com/Microsoft/ChakraCore/issues/5883) that can produce incorrect
-results when the `instanceof` operator is used with bound functions after Proxymi has been loaded.
-For this reason it is recommended not to use Proxymi in Edge as long as this issue persists.
+results when the `instanceof` operator is used with bound functions after Polytype has been loaded.
+For this reason it is recommended not to use Polytype in Edge as long as this issue persists.
 
-[npm badge]: https://badge.fury.io/js/proxymi.svg
-[npm url]: https://www.npmjs.com/package/proxymi
+[npm badge]: https://badge.fury.io/js/polytype.svg
+[npm url]: https://www.npmjs.com/package/polytype

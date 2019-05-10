@@ -26,12 +26,12 @@ task
         lint
         (
             {
-                src: 'lib/proxymi.js',
+                src: 'lib/polytype.js',
                 globals: ['global', 'self'],
                 parserOptions: { ecmaVersion: 7 },
             },
             {
-                src: 'lib/proxymi.d.ts',
+                src: 'lib/polytype.d.ts',
                 parserOptions: { project: 'tsconfig.json' },
             },
             {
@@ -89,7 +89,7 @@ task
             output: { comments: (node, comment) => comment.pos === 0 },
         };
         const stream =
-        src('lib/proxymi.js')
+        src('lib/polytype.js')
         .pipe(terser(minifyOpts))
         .pipe(rename({ extname: '.min.js' }))
         .pipe(dest('lib'));

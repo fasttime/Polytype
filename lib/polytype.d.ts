@@ -1,4 +1,4 @@
-declare namespace Proxymi
+declare namespace Polytype
 {
     // Helpers /////////////////////////////////////////////////////////////////////////////////////
 
@@ -114,8 +114,8 @@ declare global
 {
     /** Allows defining a derived class that inherits from multiple base classes. */
     function classes
-    <T extends Proxymi.SuperConstructor[]>(...types: Proxymi.RequireNonEmpty<T>):
-    Proxymi.ClusteredConstructor<T>;
+    <T extends Polytype.SuperConstructor[]>(...types: Polytype.RequireNonEmpty<T>):
+    Polytype.ClusteredConstructor<T>;
 
     interface ObjectConstructor
     {
@@ -124,7 +124,7 @@ declare global
          * * For regular objects with a non-null prototype, an array containing the prototype as its
          * only element is returned.
          * * For regular objects with a null prototype, an empty array is returned.
-         * * For Proxymi clustered objects, an array containing all zero or more prototypes of the
+         * * For Polytype clustered objects, an array containing all zero or more prototypes of the
          * object is returned.
          *
          * @param o
@@ -136,7 +136,7 @@ declare global
 }
 
 /** Specifies the arguments used to call a base class constructor. */
-export interface SuperConstructorInvokeInfo<T extends Proxymi.SuperConstructor>
+export interface SuperConstructorInvokeInfo<T extends Polytype.SuperConstructor>
 {
     /** The base class being referenced. */
     super: T;
@@ -145,5 +145,5 @@ export interface SuperConstructorInvokeInfo<T extends Proxymi.SuperConstructor>
      * An array specifying the arguments with which the base class constructor should be called.
      * If undefined, the base class constructor will be called without any arguments.
      */
-    arguments?: Proxymi.ReadonlyConstructorParameters<T>;
+    arguments?: Polytype.ReadonlyConstructorParameters<T>;
 }

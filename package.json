@@ -1,7 +1,7 @@
 {
-  "name": "proxymi",
-  "version": "0.9.0",
-  "description": "Proxy-based multiple inheritance for JavaScript and TypeScript. Without mixins.",
+  "name": "polytype",
+  "version": "0.0.0",
+  "description": "Dynamic multiple inheritance for JavaScript and TypeScript. Without mixins.",
   "keywords": [
     "class",
     "classes",
@@ -12,15 +12,15 @@
     "proxies",
     "proxy"
   ],
-  "homepage": "https://github.com/fasttime/proxymi",
-  "bugs": "https://github.com/fasttime/proxymi/issues",
+  "homepage": "https://github.com/fasttime/polytype",
+  "bugs": "https://github.com/fasttime/polytype/issues",
   "license": "ISC",
   "author": "Francesco Trotta <ft@fasttime.org> (https://github.com/fasttime)",
   "files": [
     "lib/*.{js,ts}"
   ],
-  "main": "lib/proxymi.js",
-  "types": "lib/proxymi.d.ts",
+  "main": "lib/polytype.js",
+  "types": "lib/polytype.d.ts",
   "directories": {
     "example": "example",
     "lib": "lib",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fasttime/proxymi.git"
+    "url": "https://github.com/fasttime/polytype.git"
   },
   "scripts": {
     "build": "npm install && gulp"
@@ -36,15 +36,15 @@
   "devDependencies": {
     "chai": "~4.2.0",
     "del": "~4.1.1",
-    "gulp": "~4.0.1",
-    "gulp-fasttime-lint": "~0.9.2",
+    "gulp": "~4.0.2",
+    "gulp-fasttime-lint": "~0.10.0",
     "gulp-rename": "~1.4.0",
     "gulp-terser": "~1.1.7",
     "handlebars": "~4.1.2",
     "markdown-toc": "~1.2.0",
     "mocha": "~6.1.4",
     "mocha-bar": "~0.0.3",
-    "nyc": "~14.1.0",
+    "nyc": "~14.1.1",
     "typescript": "~3.4.5"
   },
   "engines": {
