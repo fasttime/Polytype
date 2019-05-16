@@ -22,8 +22,8 @@
   "main": "lib/polytype.js",
   "types": "lib/polytype.d.ts",
   "directories": {
-    "example": "example",
     "lib": "lib",
+    "example": "example",
     "test": "test"
   },
   "repository": {
@@ -37,7 +37,7 @@
     "chai": "~4.2.0",
     "del": "~4.1.1",
     "gulp": "~4.0.2",
-    "gulp-fasttime-lint": "~0.10.0",
+    "gulp-fasttime-lint": "~0.10.1",
     "gulp-rename": "~1.4.0",
     "gulp-terser": "~1.1.7",
     "handlebars": "~4.1.2",

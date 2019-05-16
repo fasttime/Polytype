@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global BigInt, classes, document, require, self */
+/* global BigInt, classes, document, global, require, self */
 
 'use strict';
 
@@ -47,14 +47,71 @@
             'Polytype',
             () =>
             {
-                it
+                describe
                 (
                     'is loaded only once',
-                    async () =>
+                    () =>
                     {
-                        const expectedClasses = classes;
-                        await loadPolytype();
-                        assert.strictEqual(classes, expectedClasses);
+                        const globalThis = typeof self === 'undefined' ? global : self;
+                        const descriptorMapObj =
+                        {
+                            self: Object.getOwnPropertyDescriptor(globalThis, 'self'),
+                            global: Object.getOwnPropertyDescriptor(globalThis, 'global'),
+                        };
+
+                        afterEach
+                        (
+                            () =>
+                            {
+                                for (const [key, descriptor] of Object.entries(descriptorMapObj))
+                                {
+                                    if (descriptor)
+                                        Object.defineProperty(globalThis, key, descriptor);
+                                    else
+                                        delete globalThis.key;
+                                }
+                            },
+                        );
+
+                        it
+                        (
+                            'in self',
+                            async () =>
+                            {
+                                const expectedClasses = Function();
+                                const self = { classes: expectedClasses };
+                                Object.defineProperties
+                                (
+                                    globalThis,
+                                    {
+                                        self: { value: self, configurable: true },
+                                        global: { value: undefined, configurable: true },
+                                    },
+                                );
+                                await loadPolytype();
+                                assert.strictEqual(self.classes, expectedClasses);
+                            },
+                        );
+
+                        it
+                        (
+                            'in global',
+                            async () =>
+                            {
+                                const expectedClasses = Function();
+                                const global = { classes: expectedClasses };
+                                Object.defineProperties
+                                (
+                                    globalThis,
+                                    {
+                                        self: { value: undefined, configurable: true },
+                                        global: { value: global, configurable: true },
+                                    },
+                                );
+                                await loadPolytype();
+                                assert.strictEqual(global.classes, expectedClasses);
+                            },
+                        );
                     },
                 );
 
