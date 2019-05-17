@@ -58,7 +58,6 @@
                             self: Object.getOwnPropertyDescriptor(globalThis, 'self'),
                             global: Object.getOwnPropertyDescriptor(globalThis, 'global'),
                         };
-
                         afterEach
                         (
                             () =>
@@ -72,7 +71,6 @@
                                 }
                             },
                         );
-
                         it
                         (
                             'in self',
@@ -92,7 +90,6 @@
                                 assert.strictEqual(self.classes, expectedClasses);
                             },
                         );
-
                         it
                         (
                             'in global',
@@ -452,7 +449,6 @@
                     {
                         let bar;
                         let foo;
-
                         beforeEach
                         (
                             () =>
@@ -484,9 +480,7 @@
                                 );
                             },
                         );
-
                         afterEach(() => delete document.all.foo);
-
                         it('with getters', () => assert.strictEqual(bar[0], document.all[0]));
                         it
                         (
@@ -557,22 +551,31 @@
                         );
                         it
                         (
-                            'sets own properties on this',
+                            'sets but does not overwrite own properties on this',
                             () =>
                             {
-                                const { C } = setupTestData();
-                                const c = new C(undefined, ['foo', 'bar']);
-                                assert.strictEqual(c.foo, 'bar');
-                            },
-                        );
-                        it
-                        (
-                            'does not overwrite own properties on this',
-                            () =>
-                            {
-                                const { C } = setupTestData();
-                                const c = new C([42], ['aProp', 13]);
-                                assert.strictEqual(c.aProp, 42);
+                                function A()
+                                {
+                                    this.foo = 'bar';
+                                }
+
+                                function B()
+                                {
+                                    this.foo = 'baz';
+                                    this[Symbol.species] = B;
+                                }
+
+                                function C()
+                                {
+                                    this[Symbol.species] = C;
+                                }
+
+                                class D extends classes(A, B, C)
+                                { }
+
+                                const d = new D();
+                                assert.strictEqual(d.foo, 'bar');
+                                assert.strictEqual(d[Symbol.species], B);
                             },
                         );
 
@@ -2034,7 +2037,7 @@
 
         class A
         {
-            constructor(a)
+            constructor()
             {
                 callData.A =
                 {
@@ -2042,8 +2045,6 @@
                     newTarget: new.target,
                     this: this,
                 };
-                if (a !== undefined)
-                    this.aProp = a;
             }
             aMethod()
             { }
@@ -2103,7 +2104,7 @@
 
         class B
         {
-            constructor(b1, b2)
+            constructor()
             {
                 callData.B =
                 {
@@ -2111,8 +2112,6 @@
                     newTarget: new.target,
                     this: this,
                 };
-                if (b1 !== undefined || b2 !== undefined)
-                    this[b1] = b2;
             }
             bMethod()
             { }
@@ -2263,8 +2262,7 @@
         assert.hasOwnPropertyDescriptors =
         (obj, expDescs, msg) =>
         {
-            const keys =
-            [...Object.getOwnPropertyNames(expDescs), ...Object.getOwnPropertySymbols(expDescs)];
+            const keys = Reflect.ownKeys(expDescs);
             for (const key of keys)
             {
                 new Assertion(obj, msg, assert.hasOwnPropertyDescriptors, true)
