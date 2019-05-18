@@ -1162,6 +1162,15 @@
                         );
                         it
                         (
+                            'has name "class" in second instances',
+                            () =>
+                            {
+                                void classes(Object).prototype.class.name;
+                                assert.strictEqual(classes(Object).prototype.class.name, 'class');
+                            },
+                        );
+                        it
+                        (
                             'cannot be called with new',
                             () =>
                             {
@@ -1278,6 +1287,15 @@
                                     },
                                 );
                                 assert.isEmpty(Object.getOwnPropertySymbols(classValue));
+                            },
+                        );
+                        it
+                        (
+                            'has name "class" in second instances',
+                            () =>
+                            {
+                                void classes(Object).class.name;
+                                assert.strictEqual(classes(Object).class.name, 'class');
                             },
                         );
                         it
