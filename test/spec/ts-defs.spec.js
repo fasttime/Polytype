@@ -365,7 +365,7 @@ Test.class(Object).create(null);
 const actualize =
 () =>
 {
-    const { compilerOptions } = require('../tsconfig.json');
+    const { compilerOptions } = require('../../tsconfig.json');
     const
     {
         createCompilerHost,
