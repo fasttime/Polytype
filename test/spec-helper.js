@@ -1,5 +1,6 @@
+/* eslint no-process-env: "off" */
 /* eslint-env mocha */
-/* global chai, document, global, require, self */
+/* global __dirname, chai, document, global, location, process, require, self */
 
 'use strict';
 
@@ -38,6 +39,19 @@
         const pattern = patterns.length > 1 ? `(?:${patterns.join('|')})` : patterns[0];
         const regExp = RegExp(`^${pattern}$`);
         return regExp;
+    }
+
+    function getPolytypePath(extname, allowedExtnames)
+    {
+        if (extname == null)
+            [extname] = allowedExtnames;
+        else
+        {
+            if (!allowedExtnames.includes(extname))
+                throw Error(`Unsupported extension ${JSON.stringify(extname)}`);
+        }
+        const polytypePath = `../lib/polytype${extname}`;
+        return polytypePath;
     }
 
     const maybeDescribe = (condition, ...args) => (condition ? describe : describe.skip)(...args);
@@ -236,48 +250,82 @@
     };
 
     let loadPolytype;
+    if (typeof module !== 'undefined')
     {
-        const POLYTYPE_PATH = '../lib/polytype.js';
+        const path = require('path');
 
-        if (typeof module !== 'undefined')
+        function loadPolytypeBase()
+        {
+            const path = require.resolve(polytypePath);
+            delete require.cache[path];
+            const returnValue = require(path);
+            return returnValue;
+        }
+
+        const polytypePath =
+        getPolytypePath(process.env.extname, ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
+        if (polytypePath.endsWith('.js'))
+            loadPolytype = loadPolytypeBase;
+        else if (polytypePath.endsWith('.cjs'))
         {
             loadPolytype =
             () =>
             {
-                const path = require.resolve(POLYTYPE_PATH);
-                delete require.cache[path];
-                require(path);
+                const { defineGlobally } = loadPolytypeBase();
+                defineGlobally();
             };
         }
-        else
+        else if (polytypePath.endsWith('.mjs'))
         {
+            const subrequire = require('subrequire');
+
+            const modulePath = path.resolve(__dirname, '../lib/polytype.mjs');
             loadPolytype =
-            () =>
+            async () =>
             {
-                const promise =
-                new Promise
-                (
-                    resolve =>
-                    {
-                        {
-                            const script =
-                            document.querySelector(`script[src="${POLYTYPE_PATH}"]`);
-                            if (script)
-                                script.parentNode.removeChild(script);
-                        }
-                        {
-                            const script = document.createElement('script');
-                            script.onload = resolve;
-                            script.src = POLYTYPE_PATH;
-                            document.head.appendChild(script);
-                        }
-                    },
-                );
-                return promise;
+                const reimport = subrequire('./reimport.cjs');
+
+                const { defineGlobally } = await reimport(modulePath);
+                defineGlobally();
             };
         }
     }
-    loadPolytype();
+    else
+    {
+        const ALLOWED_EXTENSIONS = ['.js', '.min.js'];
+        const urlParams = new URLSearchParams(location.search);
+        const extname = urlParams.get('extname');
+        let polytypePath;
+        try
+        {
+            polytypePath = getPolytypePath(extname, ALLOWED_EXTENSIONS);
+        }
+        catch ({ message })
+        {
+            polytypePath = getPolytypePath(null, ALLOWED_EXTENSIONS);
+            alert(message);
+        }
+        loadPolytype =
+        () =>
+        new Promise
+        (
+            (resolve, reject) =>
+            {
+                {
+                    const script = document.querySelector(`script[src="${polytypePath}"]`);
+                    if (script)
+                        script.parentNode.removeChild(script);
+                }
+                {
+                    const script = document.createElement('script');
+                    script.onerror = reject;
+                    script.onload = resolve;
+                    script.src = polytypePath;
+                    document.head.appendChild(script);
+                }
+            },
+        );
+    }
 
     Object.assign
     (
