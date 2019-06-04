@@ -1,6 +1,6 @@
-/* eslint no-process-env: "off" */
-/* eslint-env mocha */
-/* global __dirname, chai, document, global, location, process, require, self */
+/* eslint no-alert: off, no-process-env: off */
+/* eslint-env mocha, shared-node-browser */
+/* global __dirname, alert, chai, document, global, location, process, require, self */
 
 'use strict';
 

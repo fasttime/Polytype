@@ -59,7 +59,7 @@ task
             {
                 src: 'src/**/*.{js,mjs}',
                 globals: ['global', 'self'],
-                parserOptions: { ecmaVersion: 7, sourceType: 'module' },
+                parserOptions: { ecmaVersion: 9, sourceType: 'module' },
             },
             {
                 src: 'lib/**/*.d.ts',
