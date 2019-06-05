@@ -1,0 +1,4 @@
+{
+  "main": "../lib/polytype.js",
+  "types": "../lib/polytype-global.d.ts"
+}

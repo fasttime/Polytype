@@ -17,11 +17,13 @@
   "license": "ISC",
   "author": "Francesco Trotta <ft@fasttime.org> (https://github.com/fasttime)",
   "files": [
+    "global",
     "lib",
     "!.*"
   ],
-  "main": "lib/polytype.js",
-  "types": "lib/polytype-global.d.ts",
+  "main": "lib/polytype.cjs",
+  "module": "lib/polytype.mjs",
+  "types": "lib/polytype-module.d.ts",
   "directories": {
     "lib": "lib",
     "example": "example",

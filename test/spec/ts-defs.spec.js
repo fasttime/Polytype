@@ -366,6 +366,7 @@ const actualize =
 () =>
 {
     const { compilerOptions } = require('../../tsconfig.json');
+    compilerOptions.types = ['./global'];
     const
     {
         createCompilerHost,
@@ -411,8 +412,7 @@ const actualize =
     for (const sourceFile of sourceFiles)
     {
         const { actualMessages } = sourceFile.testCase;
-        getPreEmitDiagnostics(program, sourceFile)
-        .forEach
+        getPreEmitDiagnostics(program, sourceFile).forEach
         (
             ({ messageText }) =>
             {
