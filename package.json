@@ -21,7 +21,7 @@
     "!.*"
   ],
   "main": "lib/polytype.js",
-  "types": "lib/polytype.d.ts",
+  "types": "lib/polytype-global.d.ts",
   "directories": {
     "lib": "lib",
     "example": "example",
@@ -46,7 +46,7 @@
     "mocha": "~6.1.4",
     "mocha-bar": "~0.0.3",
     "nyc": "~14.1.1",
-    "rollup": "~1.13.1",
+    "rollup": "~1.14.1",
     "subrequire": "~0.0.0",
     "typescript": "~3.4.5"
   },

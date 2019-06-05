@@ -42,7 +42,32 @@ task
     {
         const del = require('del');
 
-        await del(['.nyc_output', 'coverage', 'lib/**/*.{cjs,js,mjs}', 'readme.md']);
+        await del(['.nyc_output', 'coverage', 'lib/**/*', 'readme.md']);
+    },
+);
+
+task
+(
+    'make-ts-defs',
+    async () =>
+    {
+        const { promises: { readFile, writeFile } } = require('fs');
+        const Handlebars                            = require('handlebars');
+
+        async function writeOutput(outputPath, asModule)
+        {
+            const output = template({ asModule });
+            await writeFile(outputPath, output);
+        }
+
+        const input = String(await readFile('src/polytype.d.ts.hbs'));
+        const template = Handlebars.compile(input, { noEscape: true });
+        const promises =
+        [
+            writeOutput('lib/polytype-global.d.ts', false),
+            writeOutput('lib/polytype-module.d.ts', true),
+        ];
+        await Promise.all(promises);
     },
 );
 
@@ -64,6 +89,7 @@ task
             {
                 src: 'lib/**/*.d.ts',
                 parserOptions: { project: 'tsconfig.json' },
+                rules: { 'max-len': 'off' },
             },
             {
                 src: ['*.js', 'test/**/*.js'],
@@ -139,7 +165,9 @@ task
     'default',
     series
     (
-        parallel('clean', 'lint'),
+        'clean',
+        'make-ts-defs',
+        'lint',
         parallel
         (
             'bundle:cjs',
