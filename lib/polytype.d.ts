@@ -147,3 +147,14 @@ export interface SuperConstructorInvokeInfo<T extends Polytype.SuperConstructor>
      */
     arguments?: Polytype.ReadonlyConstructorParameters<T>;
 }
+
+/**
+ * Defines Polytype globally, so that it can be used anywhere without imports.
+ * You only need to call this function once in your application before the first usage of `classes`
+ * or `Object.getPrototypeListOf`.
+ *
+ * @returns
+ *
+ * `true` on success; `false` otherwise.
+ */
+export function defineGlobally(): boolean;
