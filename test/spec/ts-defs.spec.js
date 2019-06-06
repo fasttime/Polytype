@@ -1,16 +1,40 @@
 /* eslint-env mocha, node */
+/* global maybeIt, polytypeMode */
 
 'use strict';
 
 const testCases =
 [
     {
-        title: 'Exports and globals',
+        title: 'SuperConstructorInvokeInfo (module version)',
+        polytypeMode: 'module',
         code:
         `
 import { SuperConstructorInvokeInfo } from '.';
-
-void classes;
+        `,
+    },
+    {
+        title: 'SuperConstructorInvokeInfo (global version)',
+        polytypeMode: 'global',
+        code:
+        `
+import { SuperConstructorInvokeInfo } from './global';
+        `,
+    },
+    {
+        title: 'classes global is read-only',
+        polytypeMode: 'global',
+        code:
+        `
+classes = classes;
+        `,
+        expectedMessage: 'Cannot assign to \'classes\' because it is not a variable.',
+    },
+    {
+        title: 'Object.getPrototypeListOf',
+        polytypeMode: 'global',
+        code:
+        `
 void Object.getPrototypeListOf;
         `,
     },
@@ -366,7 +390,20 @@ const actualize =
 () =>
 {
     const { compilerOptions } = require('../../tsconfig.json');
-    compilerOptions.types = ['./global'];
+    let pkgPath;
+    let header;
+    switch (polytypeMode)
+    {
+    case 'global':
+        pkgPath = '.';
+        header = 'import { classes } from \'.\';\n';
+        break;
+    case 'module':
+        pkgPath = './global';
+        header = 'export { };\n';
+        break;
+    }
+    compilerOptions.types = [pkgPath];
     const
     {
         createCompilerHost,
@@ -398,7 +435,7 @@ const actualize =
             if (match)
             {
                 const testCase = testCases[match[0]];
-                const sourceText = `export { };\n${testCase.code}`;
+                const sourceText = `${header}${testCase.code}`;
                 sourceFile = createSourceFile(fileName, sourceText);
                 sourceFile.testCase = testCase;
                 sourceFiles.push(sourceFile);
@@ -443,10 +480,14 @@ describe
         (
             testCase =>
             {
-                const { expectedMessage } = testCase;
+                const { expectedMessage, polytypeMode: currentPolytypeMode } = testCase;
                 const expectedMessages = expectedMessage === undefined ? [] : [expectedMessage];
-                it
-                (testCase.title, () => assert.deepEqual(testCase.actualMessages, expectedMessages));
+                maybeIt
+                (
+                    currentPolytypeMode === undefined || currentPolytypeMode === polytypeMode,
+                    testCase.title,
+                    () => assert.deepEqual(testCase.actualMessages, expectedMessages),
+                );
             },
         );
     },

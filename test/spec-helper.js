@@ -250,6 +250,7 @@
     };
 
     let loadPolytype;
+    let polytypeMode;
     if (typeof module !== 'undefined')
     {
         const path = require('path');
@@ -265,7 +266,10 @@
         const polytypePath =
         getPolytypePath(process.env.extname, ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
         if (polytypePath.endsWith('.js'))
+        {
             loadPolytype = loadPolytypeBase;
+            polytypeMode = 'global';
+        }
         else if (polytypePath.endsWith('.cjs'))
         {
             loadPolytype =
@@ -274,6 +278,7 @@
                 const { defineGlobally } = loadPolytypeBase();
                 defineGlobally();
             };
+            polytypeMode = 'module';
         }
         else if (polytypePath.endsWith('.mjs'))
         {
@@ -288,6 +293,7 @@
                 const { defineGlobally } = await reimport(modulePath);
                 defineGlobally();
             };
+            polytypeMode = 'module';
         }
     }
     else
@@ -338,6 +344,7 @@
             loadPolytype,
             maybeDescribe,
             maybeIt,
+            polytypeMode,
             setupTestData,
         },
     );
