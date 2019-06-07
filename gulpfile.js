@@ -148,6 +148,7 @@ task
     'make-toc',
     async () =>
     {
+        const { version }                           = require('./package.json');
         const { promises: { readFile, writeFile } } = require('fs');
         const Handlebars                            = require('handlebars');
         const toc                                   = require('markdown-toc');
@@ -155,7 +156,7 @@ task
         const input = String(await readFile('src/readme.md.hbs'));
         const { content } = toc(input, { firsth1: false });
         const template = Handlebars.compile(input, { noEscape: true });
-        const output = template({ toc: content });
+        const output = template({ toc: content, version });
         await writeFile('readme.md', output);
     },
 );
