@@ -97,6 +97,7 @@ task
             },
             {
                 src: 'example/**/*.{js,ts}',
+                envs: 'node',
                 globals: ['classes', 'console'],
                 parserOptions: { ecmaVersion: 7, project: 'tsconfig.json', sourceType: 'module' },
                 rules:

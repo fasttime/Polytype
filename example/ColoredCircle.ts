@@ -1,4 +1,4 @@
-import { classes } from "polytype";
+import { classes } from "..";
 
 class Circle
 {
