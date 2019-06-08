@@ -34,7 +34,8 @@
     "url": "https://github.com/fasttime/polytype.git"
   },
   "scripts": {
-    "build": "npm install && gulp"
+    "build": "npm install && gulp",
+    "test": "test/node-spec-runner.js"
   },
   "devDependencies": {
     "chai": "~4.2.0",

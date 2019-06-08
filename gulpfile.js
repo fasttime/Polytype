@@ -84,7 +84,7 @@ task
             {
                 src: 'src/**/*.{js,mjs}',
                 globals: ['global', 'self'],
-                parserOptions: { ecmaVersion: 9, sourceType: 'module' },
+                parserOptions: { ecmaVersion: 8, sourceType: 'module' },
             },
             {
                 src: 'lib/**/*.d.ts',
@@ -93,7 +93,7 @@ task
             },
             {
                 src: ['*.js', 'test/**/*.js'],
-                parserOptions: { ecmaVersion: 9 },
+                parserOptions: { ecmaVersion: 8 },
             },
             {
                 src: 'example/**/*.{js,ts}',

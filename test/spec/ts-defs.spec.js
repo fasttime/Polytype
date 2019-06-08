@@ -431,10 +431,10 @@ const actualize =
         (fileName, languageVersion, onError) =>
         {
             let sourceFile;
-            const match = /(?<=^:)\d+(?=\.ts$)/.exec(fileName);
+            const match = /^:(\d+)\.ts$/.exec(fileName);
             if (match)
             {
-                const testCase = testCases[match[0]];
+                const testCase = testCases[match[1]];
                 const sourceText = `${header}${testCase.code}`;
                 sourceFile = createSourceFile(fileName, sourceText);
                 sourceFile.testCase = testCase;
