@@ -1,5 +1,11 @@
 # Polytype · [![npm version][npm badge]][npm url]
 
+**If you are upgrading from a previous version, note that usage has changed.**
+**Change your imports to `"polytype/global"` to keep using the script version.**
+**Check the [Setup Instructions](#setup-instructions) for details.**
+
+---
+
 **Dynamic multiple inheritance for JavaScript and TypeScript. Without mixins.**
 
 **Polytype** is a library that adds support for dynamic
