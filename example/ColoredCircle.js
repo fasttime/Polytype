@@ -1,4 +1,4 @@
-import { classes } from "polytype";
+const { classes } = require("..");
 
 class Circle
 {
