@@ -1,16 +1,40 @@
 /* eslint-env mocha, node */
+/* global maybeIt, polytypeMode */
 
 'use strict';
 
 const testCases =
 [
     {
-        title: 'Exports and globals',
+        title: 'SuperConstructorInvokeInfo (module version)',
+        polytypeMode: 'module',
         code:
         `
 import { SuperConstructorInvokeInfo } from '.';
-
-void classes;
+        `,
+    },
+    {
+        title: 'SuperConstructorInvokeInfo (global version)',
+        polytypeMode: 'global',
+        code:
+        `
+import { SuperConstructorInvokeInfo } from './global';
+        `,
+    },
+    {
+        title: 'classes global is read-only',
+        polytypeMode: 'global',
+        code:
+        `
+classes = classes;
+        `,
+        expectedMessage: 'Cannot assign to \'classes\' because it is not a variable.',
+    },
+    {
+        title: 'Object.getPrototypeListOf',
+        polytypeMode: 'global',
+        code:
+        `
 void Object.getPrototypeListOf;
         `,
     },
@@ -366,6 +390,20 @@ const actualize =
 () =>
 {
     const { compilerOptions } = require('../../tsconfig.json');
+    let pkgPath;
+    let header;
+    switch (polytypeMode)
+    {
+    case 'global':
+        pkgPath = '.';
+        header = 'import { classes } from \'.\';\n';
+        break;
+    case 'module':
+        pkgPath = './global';
+        header = 'export { };\n';
+        break;
+    }
+    compilerOptions.types = [pkgPath];
     const
     {
         createCompilerHost,
@@ -393,11 +431,11 @@ const actualize =
         (fileName, languageVersion, onError) =>
         {
             let sourceFile;
-            const match = /(?<=^:)\d+(?=\.ts$)/.exec(fileName);
+            const match = /^:(\d+)\.ts$/.exec(fileName);
             if (match)
             {
-                const testCase = testCases[match[0]];
-                const sourceText = `export { };\n${testCase.code}`;
+                const testCase = testCases[match[1]];
+                const sourceText = `${header}${testCase.code}`;
                 sourceFile = createSourceFile(fileName, sourceText);
                 sourceFile.testCase = testCase;
                 sourceFiles.push(sourceFile);
@@ -411,8 +449,7 @@ const actualize =
     for (const sourceFile of sourceFiles)
     {
         const { actualMessages } = sourceFile.testCase;
-        getPreEmitDiagnostics(program, sourceFile)
-        .forEach
+        getPreEmitDiagnostics(program, sourceFile).forEach
         (
             ({ messageText }) =>
             {
@@ -443,10 +480,14 @@ describe
         (
             testCase =>
             {
-                const { expectedMessage } = testCase;
+                const { expectedMessage, polytypeMode: currentPolytypeMode } = testCase;
                 const expectedMessages = expectedMessage === undefined ? [] : [expectedMessage];
-                it
-                (testCase.title, () => assert.deepEqual(testCase.actualMessages, expectedMessages));
+                maybeIt
+                (
+                    currentPolytypeMode === undefined || currentPolytypeMode === polytypeMode,
+                    testCase.title,
+                    () => assert.deepEqual(testCase.actualMessages, expectedMessages),
+                );
             },
         );
     },

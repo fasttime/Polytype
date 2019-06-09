@@ -1,4 +1,4 @@
-import "..";
+const { classes } = require("..");
 
 class Circle
 {

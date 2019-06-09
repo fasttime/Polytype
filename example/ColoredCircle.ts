@@ -1,4 +1,4 @@
-import "..";
+import { classes } from "..";
 
 class Circle
 {

@@ -1,5 +1,11 @@
 # Polytype · [![npm version][npm badge]][npm url]
 
+**If you are upgrading from a previous version, note that usage has changed.**
+**Change your imports to `"polytype/global"` to keep using the script version.**
+**Check the [Setup Instructions](#setup-instructions) for details.**
+
+---
+
 **Dynamic multiple inheritance for JavaScript and TypeScript. Without mixins.**
 
 **Polytype** is a library that adds support for dynamic
@@ -19,8 +25,8 @@ As JavaScript support in other browsers improves, Polytype will start to run in 
 
 - [Features](#features)
 - [Setup Instructions](#setup-instructions)
-  * [As a vanilla script](#as-a-vanilla-script)
-  * [As a module](#as-a-module)
+  * [In Node.js](#in-nodejs)
+  * [In the browser](#in-the-browser)
 - [Usage](#usage)
   * [Inheriting from multiple base classes](#inheriting-from-multiple-base-classes)
   * [Using methods and properties from multiple base classes](#using-methods-and-properties-from-multiple-base-classes)
@@ -49,25 +55,15 @@ As JavaScript support in other browsers improves, Polytype will start to run in 
 
 ## Setup Instructions
 
-### As a vanilla script
+Polytytpe is available in two flavors: a module version with exported definitions and a script
+version where all definitions are accessible through global objects.
+Apart from this, both versions provide the same features and are available in the standard package.
 
-In an HTML-based application Polytype can be embedded as a plain JavaScript library.
-Just download
-[polytype.js](https://raw.githubusercontent.com/fasttime/Polytype/master/lib/polytype.js) or
-[polytype.min.js](https://raw.githubusercontent.com/fasttime/Polytype/master/lib/polytype.min.js)
-from GitHub and include it in your HTML file.
+You are free to choose whichever version of Polytype best fits your requirements, but make sure to
+remain consistent throughout your application: mixing the module and the script versions together is
+not recommended and may produce unexpected results.
 
-```html
-<script src="polytype.min.js"></script>
-```
-
-Alternatively, you can hotlink the current stable version using a CDN of your choice.
-
-```html
-<script src="https://gitcdn.xyz/repo/fasttime/Polytype/master/lib/polytype.min.js"></script>
-```
-
-### As a module
+### In Node.js
 
 If you are using Node.js, you can install Polytype with [npm](https://www.npmjs.org).
 
@@ -75,14 +71,14 @@ If you are using Node.js, you can install Polytype with [npm](https://www.npmjs.
 npm install polytype
 ```
 
-Then you can import it in your code like any dependency.
+Then you can import it in your code like any module.
 
 ```js
-require("polytype"); // CommonJS syntax
+const { classes } = require("polytype"); // CommonJS syntax
 ```
 or
 ```js
-import "polytype"; // ECMAScript module syntax
+import { classes } from "polytype"; // ECMAScript module syntax
 ```
 
 In TypeScript you can also import certain types where necessary.
@@ -91,8 +87,39 @@ In TypeScript you can also import certain types where necessary.
 import { SuperConstructorInvokeInfo } from "polytype";
 ```
 
-If you are not using TypeScript or don’t need to explicitly reference any exported types, you only
-need to add a single import statement in a central location in your code.
+Alternatively, you can import the script version at the start of your application and access
+Polytype definitions through global objects.
+
+```js
+require("polytype/global"); // CommonJS syntax
+```
+or
+```js
+import "polytype/global"; // ECMAScript module syntax
+```
+
+### In the browser
+
+In an HTML-based application, the script version of Polytype can be simply embedded.
+Just download [polytype.min.js][polytype.min.js] from GitHub and include it in your HTML file.
+
+```html
+<script src="polytype.min.js"></script>
+```
+
+Alternatively, you can hotlink the current stable version using a CDN of your choice.
+
+```html
+<script src="https://cdn.statically.io/gh/fasttime/Polytype/0.0.1/lib/polytype.min.js"></script>
+```
+
+If your browser application already uses ECMAScript modules, you can also import the module version
+(“.mjs”) in contexts where Polytype-specific definitions like `classes` are required.
+This has the advantage to avoid possible naming conflicts on global objects.
+
+```js
+import { classes } from "https://cdn.statically.io/gh/fasttime/Polytype/0.0.1/lib/polytype.min.mjs";
+```
 
 ## Usage
 
@@ -351,10 +378,10 @@ A TypeScript version of the `ColoredCircle` sample code above can be found in
 
 Polytype was successfully tested in the following browsers / JavaScript engines.
 
-* Chrome 54+
-* Firefox 51+
+* Chrome 58+
+* Firefox 52+
 * Safari 11 *(Partial support. See notes below.)*
-* Opera 41+
+* Opera 45+
 * Node.js 8+
 
 The minimum supported TypeScript version is 3.4.
@@ -374,3 +401,4 @@ For this reason it is recommended not to use Polytype in Edge as long as this is
 
 [npm badge]: https://badge.fury.io/js/polytype.svg
 [npm url]: https://www.npmjs.com/package/polytype
+[polytype.min.js]: https://raw.githubusercontent.com/fasttime/Polytype/0.0.1/lib/polytype.min.js

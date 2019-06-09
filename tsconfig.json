@@ -2,9 +2,6 @@
   "compilerOptions": {
     "noEmit": true,
     "strict": true,
-    "target": "es2017",
-    "types": [
-      "."
-    ]
+    "target": "es2017"
   }
 }

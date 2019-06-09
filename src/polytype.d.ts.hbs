@@ -110,31 +110,6 @@ declare namespace Polytype
     }
 }
 
-declare global
-{
-    /** Allows defining a derived class that inherits from multiple base classes. */
-    function classes
-    <T extends Polytype.SuperConstructor[]>(...types: Polytype.RequireNonEmpty<T>):
-    Polytype.ClusteredConstructor<T>;
-
-    interface ObjectConstructor
-    {
-        /**
-         * Returns a list of prototypes of an object.
-         * * For regular objects with a non-null prototype, an array containing the prototype as its
-         * only element is returned.
-         * * For regular objects with a null prototype, an empty array is returned.
-         * * For Polytype clustered objects, an array containing all zero or more prototypes of the
-         * object is returned.
-         *
-         * @param o
-         *
-         * The object that references the prototypes.
-         */
-        getPrototypeListOf(o: any): any[];
-    }
-}
-
 /** Specifies the arguments used to call a base class constructor. */
 export interface SuperConstructorInvokeInfo<T extends Polytype.SuperConstructor>
 {
@@ -147,3 +122,56 @@ export interface SuperConstructorInvokeInfo<T extends Polytype.SuperConstructor>
      */
     arguments?: Polytype.ReadonlyConstructorParameters<T>;
 }
+
+{{#* inline "classes"}}
+/** Allows defining a derived class that inherits from multiple base classes. */
+{{q}}classes<T extends Polytype.SuperConstructor[]>
+(...types: Polytype.RequireNonEmpty<T>):
+Polytype.ClusteredConstructor<T>;
+{{/inline}}
+{{#* inline "getPrototypeListOf"}}
+/**
+ * Returns a list of prototypes of an object.
+ * * For regular objects with a non-null prototype, an array containing the prototype as its only
+ * element is returned.
+ * * For regular objects with a null prototype, an empty array is returned.
+ * * For Polytype clustered objects, an array containing all zero or more prototypes of the
+ * object is returned.
+ *
+ * @param o
+ *
+ * The object that references the prototypes.
+ */
+{{q}}getPrototypeListOf(o: any): any[];
+{{/inline}}
+{{#if asModule}}
+{{> classes q="export function "}}
+
+/**
+ * Globally defines `classes` and `Object.getPrototypeListOf`.
+ *
+ * Calling this function allows using Polytype everywhere inside the current JavaScript realm
+ * without imports.
+ *
+ * This function is only available in the module versions of Polytype.
+ * For most purposes it is better to import the global version of Polytype directly rather than
+ * calling this function.
+ *
+ * @returns
+ *
+ * `true` on success; `false` otherwise.
+ */
+export function defineGlobally(): boolean;
+
+{{> getPrototypeListOf q="export function "}}
+{{else}}
+declare global
+{
+    {{> classes q="function "}}
+
+    interface ObjectConstructor
+    {
+        {{> getPrototypeListOf}}
+    }
+}
+{{/if}}
