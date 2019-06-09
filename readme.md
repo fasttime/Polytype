@@ -110,7 +110,7 @@ Just download [polytype.min.js][polytype.min.js] from GitHub and include it in y
 Alternatively, you can hotlink the current stable version using a CDN of your choice.
 
 ```html
-<script src="https://cdn.statically.io/gh/fasttime/Polytype/0.0.1/lib/polytype.min.js"></script>
+<script src="https://cdn.statically.io/gh/fasttime/Polytype/0.1.0/lib/polytype.min.js"></script>
 ```
 
 If your browser application already uses ECMAScript modules, you can also import the module version
@@ -118,7 +118,7 @@ If your browser application already uses ECMAScript modules, you can also import
 This has the advantage to avoid possible naming conflicts on global objects.
 
 ```js
-import { classes } from "https://cdn.statically.io/gh/fasttime/Polytype/0.0.1/lib/polytype.min.mjs";
+import { classes } from "https://cdn.statically.io/gh/fasttime/Polytype/0.1.0/lib/polytype.min.mjs";
 ```
 
 ## Usage
@@ -401,4 +401,4 @@ For this reason it is recommended not to use Polytype in Edge as long as this is
 
 [npm badge]: https://badge.fury.io/js/polytype.svg
 [npm url]: https://www.npmjs.com/package/polytype
-[polytype.min.js]: https://raw.githubusercontent.com/fasttime/Polytype/0.0.1/lib/polytype.min.js
+[polytype.min.js]: https://raw.githubusercontent.com/fasttime/Polytype/0.1.0/lib/polytype.min.js
