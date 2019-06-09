@@ -378,10 +378,10 @@ A TypeScript version of the `ColoredCircle` sample code above can be found in
 
 Polytype was successfully tested in the following browsers / JavaScript engines.
 
-* Chrome 54+
-* Firefox 51+
+* Chrome 58+
+* Firefox 52+
 * Safari 11 *(Partial support. See notes below.)*
-* Opera 41+
+* Opera 45+
 * Node.js 8+
 
 The minimum supported TypeScript version is 3.4.
