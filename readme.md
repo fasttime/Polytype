@@ -384,7 +384,7 @@ Polytype was successfully tested in the following browsers / JavaScript engines.
 * Opera 45+
 * Node.js 8+
 
-The minimum supported TypeScript version is 3.4.
+The minimum supported TypeScript version is 3.5.
 
 Because of poor ECMAScript compliance, Safari accepts non-constructor functions (such as arrow
 functions, generators, etc.) as arguments to

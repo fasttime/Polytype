@@ -41,7 +41,7 @@
     "chai": "~4.2.0",
     "del": "~4.1.1",
     "gulp": "~4.0.2",
-    "gulp-fasttime-lint": "~0.10.1",
+    "gulp-fasttime-lint": "~0.10.2",
     "gulp-rename": "~1.4.0",
     "gulp-terser": "~1.2.0",
     "handlebars": "~4.1.2",
@@ -51,7 +51,7 @@
     "nyc": "~14.1.1",
     "rollup": "~1.14.4",
     "subrequire": "~0.0.0",
-    "typescript": "~3.4.5"
+    "typescript": "~3.5.1"
   },
   "engines": {
     "node": ">=8.0.0"

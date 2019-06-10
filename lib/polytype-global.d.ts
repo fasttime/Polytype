@@ -2,7 +2,7 @@ declare namespace Polytype
 {
     // Helpers /////////////////////////////////////////////////////////////////////////////////////
 
-    type Enrich<T, U> = T & Pick<U, Exclude<keyof U, keyof T>>;
+    type Enrich<T, U> = T & Omit<U, keyof T>;
 
     type EnrichTimes
     <
