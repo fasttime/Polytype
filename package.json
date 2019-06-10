@@ -35,6 +35,7 @@
   },
   "scripts": {
     "build": "npm install && gulp",
+    "serve": "./serve.js",
     "test": "test/node-spec-runner.js"
   },
   "devDependencies": {

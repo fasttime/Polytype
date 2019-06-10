@@ -1,6 +1,6 @@
 /* eslint no-alert: off, no-process-env: off */
 /* eslint-env mocha, shared-node-browser */
-/* global __dirname, alert, chai, document, global, location, process, require, self */
+/* global __dirname, alert, chai, document, global, location, process, reimport, require, self */
 
 'use strict';
 
@@ -39,6 +39,12 @@
         const pattern = patterns.length > 1 ? `(?:${patterns.join('|')})` : patterns[0];
         const regExp = RegExp(`^${pattern}$`);
         return regExp;
+    }
+
+    function getExtension(path)
+    {
+        const extension = path.replace(/.*(?=\..*$)/, '');
+        return extension;
     }
 
     function getPolytypePath(extname, allowedExtnames)
@@ -265,13 +271,14 @@
 
         const polytypePath =
         getPolytypePath(process.env.extname, ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
-        if (polytypePath.endsWith('.js'))
+        const extension = getExtension(polytypePath);
+        switch (extension)
         {
+        case '.js':
             loadPolytype = loadPolytypeBase;
             polytypeMode = 'global';
-        }
-        else if (polytypePath.endsWith('.cjs'))
-        {
+            break;
+        case '.cjs':
             loadPolytype =
             () =>
             {
@@ -279,26 +286,28 @@
                 defineGlobally();
             };
             polytypeMode = 'module';
-        }
-        else if (polytypePath.endsWith('.mjs'))
-        {
-            const subrequire = require('subrequire');
-
-            const modulePath = path.resolve(__dirname, '../lib/polytype.mjs');
-            loadPolytype =
-            async () =>
+            break;
+        case '.mjs':
             {
-                const reimport = subrequire('./reimport.cjs');
+                const subrequire = require('subrequire');
 
-                const { defineGlobally } = await reimport(modulePath);
-                defineGlobally();
-            };
+                const modulePath = path.resolve(__dirname, '../lib/polytype.mjs');
+                loadPolytype =
+                async () =>
+                {
+                    const reimport = subrequire('./_reimport');
+
+                    const { defineGlobally } = await reimport(modulePath);
+                    defineGlobally();
+                };
+            }
             polytypeMode = 'module';
+            break;
         }
     }
     else
     {
-        const ALLOWED_EXTENSIONS = ['.js', '.min.js'];
+        const ALLOWED_EXTENSIONS = ['.js', '.min.js', '.mjs', '.min.mjs'];
         const urlParams = new URLSearchParams(location.search);
         const extname = urlParams.get('extname');
         let polytypePath;
@@ -311,26 +320,47 @@
             polytypePath = getPolytypePath(null, ALLOWED_EXTENSIONS);
             alert(message);
         }
-        loadPolytype =
-        () =>
-        new Promise
-        (
-            (resolve, reject) =>
-            {
-                {
-                    const script = document.querySelector(`script[src="${polytypePath}"]`);
-                    if (script)
-                        script.parentNode.removeChild(script);
-                }
+        const extension = getExtension(polytypePath);
+        switch (extension)
+        {
+        case '.js':
+            loadPolytype =
+            () =>
+            new Promise
+            (
+                (resolve, reject) =>
                 {
                     const script = document.createElement('script');
-                    script.onerror = reject;
-                    script.onload = resolve;
+                    script.onerror =
+                    ({ message }) =>
+                    {
+                        script.remove();
+                        reject(message);
+                    };
+                    script.onload =
+                    () =>
+                    {
+                        script.remove();
+                        resolve();
+                    };
                     script.src = polytypePath;
                     document.head.appendChild(script);
-                }
-            },
-        );
+                },
+            );
+            break;
+        case '.mjs':
+            {
+                let counter = 0;
+                loadPolytype =
+                async () =>
+                {
+                    const url = `${polytypePath}?${++counter}`;
+                    const { defineGlobally } = await reimport(url);
+                    defineGlobally();
+                };
+            }
+            break;
+        }
     }
 
     Object.assign
