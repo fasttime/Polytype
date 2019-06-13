@@ -12,8 +12,8 @@
     "proxies",
     "proxy"
   ],
-  "homepage": "https://github.com/fasttime/polytype",
-  "bugs": "https://github.com/fasttime/polytype/issues",
+  "homepage": "https://github.com/fasttime/Polytype",
+  "bugs": "https://github.com/fasttime/Polytype/issues",
   "license": "ISC",
   "author": "Francesco Trotta <ft@fasttime.org> (https://github.com/fasttime)",
   "files": [
@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/fasttime/polytype.git"
+    "url": "https://github.com/fasttime/Polytype.git"
   },
   "scripts": {
     "build": "npm install && gulp",

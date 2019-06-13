@@ -6,13 +6,14 @@ const { dest, parallel, series, src, task } = require('gulp');
 
 async function bundle(inputPath, outputPath, format)
 {
-    const rollup = require('rollup');
+    const { homepage, version } = require('./package.json');
+    const rollup                = require('rollup');
 
     const inputOptions = { input: inputPath };
     const bundle = await rollup.rollup(inputOptions);
     const outputOptions =
     {
-        banner: '// Polytype – https://github.com/fasttime/Polytype\n',
+        banner: `// Polytype ${version} – ${homepage}\n`,
         esModule: false,
         file: outputPath,
         format,
