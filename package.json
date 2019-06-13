@@ -50,7 +50,7 @@
     "mocha": "~6.1.4",
     "mocha-bar": "~0.0.3",
     "nyc": "~14.1.1",
-    "rollup": "~1.14.4",
+    "rollup": "~1.15.1",
     "subrequire": "~0.0.0",
     "typescript": "~3.5.1"
   },

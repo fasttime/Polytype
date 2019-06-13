@@ -1,16 +1,5 @@
 /* eslint-env mocha */
-/*
-global
-BigInt,
-assert,
-classes,
-createFunctionWithGetPrototypeCount,
-document,
-exactRegExp,
-maybeIt,
-require,
-self,
-*/
+/* global BigInt, assert, classes, createFunctionWithGetPrototypeCount, exactRegExp, maybeIt */
 
 'use strict';
 

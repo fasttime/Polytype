@@ -6,6 +6,58 @@
 
 (global =>
 {
+    function backupGlobals()
+    {
+        const descriptorMapObj =
+        {
+            self: Object.getOwnPropertyDescriptor(global, 'self'),
+            global: Object.getOwnPropertyDescriptor(global, 'global'),
+        };
+        let classesDescriptor;
+        let getPrototypeListOfDescriptor;
+        let hasInstanceDescriptor;
+        let isPrototypeOfDescriptor;
+        before
+        (
+            () =>
+            {
+                classesDescriptor =
+                Object.getOwnPropertyDescriptor(global, 'classes');
+                getPrototypeListOfDescriptor =
+                Object.getOwnPropertyDescriptor(Object, 'getPrototypeListOf');
+                hasInstanceDescriptor =
+                Object.getOwnPropertyDescriptor(Object, Symbol.hasInstance);
+                isPrototypeOfDescriptor =
+                Object.getOwnPropertyDescriptor(Object.prototype, 'isPrototypeOf');
+            },
+        );
+        afterEach
+        (
+            () =>
+            {
+                for (const [key, descriptor] of Object.entries(descriptorMapObj))
+                {
+                    if (descriptor)
+                        Object.defineProperty(global, key, descriptor);
+                    else
+                        delete global[key];
+                }
+                Object.defineProperty(global, 'classes', classesDescriptor);
+                Object.defineProperties
+                (
+                    Object,
+                    {
+                        getPrototypeListOf: getPrototypeListOfDescriptor,
+                        [Symbol.hasInstance]: hasInstanceDescriptor,
+                    },
+                );
+                // eslint-disable-next-line no-extend-native
+                Object.defineProperty(Object.prototype, 'isPrototypeOf', isPrototypeOfDescriptor);
+            },
+        );
+        return global;
+    }
+
     function createFunctionWithGetPrototypeCount(name)
     {
         const fn = Function();
@@ -284,6 +336,7 @@
             {
                 const { defineGlobally } = loadPolytypeBase();
                 defineGlobally();
+                return defineGlobally;
             };
             polytypeMode = 'module';
             break;
@@ -299,6 +352,7 @@
 
                     const { defineGlobally } = await reimport(modulePath);
                     defineGlobally();
+                    return defineGlobally;
                 };
             }
             polytypeMode = 'module';
@@ -357,6 +411,7 @@
                     const url = `${polytypePath}?${++counter}`;
                     const { defineGlobally } = await reimport(url);
                     defineGlobally();
+                    return defineGlobally;
                 };
             }
             break;
@@ -368,6 +423,7 @@
         global,
         {
             assert,
+            backupGlobals,
             createFunctionWithGetPrototypeCount,
             createNullPrototypeFunction,
             exactRegExp,

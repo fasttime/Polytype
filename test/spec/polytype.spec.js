@@ -2,14 +2,13 @@
 /*
 global
 assert,
+backupGlobals,
 classes,
 createNullPrototypeFunction,
 document,
 exactRegExp,
-global,
 loadPolytype,
 maybeDescribe,
-self,
 setupTestData,
 */
 
@@ -25,25 +24,7 @@ describe
             'is loaded only once',
             () =>
             {
-                const globalThis = typeof self === 'undefined' ? global : self;
-                const descriptorMapObj =
-                {
-                    self: Object.getOwnPropertyDescriptor(globalThis, 'self'),
-                    global: Object.getOwnPropertyDescriptor(globalThis, 'global'),
-                };
-                afterEach
-                (
-                    () =>
-                    {
-                        for (const [key, descriptor] of Object.entries(descriptorMapObj))
-                        {
-                            if (descriptor)
-                                Object.defineProperty(globalThis, key, descriptor);
-                            else
-                                delete globalThis.key;
-                        }
-                    },
-                );
+                const globalThis = backupGlobals();
                 it
                 (
                     'in self',
