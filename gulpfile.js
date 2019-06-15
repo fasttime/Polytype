@@ -36,6 +36,14 @@ function minify(srcGlobs, extname)
     return stream;
 }
 
+async function readFileAsString(inputPath)
+{
+    const { promises: { readFile } } = require('fs');
+
+    const input = String(await readFile(inputPath));
+    return input;
+}
+
 task
 (
     'clean',
@@ -43,7 +51,7 @@ task
     {
         const del = require('del');
 
-        await del(['.nyc_output', 'coverage', 'lib/**/*', 'readme.md']);
+        await del(['.nyc_output', 'coverage', 'lib/**/*', 'readme.md', 'test/spec-runner.html']);
     },
 );
 
@@ -52,8 +60,8 @@ task
     'make-ts-defs',
     async () =>
     {
-        const { promises: { readFile, writeFile } } = require('fs');
-        const Handlebars                            = require('handlebars');
+        const { promises: { writeFile } }   = require('fs');
+        const Handlebars                    = require('handlebars');
 
         async function writeOutput(outputPath, asModule)
         {
@@ -61,7 +69,7 @@ task
             await writeFile(outputPath, output);
         }
 
-        const input = String(await readFile('src/polytype.d.ts.hbs'));
+        const input = await readFileAsString('src/polytype.d.ts.hbs');
         const template = Handlebars.compile(input, { noEscape: true });
         const promises =
         [
@@ -147,15 +155,45 @@ task
 
 task
 (
+    'make-spec-runner',
+    async () =>
+    {
+        const { promises: { readdir, writeFile } }  = require('fs');
+        const Handlebars                            = require('handlebars');
+        const { extname }                           = require('path');
+
+        async function getSpecs()
+        {
+            const filenames = await readdir('test/spec/common');
+            const specs = filenames.filter(filename => extname(filename) === '.js').sort();
+            return specs;
+        }
+
+        async function getTemplate()
+        {
+            const input = await readFileAsString('src/spec-runner.html.hbs');
+            const template = Handlebars.compile(input);
+            return template;
+        }
+
+        const promises = [getTemplate(), getSpecs()];
+        const [template, specs] = await Promise.all(promises);
+        const output = template({ specs });
+        await writeFile('test/spec-runner.html', output);
+    },
+);
+
+task
+(
     'make-toc',
     async () =>
     {
-        const { version }                           = require('./package.json');
-        const { promises: { readFile, writeFile } } = require('fs');
-        const Handlebars                            = require('handlebars');
-        const toc                                   = require('markdown-toc');
+        const { version }                   = require('./package.json');
+        const { promises: { writeFile } }   = require('fs');
+        const Handlebars                    = require('handlebars');
+        const toc                           = require('markdown-toc');
 
-        const input = String(await readFile('src/readme.md.hbs'));
+        const input = await readFileAsString('src/readme.md.hbs');
         const { content } = toc(input, { firsth1: false });
         const template = Handlebars.compile(input, { noEscape: true });
         const output = template({ toc: content, version });
@@ -178,6 +216,6 @@ task
             series('bundle:global', 'minify:global'),
         ),
         'test',
-        'make-toc',
+        parallel('make-spec-runner', 'make-toc'),
     ),
 );

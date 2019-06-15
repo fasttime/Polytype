@@ -11,16 +11,9 @@
 <script src='spec-helper.js'></script>
 <script src='browser-spec-runner.js'></script>
 <script src='init-spec.js'></script>
-<script src='spec/common/classes.spec.js'></script>
-<script src='spec/common/clustered-constructor.spec.js'></script>
-<script src='spec/common/clustered-prototype.spec.js'></script>
-<script src='spec/common/define-globally.spec.js'></script>
-<script src='spec/common/object-get-prototype-list-of.spec.js'></script>
-<script src='spec/common/object-prototype-is-prototype-of.spec.js'></script>
-<script src='spec/common/polytype.spec.js'></script>
-<script src='spec/common/super-class-call.spec.js'></script>
-<script src='spec/common/super-class.spec.js'></script>
-<script src='spec/common/symbol-has-instance.spec.js'></script>
+{{#each specs}}
+<script src='spec/common/{{this}}'></script>
+{{/each}}
 <style>
 
 body { margin: 1.33em; }
