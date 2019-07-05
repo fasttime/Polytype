@@ -7,10 +7,10 @@ const { dest, parallel, series, src, task } = require('gulp');
 async function bundle(inputPath, outputPath, format)
 {
     const { homepage, version } = require('./package.json');
-    const rollup                = require('rollup');
+    const { rollup }            = require('rollup');
 
     const inputOptions = { input: inputPath };
-    const bundle = await rollup.rollup(inputOptions);
+    const bundle = await rollup(inputOptions);
     const outputOptions =
     {
         banner: `// Polytype ${version} – ${homepage}\n`,

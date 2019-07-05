@@ -197,9 +197,13 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
-**Note:** In TypeScript, the syntax `super.class(DirectBaseClass).member` cannot be used to access
-protected instance members, so it is currently not possible to disambiguate between protected
-instance members having the same name in different base classes.
+More generally, `super.class(DirectBaseClass)[propertyKey]` can be used to reference a property of a
+particular base class in the body of a derived class.
+
+**Note:**
+In TypeScript, the syntax described here cannot be used to access protected instance members, so it
+is currently not possible to disambiguate between protected instance members having the same name or
+property key in different base classes.
 
 ### Static methods and properties
 
@@ -361,6 +365,105 @@ get multiple inheritance sensitive suggestions as you type.
 A TypeScript version of the `ColoredCircle` sample code above can be found in
 [ColoredCircle.ts](example/ColoredCircle.ts) in the example folder.
 
+## Caveats
+
+Neither JavaScript nor TypeScript offer native support for multiple inheritance of any kind.
+Polytype strives to make up for this deficiency, but some important limitations remain.
+
+### `for...in` iterations
+
+In plain TypeScript, without Polytype, a `for...in` iteration over a class constructor will
+enumerate not only names of static fields defined on that class, but also names of static fields
+defined on all base classes in its prototype chain.
+
+```ts
+class FooClass
+{
+    static foo = "foo";
+}
+
+class BarClass extends FooClass
+{
+    static bar = "bar";
+}
+
+for (const name in BarClass)
+    console.log(name); // Prints "bar" and "foo".
+```
+
+Additionally, some newer JavaScript engines have implemented support for
+[static public fields](https://github.com/tc39/proposal-static-class-features#static-public-fields),
+which work much like in TypeScript, but without transpiling.
+Even in JavaScript, a `for...in` iteration over a class constructor will include names of static
+fields defined on base classes.
+
+Anyway, this behavior breaks with Polytype inheritance on static fields: names of static fields
+defined on base classes are not enumerated by `for...in` statements if the inheritance line crosses
+the constructor of a class in some `extends classes(...)` clause.
+
+```ts
+class BazClass extends classes(FooClass)
+{
+    static baz = "baz";
+}
+
+for (const name in BazClass)
+    console.log(name); // Prints just "baz".
+```
+
+For this reason, and because generally [better alternatives exist][Why Use for...in?], iterating
+over Polytype classes and their derived classes with `for...in` is not recommended.
+
+### Homonymous protected instance members
+
+TypeScript class members can have
+[protected](https://www.typescriptlang.org/docs/handbook/classes.html#understanding-protected)
+access: protected members are inherited just like public members but can only be accessed in the
+body of the defining class itself or of a derived class.
+If a derived class inherits from multiple base classes, it is possible for inherited members in
+different base classes to share the same property key, i.e. the same name, the same index or the
+same symbol.
+In this case, Polytype provides the syntax `super.class(DirectBaseClass)[propertyKey]` to specify
+the base class containing the member to be accessed.
+This works fine for all public or static members, but results in a compiler error when applied to
+protected instance members.
+
+```ts
+class Apple
+{
+    protected id: number;
+}
+
+class Banana
+{
+    protected id: number;
+}
+
+class Bananapple extends classes(Apple, Banana)
+{
+    get bananaId()
+    {
+        return super.class(Banana).id; // error TS2446: Property 'id' is protected…
+    }
+}
+```
+
+As a workaround, you could use an intermediate class to expose the inherited member with a different
+name without making it public.
+
+```ts
+class BananaProxy extends Banana
+{
+    get bananaId()
+    {
+        return super.id;
+    }
+}
+
+class Bananapple extends classes(Apple, Banana)
+{ }
+```
+
 ## Compatibility
 
 Polytype was successfully tested in the following browsers / JavaScript engines.
@@ -390,3 +493,5 @@ For this reason it is recommended not to use Polytype in Edge as long as this is
 [npm url]: https://www.npmjs.com/package/polytype
 [polytype.min.js]:
 https://raw.githubusercontent.com/fasttime/Polytype/{{version}}/lib/polytype.min.js
+[Why Use for...in?]:
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#Why_Use_for...in

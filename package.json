@@ -40,9 +40,9 @@
   },
   "devDependencies": {
     "chai": "~4.2.0",
-    "del": "~4.1.1",
+    "del": "~5.0.0",
     "gulp": "~4.0.2",
-    "gulp-fasttime-lint": "~0.10.2",
+    "gulp-fasttime-lint": "~0.11.1",
     "gulp-rename": "~1.4.0",
     "gulp-terser": "~1.2.0",
     "handlebars": "~4.1.2",
@@ -50,7 +50,7 @@
     "mocha": "~6.1.4",
     "mocha-bar": "~0.0.3",
     "nyc": "~14.1.1",
-    "rollup": "~1.15.5",
+    "rollup": "~1.16.6",
     "subrequire": "~0.0.0",
     "typescript": "~3.5.2"
   },
