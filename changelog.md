@@ -1,3 +1,9 @@
+<a name="0.2.0"></a>
+## [0.2.0](https://github.com/fasttime/Polytype/releases/tag/0.2.0) (2019-07-06)
+
+* Improved documentation.
+* Dropped support for older browsers and TypeScript &lt; 3.5.
+
 <a name="0.1.0"></a>
 ## [0.1.0](https://github.com/fasttime/Polytype/releases/tag/0.1.0) (2019-06-09)
 
