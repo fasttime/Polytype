@@ -33,7 +33,7 @@ class ColoredObject
 }
 
 class ColoredCircle
-extends classes(Circle, ColoredObject) // Base classes as comma-separated params
+extends classes(Circle, ColoredObject) // Base classes as comma‐separated params
 {
     public constructor(centerX?: number, centerY?: number, radius?: number, color?: string)
     {

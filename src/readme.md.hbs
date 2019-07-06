@@ -87,7 +87,7 @@ import "polytype/global"; // ECMAScript module syntax
 
 ### In the browser
 
-In an HTML-based application, the script build of Polytype can be simply embedded.
+In an HTML‐based application, the script build of Polytype can be simply embedded.
 Just download [polytype.min.js][polytype.min.js] from GitHub and include it in your HTML file.
 
 ```html
@@ -101,7 +101,7 @@ Alternatively, you can hotlink the current stable version using a CDN of your ch
 ```
 
 If your browser application already uses ECMAScript modules, you can also import the module build
-(“.mjs”) in contexts where Polytype-specific definitions like `classes` are required.
+(“.mjs”) in contexts where Polytype specific definitions like `classes` are required.
 This has the advantage to avoid possible naming conflicts on global objects.
 
 ```js
@@ -145,7 +145,7 @@ class ColoredObject
 }
 
 class ColoredCircle
-extends classes(Circle, ColoredObject) // Base classes as comma-separated params
+extends classes(Circle, ColoredObject) // Base classes as comma‐separated params
 {
     // Add methods here.
 }
@@ -358,7 +358,7 @@ c.sayHello(); // "Hello!"
 
 ## TypeScript support
 
-Polytype has built-in TypeScript support: you can take advantage of type checking while working with
+Polytype has built‐in TypeScript support: you can take advantage of type checking while working with
 multiple inheritance without installing any additional packages.
 If you are using an IDE that supports TypeScript code completion like Visual Studio Code, you will
 get multiple inheritance sensitive suggestions as you type.
@@ -476,11 +476,11 @@ Polytype was successfully tested in the following browsers / JavaScript engines.
 
 The minimum supported TypeScript version is 3.5.
 
-Because of poor ECMAScript compliance, Safari accepts non-constructor functions (such as arrow
+Because of poor ECMAScript compliance, Safari accepts non‐constructor functions (such as arrow
 functions, generators, etc.) as arguments to
 `classes`,<sup>[[*issue*](https://bugs.webkit.org/show_bug.cgi?id=193057)]</sup> although it does
 not allow instantiating classes derived from such functions.
-Also, Safari does not throw a `TypeError` when attempting to assign to a read-only property of a
+Also, Safari does not throw a `TypeError` when attempting to assign to a read‐only property of a
 Polytype class or object in strict
 mode.<sup>[[*issue*](https://bugs.webkit.org/show_bug.cgi?id=177398)]</sup>
 

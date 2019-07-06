@@ -1,9 +1,10 @@
 <a name="0.1.0"></a>
-## [0.1.0](https://github.com/fasttime/Polytype/releases/tag/0.0.1) (2019-06-09)
+## [0.1.0](https://github.com/fasttime/Polytype/releases/tag/0.1.0) (2019-06-09)
 
 * The functions `classes` and `getPrototypeListOf` are now exported by default and no longer defined
-on globals. The global definitions can still be used by importing the "global" subdirectory package
-or by invoking the function `defineGlobally` exported by the main module.
+on globals.
+The global definitions can still be used by importing the “global” subdirectory package or by
+invoking the function `defineGlobally` exported by the main module.
 * Dropped compatibility with some obsolete versions of Chrome/Chromium and Firefox.
 
 <a name="0.0.1"></a>
