@@ -1,4 +1,4 @@
-/* eslint no-alert: off, no-process-env: off */
+/* eslint no-alert: off */
 /* eslint-env mocha, shared-node-browser */
 /* global __dirname, alert, chai, document, global, location, process, reimport, require, self */
 
@@ -322,7 +322,7 @@
         }
 
         const polytypePath =
-        getPolytypePath(process.env.extname, ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
+        getPolytypePath(process.argv[2], ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
         const extension = getExtension(polytypePath);
         switch (extension)
         {

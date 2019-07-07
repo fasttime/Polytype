@@ -389,6 +389,26 @@ Test.class(Object).create(null);
 const actualize =
 () =>
 {
+    function doCreateProgram()
+    {
+        const { dirname } = require('path');
+
+        const cwd = process.cwd();
+        {
+            const directory = dirname(dirname(__dirname));
+            process.chdir(directory);
+        }
+        try
+        {
+            const program = createProgram(fileNames, compilerOptions, host);
+            return program;
+        }
+        finally
+        {
+            process.chdir(cwd);
+        }
+    }
+
     const { compilerOptions } = require('../../tsconfig.json');
     let pkgPath;
     let header;
@@ -445,7 +465,7 @@ const actualize =
             return sourceFile;
         };
     }
-    const program = createProgram(fileNames, compilerOptions, host);
+    const program = doCreateProgram();
     for (const sourceFile of sourceFiles)
     {
         const { actualMessages } = sourceFile.testCase;

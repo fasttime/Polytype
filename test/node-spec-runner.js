@@ -1,29 +1,34 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --experimental-modules --no-warnings
 
 /* eslint-env node */
 
 'use strict';
 
-const { fork } = require('child_process');
+require('./spec-helper');
 
-const mochaPath = require.resolve('mocha/bin/_mocha');
-const [,, extname] = process.argv;
-const env = extname == null ? null : { extname };
-const execArgv = ['--no-warnings'];
-if (extname === '.mjs')
-    execArgv.push('--experimental-modules');
-const childProcess =
-fork
-(
-    mochaPath,
-    ['--color', '--require=test/spec-helper.js', 'test/init-spec.js', 'test/spec/**/*.spec.js'],
-    { env, execArgv },
-);
-childProcess.on
-(
-    'exit',
-    code =>
+const glob          = require('glob');
+const Mocha         = require('mocha');
+const { promisify } = require('util');
+
+const TEST_PATTERN = 'spec/**/*.spec.js';
+
+(async () =>
+{
+    const mocha = new Mocha();
+    mocha.addFile(require.resolve('./init-spec.js'));
+    const filenames = await promisify(glob)(TEST_PATTERN, { absolute: true, cwd: __dirname });
+    for (const filename of filenames)
+        mocha.addFile(filename);
     {
-        process.exitCode = code;
-    },
-);
+        const debug = process.execArgv.some(arg => arg.startsWith('--inspect-brk='));
+        mocha.enableTimeouts(!debug);
+    }
+    mocha.run
+    (
+        failures =>
+        {
+            process.exitCode = failures ? 1 : 0;
+        },
+    );
+}
+)();
