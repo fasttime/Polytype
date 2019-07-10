@@ -21,7 +21,7 @@ async function bundle(inputPath, outputPath, format)
     await bundle.write(outputOptions);
 }
 
-function minify(srcGlobs, extname)
+function minify(srcGlobs, module, extname)
 {
     const rename = require('gulp-rename');
     const terser = require('gulp-terser');
@@ -29,6 +29,8 @@ function minify(srcGlobs, extname)
     const minifyOpts =
     {
         compress: { hoist_funs: true, passes: 2 },
+        ecma: 8,
+        module,
         output: { comments: (node, comment) => comment.pos === 0 },
     };
     const stream =
@@ -129,9 +131,9 @@ task('bundle:esm', () => bundle('src/polytype-esm.js', 'lib/polytype.mjs', 'esm'
 
 task('bundle:global', () => bundle('src/polytype-global.js', 'lib/polytype.js', 'iife'));
 
-task('minify:esm', () => minify('lib/polytype.mjs', '.min.mjs'));
+task('minify:esm', () => minify('lib/polytype.mjs', true, '.min.mjs'));
 
-task('minify:global', () => minify('lib/polytype.js', '.min.js'));
+task('minify:global', () => minify('lib/polytype.js', false, '.min.js'));
 
 task
 (

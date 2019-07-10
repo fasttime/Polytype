@@ -146,11 +146,11 @@ export function defineGlobally(): boolean;
 
 /**
  * Returns a list of prototypes of an object.
- * * For regular objects with a non-null prototype, an array containing the prototype as its only
+ * * For objects with a regular non‐null prototype, an array containing the prototype as its only
  * element is returned.
- * * For regular objects with a null prototype, an empty array is returned.
- * * For Polytype clustered objects, an array containing all zero or more prototypes of the
- * object is returned.
+ * * For objects with a null prototype, an empty array is returned.
+ * * For constructors and instance prototypes based on Polytype clustered objects, an array
+ * containing all zero or more prototypes of the object is returned.
  *
  * @param o
  *

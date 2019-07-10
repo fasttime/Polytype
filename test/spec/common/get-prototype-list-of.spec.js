@@ -5,7 +5,7 @@
 
 describe
 (
-    'Object.getPrototypeListOf',
+    'getPrototypeListOf',
     () =>
     {
         function testGetPrototypeListOf(obj, expected)
@@ -72,23 +72,6 @@ describe
         );
         it
         (
-            'returns the prototype of a multiple inheritance class',
-            () =>
-            {
-                class A
-                { }
-
-                class B
-                { }
-
-                class C extends classes(A, B)
-                { }
-
-                testGetPrototypeListOf(C, [Object.getPrototypeOf(C)]);
-            },
-        );
-        it
-        (
             'returns the prototype of a multiple inheritance instance',
             () =>
             {
@@ -106,7 +89,7 @@ describe
         );
         it
         (
-            'returns all prototypes of a clustered constructor',
+            'returns a new empty array for a clustered constructor',
             () =>
             {
                 const A =
@@ -116,12 +99,45 @@ describe
                 class
                 { };
                 const _AB = classes(A, B);
-                testGetPrototypeListOf(_AB, [A, B]);
+                testGetPrototypeListOf(_AB, []);
             },
         );
         it
         (
-            'returns all prototypes of a clustered prototype excluding null and duplicates',
+            'returns a new empty array for a clustered prototype',
+            () =>
+            {
+                const A =
+                class
+                { };
+                const B =
+                class
+                { };
+                const _AB = classes(A, B);
+                testGetPrototypeListOf(_AB.prototype, []);
+            },
+        );
+        it
+        (
+            'returns the prototypes of a multiple inheritance constructor',
+            () =>
+            {
+                class A
+                { }
+
+                class B
+                { }
+
+                class C extends classes(A, B)
+                { }
+
+                testGetPrototypeListOf(C, [A, B]);
+            },
+        );
+        it
+        (
+            'returns all prototypes of a multiple inheritance prototype excluding null and ' +
+            'duplicates',
             () =>
             {
                 const A =
@@ -135,8 +151,10 @@ describe
                 function ()
                 { };
                 D.prototype = A.prototype;
-                const _ABCD = classes(A, B, C, D);
-                testGetPrototypeListOf(_ABCD.prototype, [A.prototype, C.prototype]);
+                const ABCD =
+                class extends classes(A, B, C, D)
+                { };
+                testGetPrototypeListOf(ABCD.prototype, [A.prototype, C.prototype]);
             },
         );
         maybeIt
@@ -144,6 +162,11 @@ describe
             typeof document !== 'undefined',
             'returns a one element array if an object has document.all for prototype',
             () => testGetPrototypeListOf(Object.create(document.all), [document.all]),
+        );
+        it
+        (
+            'throws a TypeError with null',
+            () => assert.throws(() => Object.getPrototypeListOf(null), TypeError),
         );
     },
 );
