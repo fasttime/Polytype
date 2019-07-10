@@ -27,7 +27,7 @@ As JavaScript support in other browsers improves, Polytype will start to run in 
 
 ## Features
 
-* C++ style multiple inheritance
+* Python style multiple inheritance
 * Works in Node.js and in most browsers
 * Full TypeScript support
 * Zero dependencies
@@ -202,8 +202,8 @@ particular base class in the body of a derived class.
 
 **Note:**
 In TypeScript, the syntax described here cannot be used to access protected instance members, so it
-is currently not possible to disambiguate between protected instance members having the same name or
-property key in different base classes.
+is currently not possible to disambiguate between protected instance members having the same name,
+the same index or the same symbol in different base classes.
 
 ### Static methods and properties
 
@@ -414,7 +414,41 @@ for (const name in BazClass)
 For this reason, and because generally [better alternatives exist][Why Use for...in?], iterating
 over Polytype classes and their derived classes with `for...in` is not recommended.
 
-### Homonymous protected instance members
+### Member resolution order
+
+Multiple base classes may expose members with the same name, the same index or the same symbol.
+When this happens, any unqualified access to one of those members will have to determine the
+implementation to be used.
+The approach taken by Polytype is to pick the implementation found in the first direct base class
+that contains the member.
+
+```js
+class A
+{ }
+
+class B
+{
+    whoAmI() { console.log("B"); }
+}
+
+class C
+{
+    whoAmI() { console.log("C"); }
+}
+
+class ABC extends classes(A, B, C)
+{ }
+
+const abc = new ABC();
+abc.whoAmI(); // Prints "B".
+```
+
+This is similar to what happens in programming languages that use
+[C3 linearization](https://en.wikipedia.org/wiki/C3_linearization) such as Python, but it is not the
+only reasonable behavior in these cases, and it may not match your expectations if you come from a
+C++ background.
+
+### Ambiguous protected instance members
 
 TypeScript class members can have
 [protected](https://www.typescriptlang.org/docs/handbook/classes.html#understanding-protected)
