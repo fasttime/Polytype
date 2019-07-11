@@ -31,15 +31,9 @@ describe
                     async () =>
                     {
                         const expectedClasses = Function();
-                        const self = { classes: expectedClasses };
+                        const self = { __proto__: globalThis, classes: expectedClasses };
                         Object.defineProperties
-                        (
-                            globalThis,
-                            {
-                                self: { value: self, configurable: true },
-                                global: { value: undefined, configurable: true },
-                            },
-                        );
+                        (globalThis, { self: { value: self, configurable: true } });
                         await loadPolytype();
                         assert.strictEqual(self.classes, expectedClasses);
                     },
@@ -50,7 +44,7 @@ describe
                     async () =>
                     {
                         const expectedClasses = Function();
-                        const global = { classes: expectedClasses };
+                        const global = { __proto__: globalThis, classes: expectedClasses };
                         Object.defineProperties
                         (
                             globalThis,
@@ -61,6 +55,7 @@ describe
                         );
                         await loadPolytype();
                         assert.strictEqual(global.classes, expectedClasses);
+                        delete global.classes;
                     },
                 );
             },
