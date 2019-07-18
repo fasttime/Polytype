@@ -418,7 +418,8 @@ multiple inheritance without installing any additional packages.
 If you are using an IDE that supports TypeScript code completion like Visual Studio Code, you will
 get multiple inheritance sensitive suggestions as you type.
 A TypeScript version of the `ColoredCircle` sample code above can be found in
-[ColoredCircle.ts](example/ColoredCircle.ts) in the example folder.
+[ColoredCircle.ts](https://github.com/fasttime/Polytype/blob/0.3.0/example/ColoredCircle.ts)
+in the example folder.
 
 ## Caveats
 
