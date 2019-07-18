@@ -62,12 +62,13 @@ task
     'make-ts-defs',
     async () =>
     {
+        const { version }                   = require('./package.json');
         const { promises: { writeFile } }   = require('fs');
         const Handlebars                    = require('handlebars');
 
         async function writeOutput(outputPath, asModule)
         {
-            const output = template({ asModule });
+            const output = template({ asModule, version });
             await writeFile(outputPath, output);
         }
 
