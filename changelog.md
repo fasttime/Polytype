@@ -1,3 +1,9 @@
+<a name="0.3.0"></a>
+## [0.3.0](https://github.com/fasttime/Polytype/releases/tag/0.3.0) (2019-07-18)
+
+* Changed and documented use of `getPrototypeListOf` with class constructors.
+* Extended and improved documentation.
+
 <a name="0.2.0"></a>
 ## [0.2.0](https://github.com/fasttime/Polytype/releases/tag/0.2.0) (2019-07-06)
 
