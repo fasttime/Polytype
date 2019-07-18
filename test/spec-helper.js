@@ -342,13 +342,13 @@
             break;
         case '.mjs':
             {
-                const subrequire = require('subrequire');
+                const postrequire = require('postrequire');
 
                 const modulePath = path.resolve(__dirname, '../lib/polytype.mjs');
                 loadPolytype =
                 async () =>
                 {
-                    const reimport = subrequire('./_reimport');
+                    const reimport = postrequire('./_reimport');
 
                     const { defineGlobally } = await reimport(modulePath);
                     defineGlobally();

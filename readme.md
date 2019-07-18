@@ -23,6 +23,9 @@ Safari<sup>[[*notes*](#compatibility "Safari is only partially supported. See th
 section for details.")]</sup>, Opera and in Node.js**.
 As JavaScript support in other browsers improves, Polytype will start to run in those browsers, too.
 
+## Contents
+
+- [Contents](#contents)
 - [Features](#features)
 - [Setup Instructions](#setup-instructions)
   * [In Node.js](#in-nodejs)
@@ -35,6 +38,7 @@ As JavaScript support in other browsers improves, Polytype will start to run in 
   * [`instanceof`](#instanceof)
   * [`in`](#in)
   * [`isPrototypeOf`](#isprototypeof)
+  * [Finding the base classes](#finding-the-base-classes)
   * [Dynamic base class changes](#dynamic-base-class-changes)
 - [TypeScript support](#typescript-support)
 - [Caveats](#caveats)
@@ -360,6 +364,39 @@ console.log(ColoredCircle.isPrototypeOf(ColoredCircle));        // false
 console.log(Object.isPrototypeOf(ColoredCircle));               // false
 console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
 ```
+
+### Finding the base classes
+
+In single inheritance JavaScript, the direct base class of a derived class is obtained with
+`Object.getPrototypeOf`.
+
+```js
+const DirectBaseClass = Object.getPrototypeOf(DerivedClass);
+```
+
+If a class has no explicit `extends` clause, `Object.getPrototypeOf` returns `Function.prototype`,
+the base of all classes.
+
+Of course this method cannot work with multiple inheritance, since there is no way to return
+multiple classes without packing them in some kind of structure.
+For this and other use cases, Polytype exports the function `getPrototypeListOf`, which can be used
+to get an array of direct base classes given a derived class.
+
+```js
+const { getPrototypeListOf } = require("polytype"); // Or some other kind of import.
+
+function getBaseNames(derivedClass)
+{
+    return getPrototypeListOf(derivedClass).map(({ name }) => name);
+}
+
+console.log(getBaseNames(ColoredCircle));   // ["Circle", "ColoredObject"]
+console.log(getBaseNames(Int8Array));       // ["TypedArray"]
+console.log(getBaseNames(Circle));          // [""] i.e. [Function.prototype.name]
+```
+
+If you use the script build of Polytype, no functions will be exported.
+Instead, `getPrototypeListOf` will be defined globally as `Object.getPrototypeListOf`.
 
 ### Dynamic base class changes
 

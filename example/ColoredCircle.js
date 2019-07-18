@@ -1,4 +1,4 @@
-const { classes } = require("..");
+const { classes, getPrototypeListOf } = require("..");
 
 class Circle
 {
@@ -116,6 +116,15 @@ console.log(ColoredObject.isPrototypeOf(ColoredCircle));        // true
 console.log(ColoredCircle.isPrototypeOf(ColoredCircle));        // false
 console.log(Object.isPrototypeOf(ColoredCircle));               // false
 console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
+
+function getBaseNames(derivedClass)
+{
+    return getPrototypeListOf(derivedClass).map(({ name }) => name);
+}
+
+console.log(getBaseNames(ColoredCircle));   // ["Circle", "ColoredObject"]
+console.log(getBaseNames(Int8Array));       // ["TypedArray"]
+console.log(getBaseNames(Circle));          // [""] i.e. [Function.prototype.name]
 
 Circle.prototype.sayHello = () => console.log("Hello!");
 c.sayHello(); // "Hello!"

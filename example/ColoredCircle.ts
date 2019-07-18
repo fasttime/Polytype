@@ -1,4 +1,4 @@
-import { classes } from "..";
+import { classes, getPrototypeListOf } from "..";
 
 class Circle
 {
@@ -120,6 +120,15 @@ console.log(ColoredObject.isPrototypeOf(ColoredCircle));        // true
 console.log(ColoredCircle.isPrototypeOf(ColoredCircle));        // false
 console.log(Object.isPrototypeOf(ColoredCircle));               // false
 console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
+
+function getBaseNames(derivedClass: Function): string[]
+{
+    return getPrototypeListOf(derivedClass).map(({ name }): string => name);
+}
+
+console.log(getBaseNames(ColoredCircle));   // ["Circle", "ColoredObject"]
+console.log(getBaseNames(Int8Array));       // ["TypedArray"]
+console.log(getBaseNames(Circle));          // [""] i.e. [Function.prototype.name]
 
 type Hello<T> = T & { sayHello(): void; };
 (Circle.prototype as Hello<Circle>).sayHello = (): void => console.log("Hello!");
