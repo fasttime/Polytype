@@ -476,7 +476,7 @@ Multiple base classes may expose members with the same name, the same index or t
 When this happens, any unqualified access to one of those members will have to determine the
 implementation to be used.
 The approach taken by Polytype is to pick the implementation found in the first direct base class
-that contains the member.
+that contains the (possibly inherited) member.
 
 ```js
 class A
@@ -499,10 +499,9 @@ const abc = new ABC();
 abc.whoAmI(); // Prints "B".
 ```
 
-This is similar to what happens in programming languages that use
-[C3 linearization](https://en.wikipedia.org/wiki/C3_linearization) such as Python, but it is not the
-only reasonable behavior in these cases, and it may not match your expectations if you come from a
-C++ background.
+This is similar to the depth‐first search algorithm of old‐style classes in Python 2, but it is
+different from the behavior of several other programming languages that support multiple
+inheritance, and it may not match your expectations if you come from a C++ background.
 
 ### Ambiguous protected instance members
 

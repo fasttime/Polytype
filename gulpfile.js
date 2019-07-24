@@ -114,7 +114,6 @@ task
                 parserOptions: { ecmaVersion: 7, project: 'tsconfig.json', sourceType: 'module' },
                 rules:
                 {
-                    '@typescript-eslint/unbound-method':    'off',
                     'brace-style':                          'off',
                     'no-unused-vars':
                     ['error', { varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$' }],
