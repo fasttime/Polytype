@@ -40,7 +40,7 @@ extends classes(Circle, ColoredObject) // Base classes as comma‐separated para
         super
         (
             [centerX, centerY, radius], // Circle constructor params
-            [color]                     // ColoredObject constructor params
+            [color],                    // ColoredObject constructor params
         );
     }
     public paint(): void
@@ -63,7 +63,7 @@ extends classes(Circle, ColoredObject)
         super
         (
             { super: ColoredObject, arguments: ["green"] },
-            { super: Circle, arguments: [centerX, centerY, radius] }
+            { super: Circle, arguments: [centerX, centerY, radius] },
         );
     }
 }

@@ -4,6 +4,8 @@
 
 'use strict';
 
+const INSPECT_BRK_REG_EXP = /^--inspect-brk(?![^=])/;
+
 function testExecArgv(regExp)
 {
     const returnValue = execArgv.some(arg => regExp.test(arg));
@@ -17,8 +19,11 @@ if (!testExecArgv(/^--experimental-modules(?![^=])/))
     const { fork } = require('child_process');
 
     const [, modulePath, ...args] = process.argv;
-    execArgv.push('--experimental-modules', '--no-warnings');
-    const childProcess = fork(modulePath, args, { execArgv });
+    const childExecArgv = execArgv.filter(execArg => !INSPECT_BRK_REG_EXP.test(execArg));
+    if (childExecArgv.length < execArgv.length)
+        childExecArgv.unshift('inspect');
+    childExecArgv.push('--experimental-modules', '--no-warnings');
+    const childProcess = fork(modulePath, args, { execArgv: childExecArgv });
     childProcess.on
     (
         'exit',
@@ -46,7 +51,7 @@ const TEST_PATTERN = 'spec/**/*.spec.js';
     for (const filename of filenames)
         mocha.addFile(filename);
     {
-        const debug = testExecArgv(/^--inspect-brk(?![^=])/);
+        const debug = testExecArgv(INSPECT_BRK_REG_EXP);
         mocha.enableTimeouts(!debug);
     }
     mocha.run
