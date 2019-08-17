@@ -8,7 +8,7 @@ class Circle
     {
         this.moveTo(centerX, centerY);
     }
-    public get diameter(): number { return this.radius as number * 2; }
+    public get diameter(): number { return this.radius! * 2; }
     public set diameter(diameter: number) { this.radius = diameter / 2; }
     public moveTo(centerX?: number, centerY?: number): void
     {
@@ -123,7 +123,7 @@ console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
 
 function getBaseNames(derivedClass: Function): string[]
 {
-    return getPrototypeListOf(derivedClass).map(({ name }): string => name);
+    return getPrototypeListOf(derivedClass).map(({ name }: { name: string; }): string => name);
 }
 
 console.log(getBaseNames(ColoredCircle));   // ["Circle", "ColoredObject"]

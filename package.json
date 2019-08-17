@@ -42,7 +42,7 @@
     "chai": "~4.2.0",
     "del": "~5.0.0",
     "gulp": "~4.0.2",
-    "gulp-fasttime-lint": "~0.14.0",
+    "gulp-fasttime-lint": "~0.15.0",
     "gulp-rename": "~1.4.0",
     "gulp-terser": "~1.2.0",
     "handlebars": "~4.1.2",
