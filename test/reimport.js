@@ -1,3 +1,5 @@
+/* global module, self */
+
 'use strict';
 
 {

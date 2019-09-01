@@ -104,8 +104,8 @@ task
                 rules: { 'max-len': 'off' },
             },
             {
-                src: ['*.js', 'test/**/*.js', '!**/_*'],
-                parserOptions: { ecmaVersion: 8 },
+                src: ['*.js', 'test/**/*.js'],
+                parserOptions: { ecmaVersion: 11 },
             },
             {
                 src: 'example/**/*.{js,ts}',

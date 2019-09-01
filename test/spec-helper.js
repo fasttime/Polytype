@@ -348,7 +348,7 @@
                 loadPolytype =
                 async () =>
                 {
-                    const reimport = postrequire('./_reimport');
+                    const reimport = postrequire('./reimport');
 
                     const { defineGlobally } = await reimport(modulePath);
                     defineGlobally();

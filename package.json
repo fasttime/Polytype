@@ -40,9 +40,9 @@
   },
   "devDependencies": {
     "chai": "~4.2.0",
-    "del": "~5.0.0",
+    "del": "~5.1.0",
     "gulp": "~4.0.2",
-    "gulp-fasttime-lint": "~0.15.0",
+    "gulp-fasttime-lint": "~0.16.0",
     "gulp-rename": "~1.4.0",
     "gulp-terser": "~1.2.0",
     "handlebars": "~4.1.2",
@@ -51,10 +51,11 @@
     "mocha-bar": "~0.0.3",
     "nyc": "~14.1.1",
     "postrequire": "~0.1.1",
-    "rollup": "~1.19.4",
-    "typescript": "~3.5.3"
+    "rollup": "~1.20.3",
+    "semver": "~6.3.0",
+    "typescript": "~3.6.2"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.6.0"
   }
 }

@@ -3,6 +3,16 @@
 
 'use strict';
 
+const switchByTypeScriptVersion =
+(versionRange, messageTrue, messageFalse) =>
+{
+    const { satisfies } = require('semver');
+    const { version }   = require('typescript/package.json');
+
+    const message = satisfies(version, versionRange) ? messageTrue : messageFalse;
+    return message;
+};
+
 const testCases =
 [
     {
@@ -218,10 +228,27 @@ class extends classes(B)
 };
         `,
         expectedMessage:
-        'Argument of type \'{ super: typeof A; }\' is not assignable to parameter of type ' +
-        '\'readonly []\'.\n' +
-        '  Object literal may only specify known properties, and \'super\' does not exist in ' +
-        'type \'readonly []\'.',
+        switchByTypeScriptVersion
+        (
+            '<3.6.0',
+            // TypeScript before 3.6
+            'Argument of type \'{ super: typeof A; }\' is not assignable to parameter of type ' +
+            '\'readonly []\'.\n' +
+            '  Object literal may only specify known properties, and \'super\' does not exist in ' +
+            'type \'readonly []\'.',
+            // TypeScript 3.6 or later
+            'No overload matches this call.\n' +
+            '  Overload 1 of 2, \'(args_0?: readonly [] | undefined): ' +
+            'ClusteredPrototype<[typeof B]>\', gave the following error.\n' +
+            '    Argument of type \'{ super: typeof A; }\' is not assignable to parameter of ' +
+            'type \'readonly []\'.\n' +
+            '      Object literal may only specify known properties, and \'super\' does not ' +
+            'exist in type \'readonly []\'.\n' +
+            '  Overload 2 of 2, \'(...args: Readonly<SuperConstructorInvokeInfo<typeof B>>[]): ' +
+            'ClusteredPrototype<[typeof B]>\', gave the following error.\n' +
+            '    Type \'typeof A\' is not assignable to type \'typeof B\'.\n' +
+            '      Property \'b\' is missing in type \'A\' but required in type \'B\'.',
+        ),
     },
     {
         title: 'super.class in nonstatic context with indirect superclass',
@@ -451,10 +478,10 @@ const actualize =
         (fileName, languageVersion, onError) =>
         {
             let sourceFile;
-            const match = /^:(\d+)\.ts$/.exec(fileName);
+            const match = /^:(?<baseName>\d+)\.ts$/.exec(fileName);
             if (match)
             {
-                const testCase = testCases[match[1]];
+                const testCase = testCases[match.groups.baseName];
                 const sourceText = `${header}${testCase.code}`;
                 sourceFile = createSourceFile(fileName, sourceText);
                 sourceFile.testCase = testCase;
