@@ -559,19 +559,16 @@ Polytype was successfully tested in the following browsers / JavaScript engines.
 
 * Chrome 63+
 * Firefox 67+
-* Safari 11+ *(Partial support. See notes below.)*
+* Safari 13+ *(Partial support. See notes below.)*
 * Opera 50+
 * Node.js 10.6+
 
 The minimum supported TypeScript version is 3.5.
 
-Because of poor ECMAScript compliance, Safari accepts non‐constructor functions (such as arrow
+Because of poor ECMAScript compliance, Safari accepts some non‐constructor functions (such as arrow
 functions, generators, etc.) as arguments to
 `classes`,<sup>[[*issue*](https://bugs.webkit.org/show_bug.cgi?id=193057)]</sup> although it does
 not allow instantiating classes derived from such functions.
-Also, Safari does not throw a `TypeError` when attempting to assign to a read‐only property of a
-Polytype class or object in strict
-mode.<sup>[[*issue*](https://bugs.webkit.org/show_bug.cgi?id=177398)]</sup>
 
 In the current version of Edge, the JavaScript engine Chakra has
 [a serious bug](https://github.com/Microsoft/ChakraCore/issues/5883) that can produce incorrect
