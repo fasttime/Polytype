@@ -1,3 +1,10 @@
+<a name="0.4.0"></a>
+## [0.4.0](https://github.com/fasttime/Polytype/releases/tag/0.4.0) (2019-09-22)
+
+* Full Safari 13 compatibility – dropped support for older versions of Safari.
+* Dropped support for Node.js &lt; 10.6.
+* Updated code examples.
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/fasttime/Polytype/releases/tag/0.3.1) (2019-07-24)
 

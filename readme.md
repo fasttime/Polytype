@@ -117,7 +117,7 @@ Just download [polytype.min.js][polytype.min.js] from GitHub and include it in y
 Alternatively, you can hotlink the current stable version using a CDN of your choice.
 
 ```html
-<script src="https://cdn.statically.io/gh/fasttime/Polytype/0.3.1/lib/polytype.min.js"></script>
+<script src="https://cdn.statically.io/gh/fasttime/Polytype/0.4.0/lib/polytype.min.js"></script>
 ```
 
 If your browser application already uses ECMAScript modules, you can also import the module build
@@ -125,7 +125,7 @@ If your browser application already uses ECMAScript modules, you can also import
 This has the advantage to avoid possible naming conflicts on global objects.
 
 ```js
-import { classes } from "https://cdn.statically.io/gh/fasttime/Polytype/0.3.1/lib/polytype.min.mjs";
+import { classes } from "https://cdn.statically.io/gh/fasttime/Polytype/0.4.0/lib/polytype.min.mjs";
 ```
 
 ## Usage
@@ -416,7 +416,7 @@ multiple inheritance without installing any additional packages.
 If you are using an IDE that supports TypeScript code completion like Visual Studio Code, you will
 get multiple inheritance sensitive suggestions as you type.
 A TypeScript version of the `ColoredCircle` sample code above can be found in
-[ColoredCircle.ts](https://github.com/fasttime/Polytype/blob/0.3.1/example/ColoredCircle.ts)
+[ColoredCircle.ts](https://github.com/fasttime/Polytype/blob/0.4.0/example/ColoredCircle.ts)
 in the example folder.
 
 ## Caveats
@@ -571,6 +571,6 @@ For this reason it is recommended not to use Polytype in Edge as long as this is
 [npm badge]: https://badge.fury.io/js/polytype.svg
 [npm url]: https://www.npmjs.com/package/polytype
 [polytype.min.js]:
-https://raw.githubusercontent.com/fasttime/Polytype/0.3.1/lib/polytype.min.js
+https://raw.githubusercontent.com/fasttime/Polytype/0.4.0/lib/polytype.min.js
 [Why Use for...in?]:
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#Why_Use_for...in
