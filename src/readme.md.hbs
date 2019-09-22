@@ -18,9 +18,7 @@ Polytype uses
 [proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
 along with other relatively new language features to provide multiple inheritance.
 Some of these features are not yet well supported in all browsers.
-As of today, Polytype runs in **current versions of Chrome, Firefox,
-Safari<sup>[[*notes*](#compatibility "Safari is only partially supported. See the Compatibility
-section for details.")]</sup>, Opera and in Node.js**.
+As of today, Polytype runs in **current versions of Chrome, Firefox, Safari, Opera and in Node.js**.
 As JavaScript support in other browsers improves, Polytype will start to run in those browsers, too.
 
 ## Contents
@@ -539,18 +537,13 @@ Polytype was successfully tested in the following browsers / JavaScript engines.
 
 * Chrome 63+
 * Firefox 67+
-* Safari 13+ *(Partial support. See notes below.)*
+* Safari 13+
 * Opera 50+
 * Node.js 10.6+
 
 The minimum supported TypeScript version is 3.5.
 
-Because of poor ECMAScript compliance, Safari accepts some non‐constructor functions (such as arrow
-functions, generators, etc.) as arguments to
-`classes`,<sup>[[*issue*](https://bugs.webkit.org/show_bug.cgi?id=193057)]</sup> although it does
-not allow instantiating classes derived from such functions.
-
-In the current version of Edge, the JavaScript engine Chakra has
+In the current version of the Edge browser, the JavaScript engine Chakra still contains
 [a serious bug](https://github.com/Microsoft/ChakraCore/issues/5883) that can produce incorrect
 results when the `instanceof` operator is used with bound functions after Polytype has been loaded.
 For this reason it is recommended not to use Polytype in Edge as long as this issue persists.

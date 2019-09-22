@@ -3,6 +3,28 @@
 
 'use strict';
 
+function areFieldInitializersSupported()
+{
+    try
+    {
+        eval
+        (
+            `
+            (
+                class
+                {
+                    foo = 1;
+                }
+            )`,
+        );
+        return true;
+    }
+    catch
+    {
+        return false;
+    }
+}
+
 describe
 (
     'classes',
@@ -65,6 +87,47 @@ describe
                 const Foo = createFunctionWithGetPrototypeCount();
                 classes(Foo);
                 assert.equal(Foo.getPrototypeCount, 1);
+            },
+        );
+        it
+        (
+            'does not invoke its arguments',
+            () =>
+            {
+                function Foo()
+                {
+                    superInvoked = true;
+                }
+
+                let superInvoked = false;
+                classes(Foo);
+                assert.isFalse(superInvoked);
+            },
+        );
+        maybeIt
+        (
+            areFieldInitializersSupported(),
+            'does not invoke field initializers',
+            () =>
+            {
+                const Foo =
+                eval
+                (
+                    `
+                    (
+                        class
+                        {
+                            foo = (superInvoked = true);
+
+                            constructor()
+                            { }
+                        }
+                    )`,
+                );
+                // eslint-disable-next-line prefer-const
+                let superInvoked = false;
+                classes(Foo);
+                assert.isFalse(superInvoked);
             },
         );
 
