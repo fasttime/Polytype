@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global BigInt, assert, classes, createFunctionWithGetPrototypeCount, exactRegExp, maybeIt */
+/* global assert, classes, createFunctionWithGetPrototypeCount, exactRegExp, maybeIt */
 
 'use strict';
 

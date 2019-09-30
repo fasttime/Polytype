@@ -145,7 +145,7 @@
                 };
                 return value;
             }
-            set aSetOnly(arg)
+            set aSetOnly(arg) // eslint-disable-line accessor-pairs
             {
                 callData.A =
                 {
@@ -168,7 +168,7 @@
                 };
                 return value;
             }
-            static set aStaticSet(arg)
+            static set aStaticSet(arg) // eslint-disable-line accessor-pairs
             {
                 callData.A =
                 {
@@ -212,7 +212,7 @@
                 };
                 return value;
             }
-            set bSetOnly(arg)
+            set bSetOnly(arg) // eslint-disable-line accessor-pairs
             {
                 callData.B =
                 {
@@ -235,7 +235,7 @@
                 };
                 return value;
             }
-            static set bStaticSet(arg)
+            static set bStaticSet(arg) // eslint-disable-line accessor-pairs
             {
                 callData.B =
                 {

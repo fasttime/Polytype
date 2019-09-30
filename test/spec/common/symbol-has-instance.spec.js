@@ -1,6 +1,6 @@
 
 /* eslint-env mocha */
-/* global BigInt, assert, classes, createNullPrototypeFunction, document, maybeIt */
+/* global assert, classes, createNullPrototypeFunction, document, maybeIt */
 
 'use strict';
 

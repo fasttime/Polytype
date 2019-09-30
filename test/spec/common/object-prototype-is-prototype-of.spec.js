@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global BigInt, assert, classes, document, maybeIt */
+/* global assert, classes, document, maybeIt */
 
 'use strict';
 
