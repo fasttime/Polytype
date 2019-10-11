@@ -195,7 +195,11 @@ describe
                     () =>
                     {
                         const { A, C } = setupTestData(classes);
-                        assert.isNotNull(C.getStaticSuper(A));
+                        const CConstructor =
+                        function ()
+                        { };
+                        CConstructor.prototype = Object.getPrototypeOf(C);
+                        assert.instanceOf(C.getStaticSuper(A), CConstructor);
                     },
                 );
                 it

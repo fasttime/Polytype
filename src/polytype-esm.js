@@ -1,6 +1,7 @@
 const EMPTY_ARRAY = [];
 
-const _Function_prototype   = Function.prototype;
+const _Function             = Function;
+const _Function_prototype   = _Function.prototype;
 const _Map                  = Map;
 const _Object               = Object;
 const
@@ -513,6 +514,7 @@ const propFilter = prop => obj => prop in obj;
 const prototypeSetMap = new WeakMap();
 
 defineConfigurableDataProperty(classes, 'name', 'classes', false);
+defineHasInstanceProperty(_Function);
 defineHasInstanceProperty(_Object);
 defineConfigurableDataProperty(_Object_prototype, 'isPrototypeOf', isPrototypeOf);
 

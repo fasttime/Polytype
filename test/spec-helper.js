@@ -15,7 +15,8 @@
         };
         let classesDescriptor;
         let getPrototypeListOfDescriptor;
-        let hasInstanceDescriptor;
+        let fnHasInstanceDescriptor;
+        let objHasInstanceDescriptor;
         let isPrototypeOfDescriptor;
         before
         (
@@ -25,7 +26,9 @@
                 Object.getOwnPropertyDescriptor(global, 'classes');
                 getPrototypeListOfDescriptor =
                 Object.getOwnPropertyDescriptor(Object, 'getPrototypeListOf');
-                hasInstanceDescriptor =
+                fnHasInstanceDescriptor =
+                Object.getOwnPropertyDescriptor(Function, Symbol.hasInstance);
+                objHasInstanceDescriptor =
                 Object.getOwnPropertyDescriptor(Object, Symbol.hasInstance);
                 isPrototypeOfDescriptor =
                 Object.getOwnPropertyDescriptor(Object.prototype, 'isPrototypeOf');
@@ -45,10 +48,17 @@
                 Object.defineProperty(global, 'classes', classesDescriptor);
                 Object.defineProperties
                 (
+                    Function,
+                    {
+                        [Symbol.hasInstance]: fnHasInstanceDescriptor,
+                    },
+                );
+                Object.defineProperties
+                (
                     Object,
                     {
                         getPrototypeListOf: getPrototypeListOfDescriptor,
-                        [Symbol.hasInstance]: hasInstanceDescriptor,
+                        [Symbol.hasInstance]: objHasInstanceDescriptor,
                     },
                 );
                 // eslint-disable-next-line no-extend-native
