@@ -1,4 +1,4 @@
-// Type definitions for Polytype 0.4.0
+// Type definitions for Polytype 0.5.0
 
 declare namespace Polytype
 {
