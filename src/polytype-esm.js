@@ -81,7 +81,11 @@ const classes =
             prototypeSet.add(prototype);
     }
     const constructorProxy = createConstructorProxy(typeSet, prototypeSet);
-    installHasInstance(types);
+    {
+        const installedSet = new _Set();
+        installHasInstanceOnConstructors(typeSet, installedSet);
+        installHasInstanceOnConstructors(prototypeSet, installedSet);
+    }
     return constructorProxy;
 };
 
@@ -378,6 +382,15 @@ obj =>
     return prototypes;
 };
 
+const isFunctionPrototype =
+obj =>
+isCallable(obj) &&
+_Object_prototype_hasOwnProperty_call(obj, 'apply') &&
+_Object_prototype_hasOwnProperty_call(obj, 'bind') &&
+_Object_prototype_hasOwnProperty_call(obj, 'call') &&
+!_Object_prototype_hasOwnProperty_call(obj, 'prototype') &&
+_Object_prototype_hasOwnProperty_call(obj, _Symbol_hasInstance);
+
 const { [_Symbol_hasInstance]: hasInstance } =
 class
 {
@@ -405,20 +418,34 @@ class
 
 let hasInstancePending = false;
 
-function installHasInstance(types)
+function installHasInstance(obj, installedSet)
 {
+    if (isFunctionPrototype(obj))
+        return false;
+    if (installedSet.has(obj))
+        return true;
+    installedSet.add(obj);
+    const prototypes = getPrototypesOf(obj);
     let installed = false;
-    for (const type of types)
+    for (const prototype of prototypes)
     {
-        if (type !== _Function_prototype && isObject(type))
-        {
+        if (isObject(prototype) && installHasInstance(prototype, installedSet))
             installed = true;
-            const superTypes = getPrototypesOf(type);
-            if (!installHasInstance(superTypes))
-                defineHasInstanceProperty(type);
-        }
     }
-    return installed;
+    if (!installed)
+        defineHasInstanceProperty(obj);
+    return true;
+}
+
+function installHasInstanceOnConstructors(objs, installedSet)
+{
+    for (const obj of objs)
+    {
+        // Safari does not allow destructuring document.all in the iteration of a for-of statement.
+        const constructor = obj.constructor; // eslint-disable-line prefer-destructuring
+        if (isConstructor(constructor))
+            installHasInstance(constructor, installedSet);
+    }
 }
 
 const isCallable = obj => typeof obj === 'function';
@@ -514,8 +541,6 @@ const propFilter = prop => obj => prop in obj;
 const prototypeSetMap = new WeakMap();
 
 defineConfigurableDataProperty(classes, 'name', 'classes', false);
-defineHasInstanceProperty(_Function);
-defineHasInstanceProperty(_Object);
 defineConfigurableDataProperty(_Object_prototype, 'isPrototypeOf', isPrototypeOf);
 
 export { classes, defineGlobally, getPrototypeListOf };

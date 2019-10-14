@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createNullPrototypeFunction, global, setupTestData */
+/* global assert, classes, createNullPrototypeFunction, global, newRealm, setupTestData */
 
 'use strict';
 
@@ -20,9 +20,9 @@ describe
                     {
                         const A = createNullPrototypeFunction('A');
                         const B =
-                        () =>
+                        function ()
                         { };
-                        B.prototype = { };
+                        B.prototype = { constructor: B };
                         const C = Object.create(B);
                         C.prototype = Object.create(B.prototype);
                         const D =
@@ -71,31 +71,21 @@ describe
             {
                 it
                 (
-                    'with a function that is an instance of Function',
-                    () =>
+                    'across realms',
+                    async () =>
                     {
-                        const A =
-                        function ()
-                        { };
+                        const { Function: Functionʼ } = await newRealm();
+                        const A = Function();
+                        const Aʼ = Functionʼ();
                         const B =
-                        class extends classes(A)
+                        class extends classes(A, Aʼ)
                         { };
+                        assert.instanceOf(A, Function);
+                        assert.notInstanceOf(A, Functionʼ);
+                        assert.notInstanceOf(Aʼ, Function);
+                        assert.instanceOf(Aʼ, Functionʼ);
                         assert.instanceOf(B, Function);
-                    },
-                );
-                it
-                (
-                    'with a function that is not an instance of Function',
-                    () =>
-                    {
-                        const A =
-                        function ()
-                        { };
-                        const B =
-                        class extends classes(A)
-                        { };
-                        Object.setPrototypeOf(A, null);
-                        assert.notInstanceOf(B, Function);
+                        assert.instanceOf(B, Functionʼ);
                     },
                 );
             },

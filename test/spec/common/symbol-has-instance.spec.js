@@ -62,20 +62,25 @@ describe
             'is set only on superclasses',
             () =>
             {
-                const A = createNullPrototypeFunction('A');
+                const A =
+                function ()
+                { };
+                A.prototype.constructor = null;
                 const B =
                 () =>
                 { };
-                B.prototype = { };
+                B.prototype = { constructor: B };
                 const C = Object.create(B);
                 C.prototype = Object.create(B.prototype);
+                C.prototype.constructor = C;
                 const D =
                 function ()
                 { };
                 Object.setPrototypeOf(D, C);
                 D.prototype = Object.create(C.prototype);
+                D.prototype.constructor = D;
                 const _AD = classes(A, D);
-                assert.ownProperty(A, Symbol.hasInstance);
+                assert.notOwnProperty(A, Symbol.hasInstance);
                 assert.ownProperty(B, Symbol.hasInstance);
                 assert.notOwnProperty(C, Symbol.hasInstance);
                 assert.notOwnProperty(D, Symbol.hasInstance);

@@ -390,6 +390,7 @@ describe
                     {
                         const Foo = Function();
                         Foo.prototype = document.all;
+                        Foo.prototype.constructor = null;
                         const Bar =
                         class extends classes(Foo)
                         {
@@ -415,7 +416,14 @@ describe
                         );
                     },
                 );
-                afterEach(() => delete document.all.foo);
+                afterEach
+                (
+                    () =>
+                    {
+                        delete document.all.constructor;
+                        delete document.all.foo;
+                    },
+                );
                 it('with getters', () => assert.strictEqual(bar[0], document.all[0]));
                 it
                 (

@@ -318,10 +318,12 @@
     };
 
     let loadPolytype;
+    let newRealm;
     let polytypeMode;
     if (typeof module !== 'undefined')
     {
-        const path = require('path');
+        const path                  = require('path');
+        const { runInNewContext }   = require('vm');
 
         function loadPolytypeBase()
         {
@@ -331,6 +333,7 @@
             return returnValue;
         }
 
+        newRealm = () => runInNewContext('this');
         const polytypePath =
         getPolytypePath(process.argv[2], ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
         const extension = getExtension(polytypePath);
@@ -372,6 +375,30 @@
     else
     {
         const ALLOWED_EXTENSIONS = ['.js', '.min.js', '.mjs', '.min.mjs'];
+
+        newRealm =
+        () =>
+        new Promise
+        (
+            (resolve, reject) =>
+            {
+                const iframe = document.createElement('iframe');
+                iframe.onerror =
+                ({ message }) =>
+                {
+                    reject(message);
+                    iframe.remove();
+                };
+                iframe.onload =
+                () =>
+                {
+                    resolve(iframe.contentWindow);
+                    iframe.remove();
+                };
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+            },
+        );
         const urlParams = new URLSearchParams(location.search);
         const extname = urlParams.get('extname');
         let polytypePath;
@@ -398,14 +425,14 @@
                     script.onerror =
                     ({ message }) =>
                     {
-                        script.remove();
                         reject(message);
+                        script.remove();
                     };
                     script.onload =
                     () =>
                     {
-                        script.remove();
                         resolve();
+                        script.remove();
                     };
                     script.src = polytypePath;
                     document.head.appendChild(script);
@@ -440,6 +467,7 @@
             loadPolytype,
             maybeDescribe,
             maybeIt,
+            newRealm,
             polytypeMode,
             setupTestData,
         },
