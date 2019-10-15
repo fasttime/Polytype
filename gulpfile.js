@@ -93,9 +93,9 @@ task
         lint
         (
             {
-                src: 'src/**/*.{js,mjs}',
+                src: 'src/**/*.js',
                 globals: ['global', 'self'],
-                parserOptions: { ecmaVersion: 8, sourceType: 'module' },
+                parserOptions: { ecmaVersion: 7, sourceType: 'module' },
             },
             {
                 src: 'lib/**/*.d.ts',

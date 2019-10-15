@@ -115,7 +115,7 @@ function createConstructorProxy(typeSet, prototypeSet)
         {
             constructor: describeDataProperty(constructorProxy, true, false, true),
             class: describeDataProperty(superPrototypeSelector),
-        },
+        }
     );
     const prototypeProxy = createProxy(prototypeTarget, prototypeSet, commonHandlerPrototype);
     const constructorProperties =
@@ -245,7 +245,7 @@ function createSuperPrototypeSelector(prototypeSet)
         ._,
         'name',
         'class',
-        false,
+        false
     );
     return superPrototypeSelector;
 }
@@ -271,7 +271,7 @@ function createSuperTypeSelector(typeSet)
         ._,
         'name',
         'class',
-        false,
+        false
     );
     return superTypeSelector;
 }
@@ -471,7 +471,7 @@ obj =>
                 {
                     return this;
                 },
-            },
+            }
         );
         try
         {
