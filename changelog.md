@@ -1,3 +1,9 @@
+<a name="0.6.0-beta.1"></a>
+## [0.6.0-beta.1](https://github.com/fasttime/Polytype/releases/tag/0.6.0-beta.1) (2019-10-15)
+
+* Experimental support for cross‐realm inheritance.
+* Experimental retrogression to ECMAScript 2016 syntax.
+
 <a name="0.5.0"></a>
 ## [0.5.0](https://github.com/fasttime/Polytype/releases/tag/0.5.0) (2019-10-11)
 
