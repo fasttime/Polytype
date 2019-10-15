@@ -29,7 +29,6 @@ function minify(srcGlobs, module, extname)
     const minifyOpts =
     {
         compress: { hoist_funs: true, passes: 2 },
-        ecma: 8,
         module,
         output: { comments: (node, comment) => comment.pos === 0 },
     };

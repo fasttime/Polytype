@@ -390,7 +390,7 @@ describe
                     {
                         const Foo = Function();
                         Foo.prototype = document.all;
-                        Foo.prototype.constructor = null;
+                        Object.getPrototypeOf(document.all).constructor = null;
                         const Bar =
                         class extends classes(Foo)
                         {
@@ -420,7 +420,7 @@ describe
                 (
                     () =>
                     {
-                        delete document.all.constructor;
+                        delete Object.getPrototypeOf(document.all).constructor;
                         delete document.all.foo;
                     },
                 );

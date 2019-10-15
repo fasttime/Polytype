@@ -16,30 +16,35 @@ describe
                 it
                 (
                     'with all base types',
-                    () =>
+                    async () =>
                     {
+                        const { Function: Functionʼ, Object: Objectʼ } = await newRealm();
                         const A = createNullPrototypeFunction('A');
                         const B =
-                        function ()
+                        class
                         { };
-                        B.prototype = { constructor: B };
-                        const C = Object.create(B);
-                        C.prototype = Object.create(B.prototype);
+                        const C =
+                        Object.create(B, { prototype: { value: Object.create(B.prototype) } });
                         const D =
                         function ()
                         { };
                         Object.setPrototypeOf(D, C);
                         D.prototype = Object.create(C.prototype);
-                        const _AD = classes(A, D);
-                        const E =
-                        class extends _AD
+                        const E = Functionʼ();
+                        // Workaround for a bug in Safari.
+                        Object.setPrototypeOf(E.prototype, Objectʼ.prototype);
+                        const _ADE = classes(A, D, E);
+                        const F =
+                        class extends _ADE
                         { };
-                        const e = new E();
-                        assert.instanceOf(e, B);
-                        assert.instanceOf(e, D);
-                        assert.instanceOf(e, _AD);
-                        assert.instanceOf(e, E);
-                        assert.instanceOf(e, Object);
+                        const f = new F();
+                        assert.instanceOf(f, B);
+                        assert.instanceOf(f, D);
+                        assert.instanceOf(f, E);
+                        assert.instanceOf(f, _ADE);
+                        assert.instanceOf(f, F);
+                        assert.instanceOf(f, Object);
+                        assert.instanceOf(f, Objectʼ);
                     },
                 );
                 it
