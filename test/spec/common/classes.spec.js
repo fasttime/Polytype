@@ -19,7 +19,8 @@ function areFieldInitializersSupported()
         );
         return true;
     }
-    catch
+    // catch without binding is not supported in Edge
+    catch (unused) // eslint-disable-line no-unused-vars
     {
         return false;
     }

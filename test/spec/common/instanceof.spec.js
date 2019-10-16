@@ -1,5 +1,14 @@
 /* eslint-env mocha */
-/* global assert, classes, createNullPrototypeFunction, global, newRealm, setupTestData */
+/*
+global
+assert,
+classes,
+createFunctionFromConstructor,
+createNullPrototypeFunction,
+global,
+newRealm,
+setupTestData,
+*/
 
 'use strict';
 
@@ -30,9 +39,7 @@ describe
                         { };
                         Object.setPrototypeOf(D, C);
                         D.prototype = Object.create(C.prototype);
-                        const E = Functionʼ();
-                        // Workaround for a bug in Safari.
-                        Object.setPrototypeOf(E.prototype, Objectʼ.prototype);
+                        const E = createFunctionFromConstructor(Functionʼ);
                         const _ADE = classes(A, D, E);
                         const F =
                         class extends _ADE
@@ -81,7 +88,7 @@ describe
                     {
                         const { Function: Functionʼ } = await newRealm();
                         const A = Function();
-                        const Aʼ = Functionʼ();
+                        const Aʼ = createFunctionFromConstructor(Functionʼ);
                         const B =
                         class extends classes(A, Aʼ)
                         { };

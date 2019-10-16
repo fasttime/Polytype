@@ -68,6 +68,14 @@
         return global;
     }
 
+    function createFunctionFromConstructor(Function)
+    {
+        const fn = Function();
+        // Workaround for a bug in Safari.
+        Object.setPrototypeOf(fn.prototype, Object.getPrototypeOf(Function.prototype));
+        return fn;
+    }
+
     function createFunctionWithGetPrototypeCount(name)
     {
         const fn = Function();
@@ -392,7 +400,8 @@
                 iframe.onload =
                 () =>
                 {
-                    resolve(iframe.contentWindow);
+                    const { contentWindow: { Function, Object } } = iframe;
+                    resolve({ Function, Object });
                     iframe.remove();
                 };
                 iframe.style.display = 'none';
@@ -461,6 +470,7 @@
         {
             assert,
             backupGlobals,
+            createFunctionFromConstructor,
             createFunctionWithGetPrototypeCount,
             createNullPrototypeFunction,
             exactRegExp,

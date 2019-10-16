@@ -1,7 +1,6 @@
 const EMPTY_ARRAY = [];
 
-const _Function             = Function;
-const _Function_prototype   = _Function.prototype;
+const _Function_prototype   = Function.prototype;
 const _Map                  = Map;
 const _Object               = Object;
 const
@@ -81,11 +80,7 @@ const classes =
             prototypeSet.add(prototype);
     }
     const constructorProxy = createConstructorProxy(typeSet, prototypeSet);
-    {
-        const installedSet = new _Set();
-        installHasInstanceOnConstructors(typeSet, installedSet);
-        installHasInstanceOnConstructors(prototypeSet, installedSet);
-    }
+    installHasInstanceOnConstructors(typeSet, prototypeSet);
     return constructorProxy;
 };
 
@@ -437,19 +432,26 @@ function installHasInstance(obj, installedSet)
     return true;
 }
 
-function installHasInstanceOnConstructors(objs, installedSet)
+function installHasInstanceOnConstructors(...objSets)
 {
-    for (let obj of objs)
+    const visitedObjSet = new _Set();
+    const installedSet = new _Set();
+    for (const objSet of objSets)
     {
-        do
+        for (let obj of objSet)
         {
-            // Safari does not allow destructuring document.all.
-            const constructor = obj.constructor; // eslint-disable-line prefer-destructuring
-            if (isConstructor(constructor))
-                installHasInstance(constructor, installedSet);
-            obj = _Object_getPrototypeOf(obj);
+            while (!visitedObjSet.has(obj))
+            {
+                visitedObjSet.add(obj);
+                // Safari does not allow destructuring document.all.
+                const constructor = obj.constructor; // eslint-disable-line prefer-destructuring
+                if (isConstructor(constructor))
+                    installHasInstance(constructor, installedSet);
+                obj = _Object_getPrototypeOf(obj);
+                if (!isObject(obj))
+                    break;
+            }
         }
-        while (isObject(obj));
     }
 }
 

@@ -1,6 +1,15 @@
 
 /* eslint-env mocha */
-/* global assert, classes, createNullPrototypeFunction, document, maybeIt */
+/*
+global
+assert,
+classes,
+createFunctionFromConstructor,
+createNullPrototypeFunction,
+document,
+maybeIt,
+newRealm,
+*/
 
 'use strict';
 
@@ -60,8 +69,9 @@ describe
         it
         (
             'is set only on superclasses',
-            () =>
+            async () =>
             {
+                const { Function: Functionʼ, Object: Objectʼ } = await newRealm();
                 const A =
                 function ()
                 { };
@@ -79,12 +89,20 @@ describe
                 Object.setPrototypeOf(D, C);
                 D.prototype = Object.create(C.prototype);
                 D.prototype.constructor = D;
-                const _AD = classes(A, D);
+                const E = createFunctionFromConstructor(Functionʼ);
+                const F =
+                class extends E
+                { };
+                const _ADF = classes(A, D, F);
                 assert.notOwnProperty(A, Symbol.hasInstance);
                 assert.ownProperty(B, Symbol.hasInstance);
                 assert.notOwnProperty(C, Symbol.hasInstance);
                 assert.notOwnProperty(D, Symbol.hasInstance);
-                assert.notOwnProperty(_AD, Symbol.hasInstance);
+                assert.ownProperty(E, Symbol.hasInstance);
+                assert.notOwnProperty(F, Symbol.hasInstance);
+                assert.notOwnProperty(_ADF, Symbol.hasInstance);
+                assert.ownProperty(Objectʼ, Symbol.hasInstance);
+                assert.ownProperty(Functionʼ, Symbol.hasInstance);
             },
         );
         test('when this is not callable', { prototype: Object.prototype }, { }, false);
