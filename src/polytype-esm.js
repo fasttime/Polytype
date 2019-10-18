@@ -8,6 +8,7 @@ const
     create:                     _Object_create,
     defineProperties:           _Object_defineProperties,
     defineProperty:             _Object_defineProperty,
+    getOwnPropertyDescriptor:   _Object_getOwnPropertyDescriptor,
     getOwnPropertyDescriptors:  _Object_getOwnPropertyDescriptors,
     getPrototypeOf:             _Object_getPrototypeOf,
     prototype:                  _Object_prototype,
@@ -33,6 +34,7 @@ const bindCall = callable => _Function_prototype.call.bind(callable);
 
 const _Function_prototype_bind_call         = bindCall(_Function_prototype.bind);
 const _Function_prototype_hasInstance_call  = bindCall(_Function_prototype[_Symbol_hasInstance]);
+const _Function_prototype_toString_call     = bindCall(_Function_prototype.toString);
 const _Object_prototype_hasOwnProperty_call = bindCall(_Object_prototype.hasOwnProperty);
 const _Object_prototype_valueOf_call        = bindCall(_Object_prototype.valueOf);
 
@@ -123,7 +125,8 @@ function createConstructorProxy(typeSet, prototypeSet)
     return constructorProxy;
 }
 
-function createConstructorTarget(typeSet)
+const createConstructorTarget =
+typeSet =>
 {
     const constructorTarget =
     function (...args)
@@ -145,7 +148,7 @@ function createConstructorTarget(typeSet)
     };
     _Object_setPrototypeOf(constructorTarget, null);
     return constructorTarget;
-}
+};
 
 const createGetConstructorName =
 typeSet => () => `(${[...typeSet].map(({ name }) => _String(name))})`;
@@ -198,9 +201,9 @@ const createSuper =
     const resolve =
     reflectCall =>
     {
-        const result = reflectCall();
+        const returnValue = reflectCall();
         _Object_setPrototypeOf(superObj, superTarget);
-        return result;
+        return returnValue;
     };
 
     const superHandler =
@@ -214,7 +217,8 @@ const createSuper =
     return superObj;
 };
 
-function createSuperPrototypeSelector(prototypeSet)
+const createSuperPrototypeSelector =
+prototypeSet =>
 {
     const superPrototypeSelector =
     defineConfigurableDataProperty
@@ -243,9 +247,10 @@ function createSuperPrototypeSelector(prototypeSet)
         false,
     );
     return superPrototypeSelector;
-}
+};
 
-function createSuperTypeSelector(typeSet)
+const createSuperTypeSelector =
+typeSet =>
 {
     const superTypeSelector =
     defineConfigurableDataProperty
@@ -269,7 +274,7 @@ function createSuperTypeSelector(typeSet)
         false,
     );
     return superTypeSelector;
-}
+};
 
 function createTypeToSuperArgsMap(typeSet, args)
 {
@@ -377,15 +382,6 @@ obj =>
     return prototypes;
 };
 
-const isFunctionPrototype =
-obj =>
-isCallable(obj) &&
-_Object_prototype_hasOwnProperty_call(obj, 'apply') &&
-_Object_prototype_hasOwnProperty_call(obj, 'bind') &&
-_Object_prototype_hasOwnProperty_call(obj, 'call') &&
-!_Object_prototype_hasOwnProperty_call(obj, 'prototype') &&
-_Object_prototype_hasOwnProperty_call(obj, _Symbol_hasInstance);
-
 const { [_Symbol_hasInstance]: hasInstance } =
 class
 {
@@ -396,10 +392,10 @@ class
         {
             if (isCallable(this))
             {
-                const result = _Function_prototype_hasInstance_call(this, obj);
+                const isInstance = _Function_prototype_hasInstance_call(this, obj);
                 if (!hasInstancePending)
-                    return result;
-                if (result || isObject(obj) && isInPrototypeTree(this.prototype, obj))
+                    return isInstance;
+                if (isInstance || isObject(obj) && isInPrototypeTree(this.prototype, obj))
                     return true;
             }
             return false;
@@ -413,7 +409,8 @@ class
 
 let hasInstancePending = false;
 
-function installHasInstance(obj, installedSet)
+const installHasInstance =
+(obj, installedSet) =>
 {
     if (isFunctionPrototype(obj))
         return false;
@@ -430,7 +427,7 @@ function installHasInstance(obj, installedSet)
     if (!installed)
         defineHasInstanceProperty(obj);
     return true;
-}
+};
 
 function installHasInstanceOnConstructors(...objSets)
 {
@@ -489,6 +486,23 @@ obj =>
     return false;
 };
 
+const isFunctionPrototype =
+obj =>
+{
+    if (isNativeFunction(obj, ''))
+    {
+        const descriptor = _Object_getOwnPropertyDescriptor(obj, _Symbol_hasInstance);
+        if
+        (descriptor && !descriptor.writable && !descriptor.enumerable && !descriptor.configurable)
+        {
+            const { value } = descriptor;
+            if (isNativeFunction(value, '[Symbol.hasInstance]'))
+                return true;
+        }
+    }
+    return false;
+};
+
 function isInPrototypeTree(target, obj)
 {
     const prototypes = getPrototypesOf(obj);
@@ -499,6 +513,23 @@ function isInPrototypeTree(target, obj)
     }
     return false;
 }
+
+const isNativeFunction =
+(obj, name) =>
+{
+    let str;
+    try
+    {
+        str = _Function_prototype_toString_call(obj);
+    }
+    catch (error)
+    {
+        return false;
+    }
+    const groups = /^function ?(.*)\(\) {\s+\[native code]\s+}/.exec(str);
+    const returnValue = groups && groups[1] === name && !isConstructor(obj);
+    return returnValue;
+};
 
 const isNonNullOrUndefinedPrimitive = obj => !objOrNullOrUndefinedTypes.includes(typeof obj);
 

@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createFunctionWithGetPrototypeCount, exactRegExp, maybeIt */
+/* global assert, classes, console, createFunctionWithGetPrototypeCount, exactRegExp, maybeIt */
 
 'use strict';
 
@@ -31,6 +31,22 @@ describe
     'classes',
     () =>
     {
+        const imitateFunctionPrototype =
+        console.Console &&
+        console._stdout &&
+        console.timeLog &&
+        // Returns an object that fulfills all of the following requirements in Node.js 12:
+        // * It is a non-constructor function.
+        // * Has the same string representation as Function.prototype.
+        // * It has no own properties.
+        function ()
+        {
+            const fn = new console.Console(console._stdout).timeLog;
+            for (const key of Reflect.ownKeys(fn))
+                delete fn[key];
+            return fn;
+        };
+
         it
         (
             'has expected own properties',
@@ -75,9 +91,23 @@ describe
             'works with a function that is not an instance of Function',
             () =>
             {
-                const foo = Function();
-                Object.setPrototypeOf(foo, { });
-                assert.doesNotThrow(() => classes(foo));
+                const Type = Function();
+                Object.setPrototypeOf(Type, { });
+                assert.doesNotThrow(() => classes(Type));
+            },
+        );
+        maybeIt
+        (
+            imitateFunctionPrototype,
+            'works with a function with a non-constructor function in the prototype chain',
+            () =>
+            {
+                const SuperType = imitateFunctionPrototype();
+                const Type =
+                function ()
+                { };
+                Object.setPrototypeOf(Type, SuperType);
+                assert.doesNotThrow(() => classes(Type));
             },
         );
         it
@@ -234,6 +264,24 @@ describe
                             () => classes(String, Array, String),
                             TypeError,
                             exactRegExp('Duplicate superclass String'),
+                        );
+                    },
+                );
+                maybeIt
+                (
+                    imitateFunctionPrototype,
+                    'with a function with unconfigurable property Symbol.hasInstance',
+                    () =>
+                    {
+                        const SuperType = imitateFunctionPrototype();
+                        Object.defineProperty(SuperType, Symbol.hasInstance, { value: Function() });
+                        const Type = Function();
+                        Object.setPrototypeOf(Type, SuperType);
+                        assert.throws
+                        (
+                            () => classes(Type),
+                            TypeError,
+                            exactRegExp('Cannot redefine property: Symbol(Symbol.hasInstance)'),
                         );
                     },
                 );

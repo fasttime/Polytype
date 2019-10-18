@@ -220,3 +220,19 @@ task
         parallel('make-spec-runner', 'make-toc'),
     ),
 );
+
+task
+(
+    'build',
+    series
+    (
+        'make-ts-defs',
+        parallel
+        (
+            'bundle:cjs',
+            series('bundle:esm', 'minify:esm'),
+            series('bundle:global', 'minify:global'),
+        ),
+        parallel('make-spec-runner', 'make-toc'),
+    ),
+);
