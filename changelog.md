@@ -1,3 +1,9 @@
+<a name="0.6.0"></a>
+## [0.6.0](https://github.com/fasttime/Polytype/releases/tag/0.6.0) (2019-10-19)
+
+* Fixed issues with cross‐realm types.
+* Improved documentation.
+
 <a name="0.5.0"></a>
 ## [0.5.0](https://github.com/fasttime/Polytype/releases/tag/0.5.0) (2019-10-11)
 
