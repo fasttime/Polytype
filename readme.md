@@ -563,6 +563,9 @@ Polytype was successfully tested in the following browsers / JavaScript engines.
 
 The minimum supported TypeScript version is 3.5.
 
+Bundlers and other tools that process uncompressed Polytype source files are required to parse
+ECMAScript 2017 or higher syntax.
+
 In the current version of the Edge browser, the JavaScript engine Chakra still contains
 [a serious bug](https://github.com/Microsoft/ChakraCore/issues/5883) that can produce incorrect
 results when the `instanceof` operator is used with bound functions after Polytype has been loaded.
