@@ -13,11 +13,13 @@
             self: Object.getOwnPropertyDescriptor(global, 'self'),
             global: Object.getOwnPropertyDescriptor(global, 'global'),
         };
+
         let classesDescriptor;
         let getPrototypeListOfDescriptor;
         let fnHasInstanceDescriptor;
         let objHasInstanceDescriptor;
         let isPrototypeOfDescriptor;
+
         before
         (
             () =>

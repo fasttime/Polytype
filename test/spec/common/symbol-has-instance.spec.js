@@ -21,16 +21,28 @@ describe
         function test(argDescription, type, arg, expectedResult)
         {
             const description = `returns ${expectedResult} ${argDescription}`;
-            it
-            (
-                description,
-                () =>
-                {
-                    assert.strictEqual(Object[Symbol.hasInstance].call(type, arg), expectedResult);
-                },
-            );
+            it(description, () => assert.strictEqual(hasInstance.call(type, arg), expectedResult));
         }
 
+        let hasInstance;
+
+        before
+        (
+            () =>
+            {
+                classes(Object);
+                hasInstance = Object[Symbol.hasInstance];
+                delete Function[Symbol.hasInstance];
+                delete Object[Symbol.hasInstance];
+            },
+        );
+        after
+        (
+            () =>
+            {
+                hasInstance = null;
+            },
+        );
         it
         (
             'has expected own properties',
@@ -38,7 +50,7 @@ describe
             {
                 assert.hasOwnPropertyDescriptors
                 (
-                    Object[Symbol.hasInstance],
+                    hasInstance,
                     {
                         length:
                         {
@@ -56,15 +68,14 @@ describe
                         },
                     },
                 );
-                assert.isEmpty(Object.getOwnPropertySymbols(Object[Symbol.hasInstance]));
+                assert.isEmpty(Object.getOwnPropertySymbols(hasInstance));
             },
         );
         it
         (
             'cannot be called with new',
-            () =>
-            assert.throws
-            (() => new Object[Symbol.hasInstance](), TypeError, /\bis not a constructor\b/),
+            () => // eslint-disable-next-line new-cap
+            assert.throws(() => new hasInstance(), TypeError, /\bis not a constructor\b/),
         );
         it
         (
@@ -94,15 +105,25 @@ describe
                 class extends E
                 { };
                 const _ADF = classes(A, D, F);
+                const hasInstanceDescriptorMapObj =
+                {
+                    [Symbol.hasInstance]:
+                    {
+                        enumerable: false,
+                        configurable: true,
+                        value: hasInstance,
+                        writable: true,
+                    },
+                };
                 assert.notOwnProperty(A, Symbol.hasInstance);
-                assert.ownProperty(B, Symbol.hasInstance);
+                assert.hasOwnPropertyDescriptors(B, hasInstanceDescriptorMapObj);
                 assert.notOwnProperty(C, Symbol.hasInstance);
                 assert.notOwnProperty(D, Symbol.hasInstance);
-                assert.ownProperty(E, Symbol.hasInstance);
+                assert.hasOwnPropertyDescriptors(E, hasInstanceDescriptorMapObj);
                 assert.notOwnProperty(F, Symbol.hasInstance);
                 assert.notOwnProperty(_ADF, Symbol.hasInstance);
-                assert.ownProperty(Objectʼ, Symbol.hasInstance);
-                assert.ownProperty(Functionʼ, Symbol.hasInstance);
+                assert.hasOwnPropertyDescriptors(Objectʼ, hasInstanceDescriptorMapObj);
+                assert.hasOwnPropertyDescriptors(Functionʼ, hasInstanceDescriptorMapObj);
             },
         );
         test('when this is not callable', { prototype: Object.prototype }, { }, false);
@@ -118,7 +139,7 @@ describe
             'returns false with bigint type argument',
             () =>
             {
-                const expected = Boolean[Symbol.hasInstance](BigInt(1));
+                const expected = hasInstance.call(Boolean, BigInt(1));
                 assert.isFalse(expected);
             },
         );
@@ -130,7 +151,7 @@ describe
             'returns true with document.all',
             () =>
             {
-                const expected = Object[Symbol.hasInstance](document.all);
+                const expected = hasInstance.call(Object, document.all);
                 assert.isTrue(expected);
             },
         );
@@ -147,8 +168,7 @@ describe
                     'throws a TypeError with an object argument',
                     () =>
                     {
-                        const fn =
-                        Object[Symbol.hasInstance].bind(createNullPrototypeFunction(), { });
+                        const fn = hasInstance.bind(createNullPrototypeFunction(), { });
                         assert.throws(fn, TypeError);
                     },
                 );

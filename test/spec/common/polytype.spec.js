@@ -384,6 +384,7 @@ describe
             {
                 let bar;
                 let foo;
+
                 beforeEach
                 (
                     () =>
@@ -610,6 +611,7 @@ describe
             () =>
             {
                 let bar;
+
                 beforeEach
                 (
                     () =>

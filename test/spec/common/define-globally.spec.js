@@ -10,6 +10,7 @@ maybeDescribe
     () =>
     {
         const globalThis = backupGlobals();
+
         it
         (
             'returns true',

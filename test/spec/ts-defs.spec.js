@@ -522,7 +522,6 @@ describe
                 actualize();
             },
         );
-
         testCases.forEach
         (
             testCase =>

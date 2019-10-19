@@ -17,6 +17,14 @@ describe
     'instanceof',
     () =>
     {
+        beforeEach
+        (
+            () =>
+            {
+                delete Function[Symbol.hasInstance];
+                delete Object[Symbol.hasInstance];
+            },
+        );
         describe
         (
             'works at instance level',
@@ -69,6 +77,7 @@ describe
                         class extends A
                         { };
                         const Bʼʼ = B.bind().bind();
+                        classes(A, B);
                         const a = new A();
                         assert.instanceOf(a, Aʼʼ);
                         assert.notInstanceOf(a, Bʼʼ);
