@@ -1,3 +1,8 @@
+<a name="0.6.1"></a>
+## [0.6.1](https://github.com/fasttime/Polytype/releases/tag/0.6.1) (2019-10-20)
+
+* Fixed behavior of method `isPrototypOf` with cross‐realm types.
+
 <a name="0.6.0"></a>
 ## [0.6.0](https://github.com/fasttime/Polytype/releases/tag/0.6.0) (2019-10-19)
 
