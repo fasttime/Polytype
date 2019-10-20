@@ -21,6 +21,7 @@ maybeDescribe
                 assert.strictEqual(defineGlobally(), true);
             },
         );
+
         it
         (
             'returns false',

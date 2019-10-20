@@ -15,6 +15,7 @@ describe
             assert.throws
             (() => Object.setPrototypeOf(classes(Function()).prototype, { }), TypeError),
         );
+
         it
         (
             'has expected own properties',

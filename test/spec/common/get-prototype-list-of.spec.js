@@ -49,6 +49,7 @@ describe
                 assert.isEmpty(Object.getOwnPropertySymbols(Object.getPrototypeListOf));
             },
         );
+
         it
         (
             'cannot be called with new',
@@ -60,16 +61,19 @@ describe
                 /\bis not a constructor\b/,
             ),
         );
+
         it
         (
             'returns a new empty array if an object has null prototype',
-            () => testGetPrototypeListOf(Object.create(null), []),
+            () => testGetPrototypeListOf({ __proto__: null }, []),
         );
+
         it
         (
             'returns a one element array if an object has a non-null prototype',
             () => testGetPrototypeListOf({ }, [Object.prototype]),
         );
+
         it
         (
             'returns the prototype of a multiple inheritance instance',
@@ -87,6 +91,7 @@ describe
                 testGetPrototypeListOf(new C(), [C.prototype]);
             },
         );
+
         it
         (
             'returns a new empty array for a clustered constructor',
@@ -102,6 +107,7 @@ describe
                 testGetPrototypeListOf(_AB, []);
             },
         );
+
         it
         (
             'returns a new empty array for a clustered prototype',
@@ -117,6 +123,7 @@ describe
                 testGetPrototypeListOf(_AB.prototype, []);
             },
         );
+
         it
         (
             'returns the prototypes of a multiple inheritance constructor',
@@ -134,6 +141,7 @@ describe
                 testGetPrototypeListOf(C, [A, B]);
             },
         );
+
         it
         (
             'returns all prototypes of a multiple inheritance prototype excluding null and ' +
@@ -157,12 +165,14 @@ describe
                 testGetPrototypeListOf(ABCD.prototype, [A.prototype, C.prototype]);
             },
         );
+
         maybeIt
         (
             typeof document !== 'undefined',
             'returns a one element array if an object has document.all for prototype',
-            () => testGetPrototypeListOf(Object.create(document.all), [document.all]),
+            () => testGetPrototypeListOf({ __proto__: document.all }, [document.all]),
         );
+
         it
         (
             'throws a TypeError with null',

@@ -82,7 +82,7 @@ const classes =
             prototypeSet.add(prototype);
     }
     const constructorProxy = createConstructorProxy(typeSet, prototypeSet);
-    installHasInstanceOnConstructors(typeSet, prototypeSet);
+    installAncestorProperties(typeSet, prototypeSet);
     return constructorProxy;
 };
 
@@ -409,6 +409,39 @@ class
 
 let hasInstancePending = false;
 
+function installAncestorProperties(...objSets)
+{
+    const visitedObjSet = new _Set();
+    const installedSet = new _Set();
+    for (const objSet of objSets)
+    {
+        for (let obj of objSet)
+        {
+            while (!visitedObjSet.has(obj))
+            {
+                visitedObjSet.add(obj);
+                // Safari does not allow destructuring document.all.
+                const constructor = obj.constructor; // eslint-disable-line prefer-destructuring
+                if (isConstructor(constructor))
+                    installHasInstance(constructor, installedSet);
+                const prototype = _Object_getPrototypeOf(obj);
+                if (prototype === null)
+                {
+                    const descriptor = _Object_getOwnPropertyDescriptor(obj, 'isPrototypeOf');
+                    if (descriptor && isNativeFunction(descriptor.value, 'isPrototypeOf'))
+                    {
+                        descriptor.value = isPrototypeOf;
+                        _Object_defineProperty(obj, 'isPrototypeOf', descriptor);
+                    }
+                }
+                obj = prototype;
+                if (!isObject(obj))
+                    break;
+            }
+        }
+    }
+}
+
 const installHasInstance =
 (obj, installedSet) =>
 {
@@ -428,29 +461,6 @@ const installHasInstance =
         defineHasInstanceProperty(obj);
     return true;
 };
-
-function installHasInstanceOnConstructors(...objSets)
-{
-    const visitedObjSet = new _Set();
-    const installedSet = new _Set();
-    for (const objSet of objSets)
-    {
-        for (let obj of objSet)
-        {
-            while (!visitedObjSet.has(obj))
-            {
-                visitedObjSet.add(obj);
-                // Safari does not allow destructuring document.all.
-                const constructor = obj.constructor; // eslint-disable-line prefer-destructuring
-                if (isConstructor(constructor))
-                    installHasInstance(constructor, installedSet);
-                obj = _Object_getPrototypeOf(obj);
-                if (!isObject(obj))
-                    break;
-            }
-        }
-    }
-}
 
 const isCallable = obj => typeof obj === 'function';
 
@@ -579,6 +589,5 @@ const propFilter = prop => obj => prop in obj;
 const prototypeSetMap = new WeakMap();
 
 defineConfigurableDataProperty(classes, 'name', 'classes', false);
-defineConfigurableDataProperty(_Object_prototype, 'isPrototypeOf', isPrototypeOf);
 
 export { classes, defineGlobally, getPrototypeListOf };

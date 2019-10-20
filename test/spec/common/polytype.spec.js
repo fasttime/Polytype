@@ -9,6 +9,7 @@ document,
 exactRegExp,
 loadPolytype,
 maybeDescribe,
+newRealm,
 setupTestData,
 */
 
@@ -25,6 +26,7 @@ describe
             () =>
             {
                 const globalThis = backupGlobals();
+
                 it
                 (
                     'in self',
@@ -38,6 +40,7 @@ describe
                         assert.strictEqual(self.classes, expectedClasses);
                     },
                 );
+
                 it
                 (
                     'in global',
@@ -77,6 +80,7 @@ describe
                         assert.property(c, 'bMethod');
                     },
                 );
+
                 it
                 (
                     'methods',
@@ -88,6 +92,7 @@ describe
                         assert.strictEqual(c.bMethod, B.prototype.bMethod);
                     },
                 );
+
                 it
                 (
                     'ungettable properties',
@@ -98,6 +103,7 @@ describe
                         assert.strictEqual(c.aSetOnly, undefined);
                     },
                 );
+
                 it
                 (
                     'direct superclass getters',
@@ -110,6 +116,7 @@ describe
                         (callData.A, { args: [], getter: 'aGetOnly', this: c, value: actual });
                     },
                 );
+
                 it
                 (
                     'indirect superclass getters',
@@ -122,6 +129,7 @@ describe
                         (callData.A, { args: [], getter: 'aGetOnly', this: e, value: actual });
                     },
                 );
+
                 it
                 (
                     'value overwriting',
@@ -143,6 +151,7 @@ describe
                         );
                     },
                 );
+
                 it
                 (
                     'unsettable properties',
@@ -166,6 +175,7 @@ describe
                         );
                     },
                 );
+
                 it
                 (
                     'direct superclass setters',
@@ -178,6 +188,7 @@ describe
                         (callData.A, { args: [42], setter: 'aSetOnly', this: c });
                     },
                 );
+
                 it
                 (
                     'indirect superclass setters',
@@ -213,6 +224,7 @@ describe
                 );
             },
         );
+
         it
         (
             'allows getting undefined properties from an instance',
@@ -241,6 +253,7 @@ describe
                         assert.property(C, 'bStatic');
                     },
                 );
+
                 it
                 (
                     'methods',
@@ -251,6 +264,7 @@ describe
                         assert.strictEqual(C.bStatic, B.bStatic);
                     },
                 );
+
                 it
                 (
                     'ungettable properties',
@@ -260,6 +274,7 @@ describe
                         assert.strictEqual(C.aStaticSet, undefined);
                     },
                 );
+
                 it
                 (
                     'direct superclass getters',
@@ -271,6 +286,7 @@ describe
                         (callData.A, { args: [], getter: 'aStaticGet', this: C, value: actual });
                     },
                 );
+
                 it
                 (
                     'indirect superclass getters',
@@ -282,6 +298,7 @@ describe
                         (callData.A, { args: [], getter: 'aStaticGet', this: E, value: actual });
                     },
                 );
+
                 it
                 (
                     'value overwriting',
@@ -302,6 +319,7 @@ describe
                         );
                     },
                 );
+
                 it
                 (
                     'unsettable properties',
@@ -324,6 +342,7 @@ describe
                         );
                     },
                 );
+
                 it
                 (
                     'direct superclass setters',
@@ -334,6 +353,7 @@ describe
                         assert.deepEqual(callData.A, { args: [42], setter: 'aStaticSet', this: C });
                     },
                 );
+
                 it
                 (
                     'indirect superclass setters',
@@ -366,6 +386,7 @@ describe
                 );
             },
         );
+
         it
         (
             'allows getting undefined properties from a class',
@@ -382,13 +403,15 @@ describe
             'works well when document.all is in the prototype chain',
             () =>
             {
+                let document;
                 let bar;
                 let foo;
 
                 beforeEach
                 (
-                    () =>
+                    async () =>
                     {
+                        ({ document } = await newRealm());
                         const Foo = Function();
                         Foo.prototype = document.all;
                         Object.getPrototypeOf(document.all).constructor = null;
@@ -417,15 +440,9 @@ describe
                         );
                     },
                 );
-                afterEach
-                (
-                    () =>
-                    {
-                        delete Object.getPrototypeOf(document.all).constructor;
-                        delete document.all.foo;
-                    },
-                );
+
                 it('with getters', () => assert.strictEqual(bar[0], document.all[0]));
+
                 it
                 (
                     'with setters',
@@ -435,6 +452,7 @@ describe
                         assert.strictEqual(foo, 42);
                     },
                 );
+
                 it
                 (
                     'with super',
@@ -468,6 +486,7 @@ describe
                         assert.instanceOf(callData.B.this, C);
                     },
                 );
+
                 it
                 (
                     'works with super-referencing arguments',
@@ -483,6 +502,7 @@ describe
                         assert.instanceOf(callData.B.this, C);
                     },
                 );
+
                 it
                 (
                     'does not iterate over super-referencing arguments',
@@ -493,6 +513,7 @@ describe
                         assert.deepEqual(callData.A.args, []);
                     },
                 );
+
                 it
                 (
                     'sets but does not overwrite own properties on this',
@@ -538,6 +559,7 @@ describe
                                 (() => new C(0), TypeError, exactRegExp('Invalid arguments'));
                             },
                         );
+
                         it
                         (
                             'with wrong arguments in a super-referencing construct',
@@ -554,6 +576,7 @@ describe
                                 );
                             },
                         );
+
                         it
                         (
                             'with mixed argument styles',
@@ -568,6 +591,7 @@ describe
                                 );
                             },
                         );
+
                         it
                         (
                             'with a repeated argument',
@@ -584,6 +608,7 @@ describe
                                 );
                             },
                         );
+
                         it
                         (
                             'with an invalid superclass',
@@ -637,6 +662,7 @@ describe
                         bar = new Bar();
                     },
                 );
+
                 it
                 (
                     'get',
@@ -647,6 +673,7 @@ describe
                         assert.strictEqual(bar.bar, foo);
                     },
                 );
+
                 it
                 (
                     'in',
@@ -657,6 +684,7 @@ describe
                         assert.isTrue(bar.in());
                     },
                 );
+
                 it
                 (
                     'set',

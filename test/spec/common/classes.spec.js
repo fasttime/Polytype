@@ -75,6 +75,7 @@ describe
                 assert.isEmpty(Object.getOwnPropertySymbols(classes));
             },
         );
+
         it
         (
             'cannot be called with new',
@@ -86,6 +87,7 @@ describe
                 /\bis not a constructor\b/,
             ),
         );
+
         it
         (
             'works with a function that is not an instance of Function',
@@ -96,6 +98,7 @@ describe
                 assert.doesNotThrow(() => classes(Type));
             },
         );
+
         maybeIt
         (
             imitateFunctionPrototype,
@@ -110,6 +113,7 @@ describe
                 assert.doesNotThrow(() => classes(Type));
             },
         );
+
         it
         (
             'gets property \'prototype\' only once',
@@ -120,6 +124,7 @@ describe
                 assert.equal(Foo.getPrototypeCount, 1);
             },
         );
+
         it
         (
             'does not invoke its arguments',
@@ -135,6 +140,7 @@ describe
                 assert.isFalse(superInvoked);
             },
         );
+
         maybeIt
         (
             areFieldInitializersSupported(),
@@ -167,6 +173,8 @@ describe
             'throws a TypeError',
             () =>
             {
+                const { isPrototypeOf } = Object.prototype;
+
                 it
                 (
                     'without arguments',
@@ -174,6 +182,7 @@ describe
                     assert.throws
                     (() => classes(), TypeError, exactRegExp('No superclasses specified')),
                 );
+
                 it
                 (
                     'with a null argument',
@@ -181,6 +190,7 @@ describe
                     assert.throws
                     (() => classes(null), TypeError, exactRegExp('null is not a constructor')),
                 );
+
                 maybeIt
                 (
                     typeof BigInt === 'function',
@@ -189,6 +199,7 @@ describe
                     assert.throws
                     (() => classes(BigInt(42)), TypeError, exactRegExp('42 is not a constructor')),
                 );
+
                 it
                 (
                     'with a symbol argument',
@@ -200,6 +211,7 @@ describe
                         exactRegExp('Symbol() is not a constructor'),
                     ),
                 );
+
                 it
                 (
                     'with a non-callable object argument',
@@ -211,6 +223,7 @@ describe
                         exactRegExp('[object Object] is not a constructor'),
                     ),
                 );
+
                 it
                 (
                     'with a non-constructor callable argument',
@@ -227,6 +240,7 @@ describe
                         );
                     },
                 );
+
                 it
                 (
                     'with a bound function',
@@ -238,6 +252,7 @@ describe
                         ('Property \'prototype\' of bound Array is not an object or null'),
                     ),
                 );
+
                 it
                 (
                     'with a function with a non-object property \'prototype\' value',
@@ -254,6 +269,7 @@ describe
                         );
                     },
                 );
+
                 it
                 (
                     'with a repeated argument',
@@ -267,22 +283,30 @@ describe
                         );
                     },
                 );
+
                 maybeIt
                 (
                     imitateFunctionPrototype,
-                    'with a function with unconfigurable property Symbol.hasInstance',
+                    'when property Symbol.hasInstance cannot be installed',
                     () =>
                     {
                         const SuperType = imitateFunctionPrototype();
                         Object.defineProperty(SuperType, Symbol.hasInstance, { value: Function() });
                         const Type = Function();
                         Object.setPrototypeOf(Type, SuperType);
-                        assert.throws
-                        (
-                            () => classes(Type),
-                            TypeError,
-                            exactRegExp('Cannot redefine property: Symbol(Symbol.hasInstance)'),
-                        );
+                        assert.throws(() => classes(Type), TypeError);
+                    },
+                );
+
+                it
+                (
+                    'when property \'isPrototypeOf\' cannot be installed',
+                    () =>
+                    {
+                        const Type = Function();
+                        Type.prototype = { __proto__: null, isPrototypeOf };
+                        Object.freeze(Type.prototype);
+                        assert.throws(() => classes(Type), TypeError);
                     },
                 );
             },

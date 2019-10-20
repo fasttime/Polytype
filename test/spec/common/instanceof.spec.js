@@ -1,14 +1,5 @@
 /* eslint-env mocha */
-/*
-global
-assert,
-classes,
-createFunctionFromConstructor,
-createNullPrototypeFunction,
-global,
-newRealm,
-setupTestData,
-*/
+/* global assert, classes, createFunctionFromConstructor, createNullPrototypeFunction, newRealm */
 
 'use strict';
 
@@ -25,6 +16,7 @@ describe
                 delete Object[Symbol.hasInstance];
             },
         );
+
         describe
         (
             'works at instance level',
@@ -40,13 +32,12 @@ describe
                         const B =
                         class
                         { };
-                        const C =
-                        Object.create(B, { prototype: { value: Object.create(B.prototype) } });
+                        const C = { __proto__: B, prototype: { __proto__: B.prototype } };
                         const D =
                         function ()
                         { };
                         Object.setPrototypeOf(D, C);
-                        D.prototype = Object.create(C.prototype);
+                        D.prototype = { __proto__: C.prototype };
                         const E = createFunctionFromConstructor(Functionʼ);
                         const _ADE = classes(A, D, E);
                         const F =
@@ -62,6 +53,7 @@ describe
                         assert.instanceOf(f, Objectʼ);
                     },
                 );
+
                 it
                 (
                     'with bound types',
@@ -72,7 +64,7 @@ describe
                         { };
                         Object.setPrototypeOf(A, Object);
                         const Aʼʼ = A.bind().bind();
-                        A.prototype = Object.create(null);
+                        A.prototype = { __proto__: null };
                         const B =
                         class extends A
                         { };
@@ -85,6 +77,7 @@ describe
                 );
             },
         );
+
         describe
         (
             'works at class level',

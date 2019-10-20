@@ -36,6 +36,7 @@
                 Object.getOwnPropertyDescriptor(Object.prototype, 'isPrototypeOf');
             },
         );
+
         afterEach
         (
             () =>
@@ -67,6 +68,7 @@
                 Object.defineProperty(Object.prototype, 'isPrototypeOf', isPrototypeOfDescriptor);
             },
         );
+
         return global;
     }
 
@@ -402,8 +404,8 @@
                 iframe.onload =
                 () =>
                 {
-                    const { contentWindow: { Function, Object } } = iframe;
-                    resolve({ Function, Object });
+                    const { contentWindow: { Function, Object, document } } = iframe;
+                    resolve({ Function, Object, document });
                     iframe.remove();
                 };
                 iframe.style.display = 'none';

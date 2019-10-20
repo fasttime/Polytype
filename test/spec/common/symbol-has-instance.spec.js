@@ -21,6 +21,7 @@ describe
         function test(argDescription, type, arg, expectedResult)
         {
             const description = `returns ${expectedResult} ${argDescription}`;
+
             it(description, () => assert.strictEqual(hasInstance.call(type, arg), expectedResult));
         }
 
@@ -36,6 +37,7 @@ describe
                 delete Object[Symbol.hasInstance];
             },
         );
+
         after
         (
             () =>
@@ -43,6 +45,7 @@ describe
                 hasInstance = null;
             },
         );
+
         it
         (
             'has expected own properties',
@@ -71,15 +74,17 @@ describe
                 assert.isEmpty(Object.getOwnPropertySymbols(hasInstance));
             },
         );
+
         it
         (
             'cannot be called with new',
             () => // eslint-disable-next-line new-cap
             assert.throws(() => new hasInstance(), TypeError, /\bis not a constructor\b/),
         );
+
         it
         (
-            'is set only on superclasses',
+            'is defined only on superclasses',
             async () =>
             {
                 const { Function: Functionʼ, Object: Objectʼ } = await newRealm();
@@ -91,14 +96,14 @@ describe
                 () =>
                 { };
                 B.prototype = { constructor: B };
-                const C = Object.create(B);
-                C.prototype = Object.create(B.prototype);
+                const C = { __proto__: B };
+                C.prototype = { __proto__: B.prototype };
                 C.prototype.constructor = C;
                 const D =
                 function ()
                 { };
                 Object.setPrototypeOf(D, C);
-                D.prototype = Object.create(C.prototype);
+                D.prototype = { __proto__: C.prototype };
                 D.prototype.constructor = D;
                 const E = createFunctionFromConstructor(Functionʼ);
                 const F =
@@ -126,13 +131,21 @@ describe
                 assert.hasOwnPropertyDescriptors(Functionʼ, hasInstanceDescriptorMapObj);
             },
         );
+
         test('when this is not callable', { prototype: Object.prototype }, { }, false);
+
         test('when this is null', null, { }, false);
-        test('when this has null prototype', Object.create(null), { }, false);
+
+        test('when this has null prototype', { __proto__: null }, { }, false);
+
         test('with null argument', Object, null, false);
+
         test('with undefined argument', Object, undefined, false);
+
         test('with boolean type argument', Boolean, true, false);
+
         test('with number type argument', Number, 1, false);
+
         maybeIt
         (
             typeof BigInt === 'function',
@@ -143,8 +156,11 @@ describe
                 assert.isFalse(expected);
             },
         );
+
         test('with string type argument', String, 'foo', false);
+
         test('with symbol type argument', Symbol, Symbol.iterator, false);
+
         maybeIt
         (
             typeof document !== 'undefined',
@@ -155,6 +171,7 @@ describe
                 assert.isTrue(expected);
             },
         );
+
         test('when the argument is the prototype of this', Symbol, Symbol.prototype, false);
 
         describe
@@ -163,6 +180,7 @@ describe
             () =>
             {
                 test('with a primitive argument', createNullPrototypeFunction(), 1, false);
+
                 it
                 (
                     'throws a TypeError with an object argument',

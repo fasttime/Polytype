@@ -522,12 +522,14 @@ describe
                 actualize();
             },
         );
+
         testCases.forEach
         (
             testCase =>
             {
                 const { expectedMessage, polytypeMode: currentPolytypeMode } = testCase;
                 const expectedMessages = expectedMessage === undefined ? [] : [expectedMessage];
+
                 maybeIt
                 (
                     currentPolytypeMode === undefined || currentPolytypeMode === polytypeMode,

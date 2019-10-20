@@ -42,6 +42,7 @@ describe
                         assert.isEmpty(Object.getOwnPropertySymbols(classValue));
                     },
                 );
+
                 it
                 (
                     'has name "class" in second instances',
@@ -51,6 +52,7 @@ describe
                         assert.strictEqual(classes(Object).prototype.class.name, 'class');
                     },
                 );
+
                 it
                 (
                     'cannot be called with new',
@@ -61,6 +63,7 @@ describe
                         assert.throws(() => c.newSuper(A), TypeError, /\bis not a constructor\b/);
                     },
                 );
+
                 it
                 (
                     'returns a proxy for any superclass argument',
@@ -71,6 +74,7 @@ describe
                         assert.instanceOf(c.getSuper(A), C);
                     },
                 );
+
                 it
                 (
                     'throws a TypeError with an invalid argument',
@@ -86,6 +90,7 @@ describe
                         );
                     },
                 );
+
                 it
                 (
                     'throws a TypeError with an invalid superclass',
@@ -105,6 +110,7 @@ describe
                         );
                     },
                 );
+
                 it
                 (
                     'throws a TypeError with a superclass with property \'prototype\' null',
@@ -170,6 +176,7 @@ describe
                         assert.isEmpty(Object.getOwnPropertySymbols(classValue));
                     },
                 );
+
                 it
                 (
                     'has name "class" in second instances',
@@ -179,6 +186,7 @@ describe
                         assert.strictEqual(classes(Object).class.name, 'class');
                     },
                 );
+
                 it
                 (
                     'cannot be called with new',
@@ -189,6 +197,7 @@ describe
                         (() => C.newStaticSuper(A), TypeError, /\bis not a constructor\b/);
                     },
                 );
+
                 it
                 (
                     'returns a proxy for any superclass argument',
@@ -202,6 +211,7 @@ describe
                         assert.instanceOf(C.getStaticSuper(A), CConstructor);
                     },
                 );
+
                 it
                 (
                     'throws a TypeError with an invalid argument',
@@ -216,6 +226,7 @@ describe
                         );
                     },
                 );
+
                 it
                 (
                     'throws a TypeError with an invalid superclass',

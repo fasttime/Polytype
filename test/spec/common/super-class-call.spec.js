@@ -28,6 +28,7 @@ describe
                         assert.strictEqual(c.getSuper(Bʼ).someMethod(), 'B');
                     },
                 );
+
                 it
                 (
                     'invokes an indirect superclass method',
@@ -41,6 +42,7 @@ describe
                         assert.strictEqual(e.getSuper(C).getSuper(B).someMethod(), 'B');
                     },
                 );
+
                 it
                 (
                     'invokes a direct superclass getter',
@@ -64,6 +66,7 @@ describe
                         }
                     },
                 );
+
                 it
                 (
                     'invokes an indirect superclass getter',
@@ -87,6 +90,7 @@ describe
                         }
                     },
                 );
+
                 it
                 (
                     'does not invoke a getter in a different superclass',
@@ -108,6 +112,7 @@ describe
                         }
                     },
                 );
+
                 it
                 (
                     'invokes a direct superclass setter',
@@ -127,6 +132,7 @@ describe
                         assert.strictEqual(callData.B.this, c);
                     },
                 );
+
                 it
                 (
                     'invokes an indirect superclass setter',
@@ -146,6 +152,7 @@ describe
                         assert(e.isPrototypeOf(callData.B.this));
                     },
                 );
+
                 it
                 (
                     'does not invoke a setter in a different superclass',
@@ -182,6 +189,7 @@ describe
                         assert.strictEqual(C.getStaticSuper(B).someStaticMethod(), B.bProp);
                     },
                 );
+
                 it
                 (
                     'invokes a direct superclass getter',
@@ -233,6 +241,7 @@ describe
                         }
                     },
                 );
+
                 it
                 (
                     'does not invoke a getter in a different superclass',
@@ -251,6 +260,7 @@ describe
                         }
                     },
                 );
+
                 it
                 (
                     'invokes a direct superclass setter',
@@ -267,6 +277,7 @@ describe
                         assert.strictEqual(callData.B.this.name, 'C');
                     },
                 );
+
                 it
                 (
                     'does not invoke a setter in a different superclass',

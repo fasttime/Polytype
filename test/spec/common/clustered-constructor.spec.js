@@ -13,6 +13,7 @@ describe
             'has unsettable prototype',
             () => assert.throws(() => Object.setPrototypeOf(classes(Function()), { }), TypeError),
         );
+
         it
         (
             'has expected own properties',
@@ -57,6 +58,7 @@ describe
                 assert.isEmpty(Object.getOwnPropertySymbols(constructor));
             },
         );
+
         it
         (
             'has expected name',
@@ -80,6 +82,7 @@ describe
                 assert.strictEqual(classes(ぁ, A, B, C).name, '(ぁ,undefined,null,)');
             },
         );
+
         it
         (
             'cannot be called without new',
@@ -91,6 +94,7 @@ describe
                 exactRegExp('Constructor cannot be invoked without \'new\''),
             ),
         );
+
         it
         (
             'does not get property \'prototype\' of superclasses when called with new',
