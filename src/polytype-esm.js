@@ -213,7 +213,7 @@ const createSuper =
     };
 
     const superProxy = new _Proxy(superTarget, superHandler);
-    const superObj = _Object_create(superProxy);
+    const superObj = { __proto__: superProxy };
     return superObj;
 };
 
@@ -435,11 +435,10 @@ function installAncestorProperties(...objSets)
                             descriptor.value = isPrototypeOf;
                             _Object_defineProperty(obj, 'isPrototypeOf', descriptor);
                         }
+                        break;
                     }
                     obj = prototype;
                 }
-                if (!isObject(obj))
-                    break;
             }
         }
     }
@@ -450,18 +449,19 @@ const installHasInstance =
 {
     if (isFunctionPrototype(obj))
         return false;
-    if (installedSet.has(obj))
-        return true;
-    installedSet.add(obj);
-    const prototypes = getPrototypesOf(obj);
-    let installed = false;
-    for (const prototype of prototypes)
+    if (!installedSet.has(obj))
     {
-        if (isObject(prototype) && installHasInstance(prototype, installedSet))
-            installed = true;
+        installedSet.add(obj);
+        const prototypes = getPrototypesOf(obj);
+        let installed = false;
+        for (const prototype of prototypes)
+        {
+            if (prototype !== null && installHasInstance(prototype, installedSet))
+                installed = true;
+        }
+        if (!installed)
+            defineHasInstanceProperty(obj);
     }
-    if (!installed)
-        defineHasInstanceProperty(obj);
     return true;
 };
 
@@ -474,17 +474,7 @@ obj =>
     {
         const boundFn = _Function_prototype_bind_call(obj);
         defineConfigurableDataProperty(boundFn, 'prototype', null);
-        const proxy =
-        new _Proxy
-        (
-            boundFn,
-            {
-                construct()
-                {
-                    return this;
-                },
-            },
-        );
+        const proxy = new _Proxy(boundFn, isConstructorArgumentHandler);
         try
         {
             new
@@ -497,6 +487,14 @@ obj =>
         { }
     }
     return false;
+};
+
+const isConstructorArgumentHandler =
+{
+    construct()
+    {
+        return this;
+    },
 };
 
 const isFunctionPrototype =
@@ -541,7 +539,7 @@ const isNativeFunction =
     {
         return false;
     }
-    const groups = /^function ?(.*)\(\) {\s+\[native code]\s+}/.exec(str);
+    const groups = /^function ?(.*)\(\) {\s+\[native code]\s+}$/.exec(str);
     const returnValue = groups && groups[1] === name && !isConstructor(obj);
     return returnValue;
 };
