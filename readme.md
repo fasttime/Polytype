@@ -108,10 +108,10 @@ Just download [polytype.min.js][polytype.min.js] from GitHub and include it in y
 <script src="polytype.min.js"></script>
 ```
 
-Alternatively, you can hotlink the current stable version using a CDN of your choice.
+Alternatively, you can hotlink the latest release using a CDN of your choice.
 
 ```html
-<script src="https://cdn.statically.io/gh/fasttime/Polytype/0.6.1/lib/polytype.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/polytype@0.6.1/lib/polytype.min.js"></script>
 ```
 
 If your browser application already uses ECMAScript modules, you can also import the module build
@@ -119,7 +119,7 @@ If your browser application already uses ECMAScript modules, you can also import
 This has the advantage to avoid possible naming conflicts on global objects.
 
 ```js
-import { classes } from "https://cdn.statically.io/gh/fasttime/Polytype/0.6.1/lib/polytype.min.mjs";
+import { classes } from "https://cdn.jsdelivr.net/npm/polytype@0.6.1/lib/polytype.min.mjs";
 ```
 
 ## Usage

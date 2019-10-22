@@ -52,7 +52,7 @@ task
     {
         const del = require('del');
 
-        await del(['.nyc_output', 'coverage', 'lib/**/*', 'readme.md', 'test/spec-runner.html']);
+        await del(['.nyc_output', 'coverage', 'lib', 'readme.md', 'test/spec-runner.html']);
     },
 );
 
@@ -61,9 +61,9 @@ task
     'make-ts-defs',
     async () =>
     {
-        const { version }                   = require('./package.json');
-        const { promises: { writeFile } }   = require('fs');
-        const Handlebars                    = require('handlebars');
+        const { version }                           = require('./package.json');
+        const { promises: { mkdir, writeFile } }    = require('fs');
+        const Handlebars                            = require('handlebars');
 
         async function writeOutput(outputPath, asModule)
         {
@@ -71,8 +71,10 @@ task
             await writeFile(outputPath, output);
         }
 
+        const mkdirPromise = mkdir('lib', { recursive: true });
         const input = await readFileAsString('src/polytype.d.ts.hbs');
         const template = Handlebars.compile(input, { noEscape: true });
+        await mkdirPromise;
         const promises =
         [
             writeOutput('lib/polytype-global.d.ts', false),
