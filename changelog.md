@@ -1,3 +1,10 @@
+<a name="0.7.0"></a>
+## [0.7.0](https://github.com/fasttime/Polytype/releases/tag/0.7.0) (2020-01-20)
+
+* Edge 79+ compatibility.
+* Dropped support for older engines and tools.
+* Updated package.json keywords.
+
 <a name="0.6.1"></a>
 ## [0.6.1](https://github.com/fasttime/Polytype/releases/tag/0.6.1) (2019-10-20)
 
