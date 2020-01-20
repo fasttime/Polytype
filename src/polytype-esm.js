@@ -368,9 +368,8 @@ obj =>
 };
 
 const { [_Symbol_hasInstance]: hasInstance } =
-class
 {
-    static [_Symbol_hasInstance](obj)
+    [_Symbol_hasInstance](obj)
     {
         hasInstancePending = true;
         try
@@ -389,7 +388,7 @@ class
         {
             hasInstancePending = false;
         }
-    }
+    },
 };
 
 let hasInstancePending = false;
@@ -538,9 +537,8 @@ const isNonUndefinedPrimitive = obj => obj === null || isNonNullOrUndefinedPrimi
 const isObject = obj => obj !== null && !isNonNullPrimitive(obj);
 
 const { isPrototypeOf } =
-class
 {
-    static isPrototypeOf(obj)
+    isPrototypeOf(obj)
     {
         if (isObject(obj))
         {
@@ -549,7 +547,7 @@ class
                 return true;
         }
         return false;
-    }
+    },
 };
 
 const nameOfType =
