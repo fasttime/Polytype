@@ -3,8 +3,7 @@
 
 'use strict';
 
-mocha.setup({ reporter: MochaBar, ui: 'bdd' });
-mocha.checkLeaks();
+mocha.setup({ checkLeaks: true, reporter: MochaBar, ui: 'bdd' });
 addEventListener
 (
     'DOMContentLoaded',

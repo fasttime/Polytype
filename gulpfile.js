@@ -97,29 +97,41 @@ task
             {
                 src: 'src/**/*.{js,mjs}',
                 globals: ['globalThis'],
-                parserOptions: { ecmaVersion: 10, sourceType: 'module' },
+                parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
                 rules: { 'prefer-named-capture-group': 'off' },
             },
             {
                 src: 'lib/**/*.d.ts',
-                parserOptions: { project: 'tsconfig.json' },
+                parserOptions: { ecmaVersion: 2020, project: 'tsconfig.json' },
                 rules: { 'max-len': 'off' },
             },
             {
                 src: ['*.js', 'test/**/*.js'],
-                parserOptions: { ecmaVersion: 11 },
+                parserOptions: { ecmaVersion: 2020 },
             },
             {
                 src: 'example/**/*.{js,ts}',
                 envs: 'node',
                 globals: ['classes', 'console'],
-                parserOptions: { ecmaVersion: 7, project: 'tsconfig.json', sourceType: 'module' },
+                parserOptions:
+                { ecmaVersion: 2020, project: 'tsconfig.json', sourceType: 'module' },
                 rules:
                 {
-                    'brace-style':                          'off',
+                    'brace-style':  'off',
+                    'comma-dangle':
+                    [
+                        'error',
+                        {
+                            'arrays':       'always-multiline',
+                            'objects':      'always-multiline',
+                            'imports':      'always-multiline',
+                            'exports':      'always-multiline',
+                            'functions':    'only-multiline',
+                        },
+                    ],
                     'no-unused-vars':
                     ['error', { varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$' }],
-                    'quotes':                               ['error', 'double'],
+                    'quotes':       ['error', 'double'],
                 },
             },
         );

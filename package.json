@@ -5,12 +5,9 @@
   "keywords": [
     "class",
     "classes",
-    "es2017",
-    "es8",
+    "es2020",
     "inheritance",
-    "multiple-inheritance",
-    "proxies",
-    "proxy"
+    "multiple-inheritance"
   ],
   "homepage": "https://github.com/fasttime/Polytype",
   "bugs": "https://github.com/fasttime/Polytype/issues",
@@ -56,6 +53,6 @@
     "typescript": "~3.7.5"
   },
   "engines": {
-    "node": ">=10.6.0"
+    "node": ">=12.0.0"
   }
 }

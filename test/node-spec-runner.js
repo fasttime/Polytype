@@ -45,7 +45,7 @@ const TEST_PATTERN = 'spec/**/*.spec.js';
 
 (async () =>
 {
-    const mocha = new Mocha({ ignoreLeaks: false, globals: ['__coverage__'] });
+    const mocha = new Mocha({ checkLeaks: true, global: ['__coverage__'] });
     mocha.addFile(require.resolve('./init-spec.js'));
     const filenames = await promisify(glob)(TEST_PATTERN, { absolute: true, cwd: __dirname });
     for (const filename of filenames)
