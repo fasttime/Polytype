@@ -8,12 +8,8 @@ TypeScript with a simple syntax.
 “Dynamic” means that changes to base classes at runtime are reflected immediately in all derived
 classes just like programmers would expect when working with single prototype inheritance.
 
-Polytype uses
-[proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)
-along with other relatively new language features to provide multiple inheritance.
-Some of these features are not yet well supported in all browsers.
-As of today, Polytype runs in **current versions of Chrome, Firefox, Safari, Opera and in Node.js**.
-As JavaScript support in other browsers improves, Polytype will start to run in those browsers, too.
+As of today, Polytype runs in **current versions of all major browsers** and in
+**Node.js**<sup>([*](#compatibility))</sup>.
 
 ## Contents
 
@@ -550,20 +546,16 @@ class Bananapple extends classes(Apple, Banana)
 Polytype was successfully tested in the following browsers/JavaScript engines.
 
 * Chrome 63+
-* Firefox 67+
 * Safari 13+
+* Edge 79+
+* Firefox 67+
 * Opera 50+
 * Node.js 10.6+
 
 The minimum supported TypeScript version is 3.5.
 
 Bundlers and other tools that process uncompressed Polytype source files are required to parse
-ECMAScript 2017 or higher syntax.
-
-In the current version of the Edge browser, the JavaScript engine Chakra still contains
-[a serious bug](https://github.com/Microsoft/ChakraCore/issues/5883) that can produce incorrect
-results when the `instanceof` operator is used with bound functions after Polytype has been loaded.
-For this reason it is recommended not to use Polytype in Edge as long as this issue persists.
+ECMAScript 2019 or higher syntax.
 
 [npm badge]: https://badge.fury.io/js/polytype.svg
 [npm url]: https://www.npmjs.com/package/polytype

@@ -42,18 +42,18 @@
     "chai": "~4.2.0",
     "del": "~5.1.0",
     "gulp": "~4.0.2",
-    "gulp-fasttime-lint": "~0.17.0",
-    "gulp-rename": "~1.4.0",
+    "gulp-fasttime-lint": "~0.19.0",
+    "gulp-rename": "~2.0.0",
     "gulp-terser": "~1.2.0",
-    "handlebars": "~4.4.3",
+    "handlebars": "~4.7.2",
     "markdown-toc": "~1.2.0",
-    "mocha": "~6.2.1",
+    "mocha": "~7.0.0",
     "mocha-bar": "~0.0.4",
-    "nyc": "~14.1.1",
+    "nyc": "~15.0.0",
     "postrequire": "~0.1.1",
-    "rollup": "~1.25.0",
-    "semver": "~6.3.0",
-    "typescript": "~3.6.4"
+    "rollup": "~1.29.0",
+    "semver": "~7.1.1",
+    "typescript": "~3.7.5"
   },
   "engines": {
     "node": ">=10.6.0"

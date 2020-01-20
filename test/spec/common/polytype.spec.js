@@ -7,6 +7,7 @@ classes,
 createNullPrototypeFunction,
 document,
 exactRegExp,
+globalThis,
 loadPolytype,
 maybeDescribe,
 newRealm,
@@ -25,40 +26,22 @@ describe
             'is loaded only once',
             () =>
             {
-                const globalThis = backupGlobals();
+                backupGlobals();
 
                 it
                 (
-                    'in self',
+                    'in globalThis',
                     async () =>
                     {
                         const expectedClasses = Function();
-                        const self = { __proto__: globalThis, classes: expectedClasses };
-                        Object.defineProperties
-                        (globalThis, { self: { value: self, configurable: true } });
-                        await loadPolytype();
-                        assert.strictEqual(self.classes, expectedClasses);
-                    },
-                );
-
-                it
-                (
-                    'in global',
-                    async () =>
-                    {
-                        const expectedClasses = Function();
-                        const global = { __proto__: globalThis, classes: expectedClasses };
+                        const globalThat = { __proto__: globalThis, classes: expectedClasses };
                         Object.defineProperties
                         (
-                            globalThis,
-                            {
-                                self: { value: undefined, configurable: true },
-                                global: { value: global, configurable: true },
-                            },
+                            globalThis, { globalThis: { value: globalThat, configurable: true } },
                         );
                         await loadPolytype();
-                        assert.strictEqual(global.classes, expectedClasses);
-                        delete global.classes;
+                        assert.strictEqual(globalThat.classes, expectedClasses);
+                        delete globalThat.classes;
                     },
                 );
             },
@@ -649,13 +632,13 @@ describe
                             {
                                 return this.foo;
                             }
-                            in()
-                            {
-                                return 'foo' in this;
-                            }
                             set bar(value)
                             {
                                 this.foo = value;
+                            }
+                            in()
+                            {
+                                return 'foo' in this;
                             }
                         }
 

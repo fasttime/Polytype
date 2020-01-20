@@ -96,8 +96,9 @@ task
         (
             {
                 src: 'src/**/*.{js,mjs}',
-                globals: ['global', 'self'],
-                parserOptions: { ecmaVersion: 8, sourceType: 'module' },
+                globals: ['globalThis'],
+                parserOptions: { ecmaVersion: 10, sourceType: 'module' },
+                rules: { 'prefer-named-capture-group': 'off' },
             },
             {
                 src: 'lib/**/*.d.ts',

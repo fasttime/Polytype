@@ -1,18 +1,13 @@
 /* eslint no-alert: off */
 /* eslint-env mocha, shared-node-browser */
-/* global __dirname, alert, chai, document, global, location, process, reimport, require, self */
+/* global __dirname, alert, chai, document, globalThis, location, process, reimport, require */
 
 'use strict';
 
-(global =>
 {
     function backupGlobals()
     {
-        const descriptorMapObj =
-        {
-            self: Object.getOwnPropertyDescriptor(global, 'self'),
-            global: Object.getOwnPropertyDescriptor(global, 'global'),
-        };
+        const globalThisDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'globalThis');
 
         let classesDescriptor;
         let getPrototypeListOfDescriptor;
@@ -25,7 +20,7 @@
             () =>
             {
                 classesDescriptor =
-                Object.getOwnPropertyDescriptor(global, 'classes');
+                Object.getOwnPropertyDescriptor(globalThis, 'classes');
                 getPrototypeListOfDescriptor =
                 Object.getOwnPropertyDescriptor(Object, 'getPrototypeListOf');
                 fnHasInstanceDescriptor =
@@ -41,14 +36,11 @@
         (
             () =>
             {
-                for (const [key, descriptor] of Object.entries(descriptorMapObj))
-                {
-                    if (descriptor)
-                        Object.defineProperty(global, key, descriptor);
-                    else
-                        delete global[key];
-                }
-                Object.defineProperty(global, 'classes', classesDescriptor);
+                if (globalThisDescriptor)
+                    Object.defineProperty(globalThis, 'globalThis', globalThisDescriptor);
+                else
+                    delete globalThis.globalThis;
+                Object.defineProperty(globalThis, 'classes', classesDescriptor);
                 Object.defineProperties
                 (
                     Function,
@@ -68,8 +60,6 @@
                 Object.defineProperty(Object.prototype, 'isPrototypeOf', isPrototypeOfDescriptor);
             },
         );
-
-        return global;
     }
 
     function createFunctionFromConstructor(Function)
@@ -399,14 +389,14 @@
                 ({ message }) =>
                 {
                     reject(message);
-                    iframe.remove();
+                    setTimeout(() => iframe.remove());
                 };
                 iframe.onload =
                 () =>
                 {
                     const { contentWindow: { Function, Object, document } } = iframe;
                     resolve({ Function, Object, document });
-                    iframe.remove();
+                    setTimeout(() => iframe.remove());
                 };
                 iframe.style.display = 'none';
                 document.body.appendChild(iframe);
@@ -470,7 +460,7 @@
 
     Object.assign
     (
-        global,
+        globalThis,
         {
             assert,
             backupGlobals,
@@ -487,4 +477,3 @@
         },
     );
 }
-)(typeof self === 'undefined' ? global : self);

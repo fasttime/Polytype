@@ -55,35 +55,37 @@ type =>
         throw _TypeError('Argument is not a function');
 };
 
-const classes =
-(...types) =>
+const { classes } =
 {
-    if (!types.length)
-        throw _TypeError('No superclasses specified');
-    const typeSet = new _Set();
-    const prototypeSet = new _Set();
-    for (const type of types)
+    classes(...types)
     {
-        checkDuplicateSuperType(typeSet, type);
-        if (!isConstructor(type))
+        if (!types.length)
+            throw _TypeError('No superclasses specified');
+        const typeSet = new _Set();
+        const prototypeSet = new _Set();
+        for (const type of types)
         {
-            const message = `${nameOfType(type)} is not a constructor`;
-            throw _TypeError(message);
+            checkDuplicateSuperType(typeSet, type);
+            if (!isConstructor(type))
+            {
+                const message = `${nameOfType(type)} is not a constructor`;
+                throw _TypeError(message);
+            }
+            const { prototype } = type;
+            if (isNonNullPrimitive(prototype))
+            {
+                const message =
+                `Property 'prototype' of ${nameOfType(type)} is not an object or null`;
+                throw _TypeError(message);
+            }
+            typeSet.add(type);
+            if (prototype !== null)
+                prototypeSet.add(prototype);
         }
-        const { prototype } = type;
-        if (isNonNullPrimitive(prototype))
-        {
-            const message =
-            `Property 'prototype' of ${nameOfType(type)} is not an object or null`;
-            throw _TypeError(message);
-        }
-        typeSet.add(type);
-        if (prototype !== null)
-            prototypeSet.add(prototype);
-    }
-    const constructorProxy = createConstructorProxy(typeSet, prototypeSet);
-    installAncestorProperties(typeSet, prototypeSet);
-    return constructorProxy;
+        const constructorProxy = createConstructorProxy(typeSet, prototypeSet);
+        installAncestorProperties(typeSet, prototypeSet);
+        return constructorProxy;
+    },
 };
 
 const commonHandlerPrototype = { setPrototypeOf: () => false };
@@ -110,7 +112,7 @@ function createConstructorProxy(typeSet, prototypeSet)
     (
         null,
         {
-            constructor: describeDataProperty(constructorProxy, true, false, true),
+            constructor: describeDataProperty(constructorProxy, true),
             class: describeDataProperty(superPrototypeSelector),
         },
     );
@@ -177,7 +179,7 @@ const createHandler =
                 const success = _Reflect_set(obj, prop, value, receiver);
                 return success;
             }
-            defineConfigurableDataProperty(receiver, prop, value, true, true);
+            defineMutableDataProperty(receiver, prop, value, true);
             return true;
         },
     };
@@ -220,59 +222,43 @@ const createSuper =
 const createSuperPrototypeSelector =
 prototypeSet =>
 {
-    const superPrototypeSelector =
-    defineConfigurableDataProperty
-    (
-        class
+    const { class: superPrototypeSelector } =
+    {
+        class(type)
         {
-            static _(type)
+            checkNonCallableArgument(type);
+            const { prototype } = type;
+            if (!prototypeSet.has(prototype))
             {
-                checkNonCallableArgument(type);
-                const { prototype } = type;
-                if (!prototypeSet.has(prototype))
-                {
-                    const message =
-                    isObject(prototype) ?
-                    'Property \'prototype\' of argument does not match any direct superclass' :
-                    'Property \'prototype\' of argument is not an object';
-                    throw _TypeError(message);
-                }
-                const superObj = createSuper(prototype, this);
-                return superObj;
+                const message =
+                isObject(prototype) ?
+                'Property \'prototype\' of argument does not match any direct superclass' :
+                'Property \'prototype\' of argument is not an object';
+                throw _TypeError(message);
             }
-        }
-        ._,
-        'name',
-        'class',
-        false,
-    );
+            const superObj = createSuper(prototype, this);
+            return superObj;
+        },
+    };
     return superPrototypeSelector;
 };
 
 const createSuperTypeSelector =
 typeSet =>
 {
-    const superTypeSelector =
-    defineConfigurableDataProperty
-    (
-        class
+    const { class: superTypeSelector } =
+    {
+        class(type)
         {
-            static _(type)
+            if (!typeSet.has(type))
             {
-                if (!typeSet.has(type))
-                {
-                    checkNonCallableArgument(type);
-                    throw _TypeError('Argument is not a direct superclass');
-                }
-                const superObj = createSuper(type, this);
-                return superObj;
+                checkNonCallableArgument(type);
+                throw _TypeError('Argument is not a direct superclass');
             }
-        }
-        ._,
-        'name',
-        'class',
-        false,
-    );
+            const superObj = createSuper(type, this);
+            return superObj;
+        },
+    };
     return superTypeSelector;
 };
 
@@ -325,26 +311,25 @@ function createTypeToSuperArgsMap(typeSet, args)
     return typeToSuperArgsMap;
 }
 
-const defineConfigurableDataProperty =
-(obj, prop, value, writable = true, enumerable = false) =>
-_Object_defineProperty(obj, prop, describeDataProperty(value, writable, enumerable, true));
-
 const defineGlobally =
 () =>
 {
-    const globalThis = typeof self === 'undefined' ? global : self;
     if (globalThis.hasOwnProperty('classes'))
         return false;
-    defineConfigurableDataProperty(globalThis, 'classes', classes);
-    defineConfigurableDataProperty(_Object, 'getPrototypeListOf', getPrototypeListOf);
+    defineMutableDataProperty(globalThis, 'classes', classes);
+    defineMutableDataProperty(_Object, 'getPrototypeListOf', getPrototypeListOf);
     return true;
 };
 
 const defineHasInstanceProperty =
-type => defineConfigurableDataProperty(type, _Symbol_hasInstance, hasInstance);
+type => defineMutableDataProperty(type, _Symbol_hasInstance, hasInstance);
+
+const defineMutableDataProperty =
+(obj, prop, value, enumerable = false) =>
+_Object_defineProperty(obj, prop, describeDataProperty(value, true, enumerable));
 
 const describeDataProperty =
-(value, writable, enumerable, configurable) => ({ value, writable, enumerable, configurable });
+(value, mutable, enumerable) => ({ value, writable: mutable, enumerable, configurable: mutable });
 
 const getNewObjectPropertyDescriptors =
 (type, args = EMPTY_ARRAY, newTarget) =>
@@ -473,7 +458,7 @@ obj =>
     if (isCallable(obj))
     {
         const boundFn = _Function_prototype_bind_call(obj);
-        defineConfigurableDataProperty(boundFn, 'prototype', null);
+        defineMutableDataProperty(boundFn, 'prototype', null);
         const proxy = new _Proxy(boundFn, isConstructorArgumentHandler);
         try
         {
@@ -483,7 +468,7 @@ obj =>
             ();
             return true;
         }
-        catch (error)
+        catch
         { }
     }
     return false;
@@ -535,7 +520,7 @@ const isNativeFunction =
     {
         str = _Function_prototype_toString_call(obj);
     }
-    catch (error)
+    catch
     {
         return false;
     }
@@ -590,7 +575,5 @@ const objOrNullOrUndefinedTypes = ['function', 'object', 'undefined'];
 const propFilter = prop => obj => prop in obj;
 
 const prototypeSetMap = new WeakMap();
-
-defineConfigurableDataProperty(classes, 'name', 'classes', false);
 
 export { classes, defineGlobally, getPrototypeListOf };
