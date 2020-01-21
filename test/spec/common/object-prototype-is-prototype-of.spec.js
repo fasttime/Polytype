@@ -71,8 +71,8 @@ describe
         (
             'cannot be called with new',
             () =>
-            assert.throws
-            (() => new Object.prototype.isPrototypeOf(), TypeError, /\bis not a constructor\b/),
+            assert.throwsTypeError
+            (() => new Object.prototype.isPrototypeOf(), /\bis not a constructor\b/),
         );
 
         test('with null argument', undefined, null, false);

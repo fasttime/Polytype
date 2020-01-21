@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, console, createFunctionWithGetPrototypeCount, exactRegExp, maybeIt */
+/* global assert, classes, console, createFunctionWithGetPrototypeCount, maybeIt */
 
 'use strict';
 
@@ -78,13 +78,8 @@ describe
         it
         (
             'cannot be called with new',
-            () =>
-            assert.throws
-            (
-                () => new classes(), // eslint-disable-line new-cap
-                TypeError,
-                /\bis not a constructor\b/,
-            ),
+            // eslint-disable-next-line new-cap
+            () => assert.throwsTypeError(() => new classes(), /\bis not a constructor\b/),
         );
 
         it
@@ -177,17 +172,13 @@ describe
                 it
                 (
                     'without arguments',
-                    () =>
-                    assert.throws
-                    (() => classes(), TypeError, exactRegExp('No superclasses specified')),
+                    () => assert.throwsTypeError(() => classes(), 'No superclasses specified'),
                 );
 
                 it
                 (
                     'with a null argument',
-                    () =>
-                    assert.throws
-                    (() => classes(null), TypeError, exactRegExp('null is not a constructor')),
+                    () => assert.throwsTypeError(() => classes(null), 'null is not a constructor'),
                 );
 
                 maybeIt
@@ -195,32 +186,23 @@ describe
                     typeof BigInt === 'function',
                     'with a bigint argument',
                     () =>
-                    assert.throws
-                    (() => classes(BigInt(42)), TypeError, exactRegExp('42 is not a constructor')),
+                    assert.throwsTypeError(() => classes(BigInt(42)), '42 is not a constructor'),
                 );
 
                 it
                 (
                     'with a symbol argument',
                     () =>
-                    assert.throws
-                    (
-                        () => classes(Symbol()),
-                        TypeError,
-                        exactRegExp('Symbol() is not a constructor'),
-                    ),
+                    assert.throwsTypeError
+                    (() => classes(Symbol()), 'Symbol() is not a constructor'),
                 );
 
                 it
                 (
                     'with a non-callable object argument',
                     () =>
-                    assert.throws
-                    (
-                        () => classes({ }),
-                        TypeError,
-                        exactRegExp('[object Object] is not a constructor'),
-                    ),
+                    assert.throwsTypeError
+                    (() => classes({ }), '[object Object] is not a constructor'),
                 );
 
                 it
@@ -231,12 +213,7 @@ describe
                         const foo = () => -0;
                         Object.defineProperties
                         (foo, { name: { value: undefined }, prototype: { value: { } } });
-                        assert.throws
-                        (
-                            () => classes(foo),
-                            TypeError,
-                            exactRegExp('() => -0 is not a constructor'),
-                        );
+                        assert.throwsTypeError(() => classes(foo), '() => -0 is not a constructor');
                     },
                 );
 
@@ -244,12 +221,10 @@ describe
                 (
                     'with a bound function',
                     () =>
-                    assert.throws
+                    assert.throwsTypeError
                     (
                         () => classes(Array.bind()),
-                        TypeError,
-                        exactRegExp
-                        ('Property \'prototype\' of bound Array is not an object or null'),
+                        'Property \'prototype\' of bound Array is not an object or null',
                     ),
                 );
 
@@ -260,12 +235,10 @@ describe
                     {
                         const foo = Function();
                         Object.defineProperty(foo, 'prototype', { value: 42 });
-                        assert.throws
+                        assert.throwsTypeError
                         (
                             () => classes(foo),
-                            TypeError,
-                            exactRegExp
-                            ('Property \'prototype\' of anonymous is not an object or null'),
+                            'Property \'prototype\' of anonymous is not an object or null',
                         );
                     },
                 );
@@ -275,12 +248,8 @@ describe
                     'with a repeated argument',
                     () =>
                     {
-                        assert.throws
-                        (
-                            () => classes(String, Array, String),
-                            TypeError,
-                            exactRegExp('Duplicate superclass String'),
-                        );
+                        assert.throwsTypeError
+                        (() => classes(String, Array, String), 'Duplicate superclass String');
                     },
                 );
 
@@ -294,7 +263,7 @@ describe
                         Object.defineProperty(SuperType, Symbol.hasInstance, { value: Function() });
                         const Type = Function();
                         Object.setPrototypeOf(Type, SuperType);
-                        assert.throws(() => classes(Type), TypeError);
+                        assert.throwsTypeError(() => classes(Type));
                     },
                 );
 
@@ -306,7 +275,7 @@ describe
                         const Type = Function();
                         Type.prototype = { __proto__: null, isPrototypeOf };
                         Object.freeze(Type.prototype);
-                        assert.throws(() => classes(Type), TypeError);
+                        assert.throwsTypeError(() => classes(Type));
                     },
                 );
             },

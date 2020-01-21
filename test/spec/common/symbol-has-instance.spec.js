@@ -78,8 +78,8 @@ describe
         it
         (
             'cannot be called with new',
-            () => // eslint-disable-next-line new-cap
-            assert.throws(() => new hasInstance(), TypeError, /\bis not a constructor\b/),
+            // eslint-disable-next-line new-cap
+            () => assert.throwsTypeError(() => new hasInstance(), /\bis not a constructor\b/),
         );
 
         it
@@ -187,7 +187,7 @@ describe
                     () =>
                     {
                         const fn = hasInstance.bind(createNullPrototypeFunction(), { });
-                        assert.throws(fn, TypeError);
+                        assert.throwsTypeError(fn);
                     },
                 );
             },

@@ -41,13 +41,7 @@
                 else
                     delete globalThis.globalThis;
                 Object.defineProperty(globalThis, 'classes', classesDescriptor);
-                Object.defineProperties
-                (
-                    Function,
-                    {
-                        [Symbol.hasInstance]: fnHasInstanceDescriptor,
-                    },
-                );
+                Object.defineProperty(Function, Symbol.hasInstance, fnHasInstanceDescriptor);
                 Object.defineProperties
                 (
                     Object,
@@ -318,6 +312,15 @@
             .ownPropertyDescriptor(key, expDescs[key]);
         }
     };
+    assert.throwsTypeError =
+    (fn, expErrorMsg, msg) =>
+    {
+        const expected =
+        typeof expErrorMsg === 'string' ?
+        exactRegExp(expErrorMsg) :
+        Array.isArray(expErrorMsg) ? exactRegExp(...expErrorMsg) : expErrorMsg;
+        new Assertion(fn, msg, assert.throwsTypeError, true).throws(TypeError, expected);
+    };
 
     let loadPolytype;
     let newRealm;
@@ -394,8 +397,7 @@
                 iframe.onload =
                 () =>
                 {
-                    const { contentWindow: { Function, Object, document } } = iframe;
-                    resolve({ Function, Object, document });
+                    resolve(iframe.contentWindow);
                     setTimeout(() => iframe.remove());
                 };
                 iframe.style.display = 'none';
@@ -467,7 +469,6 @@
             createFunctionFromConstructor,
             createFunctionWithGetPrototypeCount,
             createNullPrototypeFunction,
-            exactRegExp,
             loadPolytype,
             maybeDescribe,
             maybeIt,

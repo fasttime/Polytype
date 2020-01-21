@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createFunctionWithGetPrototypeCount, exactRegExp */
+/* global assert, classes, createFunctionWithGetPrototypeCount */
 
 'use strict';
 
@@ -11,7 +11,7 @@ describe
         it
         (
             'has unsettable prototype',
-            () => assert.throws(() => Object.setPrototypeOf(classes(Function()), { }), TypeError),
+            () => assert.throwsTypeError(() => Object.setPrototypeOf(classes(Function()), { })),
         );
 
         it
@@ -87,12 +87,8 @@ describe
         (
             'cannot be called without new',
             () =>
-            assert.throws
-            (
-                classes(Function()),
-                TypeError,
-                exactRegExp('Constructor cannot be invoked without \'new\''),
-            ),
+            assert.throwsTypeError
+            (classes(Function()), 'Constructor cannot be invoked without \'new\''),
         );
 
         it

@@ -12,8 +12,7 @@ describe
         (
             'has unsettable prototype',
             () =>
-            assert.throws
-            (() => Object.setPrototypeOf(classes(Function()).prototype, { }), TypeError),
+            assert.throwsTypeError(() => Object.setPrototypeOf(classes(Function()).prototype, { })),
         );
 
         it

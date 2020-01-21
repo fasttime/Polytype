@@ -54,12 +54,9 @@ describe
         (
             'cannot be called with new',
             () =>
-            assert.throws
-            (
-                () => new Object.getPrototypeListOf(), // eslint-disable-line new-cap
-                TypeError,
-                /\bis not a constructor\b/,
-            ),
+            assert.throwsTypeError
+            // eslint-disable-next-line new-cap
+            (() => new Object.getPrototypeListOf(), /\bis not a constructor\b/),
         );
 
         it
@@ -176,7 +173,7 @@ describe
         it
         (
             'throws a TypeError with null',
-            () => assert.throws(() => Object.getPrototypeListOf(null), TypeError),
+            () => assert.throwsTypeError(() => Object.getPrototypeListOf(null)),
         );
     },
 );

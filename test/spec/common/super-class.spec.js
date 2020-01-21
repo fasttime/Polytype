@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createNullPrototypeFunction, exactRegExp, setupTestData */
+/* global assert, classes, createNullPrototypeFunction, setupTestData */
 
 'use strict';
 
@@ -60,7 +60,7 @@ describe
                     {
                         const { A, C } = setupTestData(classes);
                         const c = new C();
-                        assert.throws(() => c.newSuper(A), TypeError, /\bis not a constructor\b/);
+                        assert.throwsTypeError(() => c.newSuper(A), /\bis not a constructor\b/);
                     },
                 );
 
@@ -82,12 +82,7 @@ describe
                     {
                         const { E } = setupTestData(classes);
                         const e = new E();
-                        assert.throws
-                        (
-                            () => e.getSuper({ }),
-                            TypeError,
-                            exactRegExp('Argument is not a function'),
-                        );
+                        assert.throwsTypeError(() => e.getSuper({ }), 'Argument is not a function');
                     },
                 );
 
@@ -98,15 +93,11 @@ describe
                     {
                         const { A, E } = setupTestData(classes);
                         const e = new E();
-                        assert.throws
+                        assert.throwsTypeError
                         (
                             () => e.getSuper(A),
-                            TypeError,
-                            exactRegExp
-                            (
-                                'Property \'prototype\' of argument does not match any ' +
-                                'direct superclass',
-                            ),
+                            'Property \'prototype\' of argument does not match any direct ' +
+                            'superclass',
                         );
                     },
                 );
@@ -127,15 +118,13 @@ describe
                         }
 
                         const bar = new Bar();
-                        assert.throws
+                        assert.throwsTypeError
                         (
                             () => bar.bar(),
-                            TypeError,
-                            exactRegExp
-                            (
+                            [
                                 'Property \'prototype\' of argument is not an object',
                                 'undefined is not an object (evaluating \'super.class\')',
-                            ),
+                            ],
                         );
                     },
                 );
@@ -193,8 +182,8 @@ describe
                     () =>
                     {
                         const { A, C } = setupTestData(classes);
-                        assert.throws
-                        (() => C.newStaticSuper(A), TypeError, /\bis not a constructor\b/);
+                        assert.throwsTypeError
+                        (() => C.newStaticSuper(A), /\bis not a constructor\b/);
                     },
                 );
 
@@ -218,12 +207,8 @@ describe
                     () =>
                     {
                         const { E } = setupTestData(classes);
-                        assert.throws
-                        (
-                            () => E.getStaticSuper({ }),
-                            TypeError,
-                            exactRegExp('Argument is not a function'),
-                        );
+                        assert.throwsTypeError
+                        (() => E.getStaticSuper({ }), 'Argument is not a function');
                     },
                 );
 
@@ -233,12 +218,8 @@ describe
                     () =>
                     {
                         const { A, E } = setupTestData(classes);
-                        assert.throws
-                        (
-                            () => E.getStaticSuper(A),
-                            TypeError,
-                            exactRegExp('Argument is not a direct superclass'),
-                        );
+                        assert.throwsTypeError
+                        (() => E.getStaticSuper(A), 'Argument is not a direct superclass');
                     },
                 );
             },

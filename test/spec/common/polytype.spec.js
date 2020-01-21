@@ -6,7 +6,6 @@ backupGlobals,
 classes,
 createNullPrototypeFunction,
 document,
-exactRegExp,
 globalThis,
 loadPolytype,
 maybeDescribe,
@@ -35,10 +34,8 @@ describe
                     {
                         const expectedClasses = Function();
                         const globalThat = { __proto__: globalThis, classes: expectedClasses };
-                        Object.defineProperties
-                        (
-                            globalThis, { globalThis: { value: globalThat, configurable: true } },
-                        );
+                        Object.defineProperty
+                        (globalThis, 'globalThis', { value: globalThat, configurable: true });
                         await loadPolytype();
                         assert.strictEqual(globalThat.classes, expectedClasses);
                         delete globalThat.classes;
@@ -148,13 +145,12 @@ describe
 
                         Object.defineProperty(A.prototype, 'a', { value: 13 });
                         const b = new B();
-                        assert.throws
+                        assert.throwsTypeError
                         (
                             () =>
                             {
                                 b.a = 42;
                             },
-                            TypeError,
                         );
                     },
                 );
@@ -315,13 +311,12 @@ describe
                         { }
 
                         Object.defineProperty(A, 'aProp', { value: 'A' });
-                        assert.throws
+                        assert.throwsTypeError
                         (
                             () =>
                             {
                                 B.aProp = 'B';
                             },
-                            TypeError,
                         );
                     },
                 );
@@ -538,8 +533,7 @@ describe
                             () =>
                             {
                                 const { C } = setupTestData(classes);
-                                assert.throws
-                                (() => new C(0), TypeError, exactRegExp('Invalid arguments'));
+                                assert.throwsTypeError(() => new C(0), 'Invalid arguments');
                             },
                         );
 
@@ -551,11 +545,10 @@ describe
                                 class Foo extends classes(Object)
                                 { }
 
-                                assert.throws
+                                assert.throwsTypeError
                                 (
                                     () => new Foo({ super: Object, arguments: false }),
-                                    TypeError,
-                                    exactRegExp('Invalid arguments for superclass Object'),
+                                    'Invalid arguments for superclass Object',
                                 );
                             },
                         );
@@ -566,12 +559,8 @@ describe
                             () =>
                             {
                                 const { A, C } = setupTestData(classes);
-                                assert.throws
-                                (
-                                    () => new C([], { super: A }),
-                                    TypeError,
-                                    exactRegExp('Mixed argument styles'),
-                                );
+                                assert.throwsTypeError
+                                (() => new C([], { super: A }), 'Mixed argument styles');
                             },
                         );
 
@@ -583,11 +572,10 @@ describe
                                 class Foo extends classes(Number)
                                 { }
 
-                                assert.throws
+                                assert.throwsTypeError
                                 (
                                     () => new Foo({ super: Number }, { super: Number }),
-                                    TypeError,
-                                    exactRegExp('Duplicate superclass Number'),
+                                    'Duplicate superclass Number',
                                 );
                             },
                         );
@@ -600,11 +588,10 @@ describe
                                 const { A, C } = setupTestData(classes);
                                 const Foo = _ => [] <= _;
                                 Object.defineProperty(Foo, 'name', { value: '' });
-                                assert.throws
+                                assert.throwsTypeError
                                 (
                                     () => new C({ super: A }, { super: Foo }),
-                                    TypeError,
-                                    exactRegExp('_ => [] <= _ is not a direct superclass'),
+                                    '_ => [] <= _ is not a direct superclass',
                                 );
                             },
                         );
