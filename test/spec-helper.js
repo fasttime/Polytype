@@ -327,8 +327,9 @@
     let polytypeMode;
     if (typeof module !== 'undefined')
     {
-        const path                  = require('path');
-        const { runInNewContext }   = require('vm');
+        const { promises: { readFile } }                        = require('fs');
+        const { resolve }                                       = require('path');
+        const { createContext, runInContext, runInNewContext }  = require('vm');
 
         function loadPolytypeBase()
         {
@@ -338,7 +339,21 @@
             return returnValue;
         }
 
-        newRealm = () => runInNewContext('this');
+        newRealm =
+        async includePolytype =>
+        {
+            let globalThat;
+            if (includePolytype)
+            {
+                const path = require.resolve('../lib/polytype.js');
+                const code = await readFile(path, 'utf8');
+                globalThat = createContext();
+                runInContext(code, globalThat);
+            }
+            else
+                globalThat = runInNewContext('this');
+            return globalThat;
+        };
         const polytypePath =
         getPolytypePath(process.argv[2], ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
         const extension = getExtension(polytypePath);
@@ -362,7 +377,7 @@
             {
                 const postrequire = require('postrequire');
 
-                const modulePath = path.resolve(__dirname, '../lib/polytype.mjs');
+                const modulePath = resolve(__dirname, '../lib/polytype.mjs');
                 loadPolytype =
                 async () =>
                 {
@@ -381,29 +396,60 @@
     {
         const ALLOWED_EXTENSIONS = ['.js', '.min.js', '.mjs', '.min.mjs'];
 
-        newRealm =
-        () =>
+        const loadIFrame =
+        iFrame =>
         new Promise
         (
             (resolve, reject) =>
             {
-                const iframe = document.createElement('iframe');
-                iframe.onerror =
+                iFrame.onerror = reject;
+                iFrame.onload = () => resolve(iFrame.contentWindow);
+                iFrame.style.display = 'none';
+                document.body.appendChild(iFrame);
+            },
+        );
+
+        const loadScript =
+        (document, src) =>
+        new Promise
+        (
+            (resolve, reject) =>
+            {
+                const script = document.createElement('script');
+                script.onerror =
                 ({ message }) =>
                 {
                     reject(message);
-                    setTimeout(() => iframe.remove());
+                    script.remove();
                 };
-                iframe.onload =
+                script.onload =
                 () =>
                 {
-                    resolve(iframe.contentWindow);
-                    setTimeout(() => iframe.remove());
+                    resolve();
+                    script.remove();
                 };
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
+                script.src = src;
+                document.head.appendChild(script);
             },
         );
+
+        newRealm =
+        async includePolytype =>
+        {
+            const iFrame = document.createElement('iframe');
+            try
+            {
+                const window = await loadIFrame(iFrame);
+                if (includePolytype)
+                    await loadScript(window.document, '../lib/polytype.js');
+                return window;
+            }
+            finally
+            {
+                iFrame.remove();
+            }
+        };
+
         const urlParams = new URLSearchParams(location.search);
         const extname = urlParams.get('extname');
         let polytypePath;
@@ -420,29 +466,7 @@
         switch (extension)
         {
         case '.js':
-            loadPolytype =
-            () =>
-            new Promise
-            (
-                (resolve, reject) =>
-                {
-                    const script = document.createElement('script');
-                    script.onerror =
-                    ({ message }) =>
-                    {
-                        reject(message);
-                        script.remove();
-                    };
-                    script.onload =
-                    () =>
-                    {
-                        resolve();
-                        script.remove();
-                    };
-                    script.src = polytypePath;
-                    document.head.appendChild(script);
-                },
-            );
+            loadPolytype = () => loadScript(document, '../lib/polytype.js');
             break;
         case '.mjs':
             {

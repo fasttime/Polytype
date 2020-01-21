@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createNullPrototypeFunction, document, maybeIt */
+/* global assert, classes, createNullPrototypeFunction, document, maybeIt, newRealm */
 
 'use strict';
 
@@ -133,6 +133,26 @@ describe
                 { }
 
                 class C extends classes(A, B)
+                { }
+
+                testGetPrototypeListOf(C, [A, B]);
+            },
+        );
+
+        it.skip
+        (
+            'returns the prototypes of a multiple inheritance constructor in another realm',
+            async () =>
+            {
+                const { classes: classesʼ } = await newRealm(true);
+
+                class A
+                { }
+
+                class B
+                { }
+
+                class C extends classesʼ(A, B)
                 { }
 
                 testGetPrototypeListOf(C, [A, B]);
