@@ -8,6 +8,7 @@ const
     create:                     _Object_create,
     defineProperties:           _Object_defineProperties,
     defineProperty:             _Object_defineProperty,
+    freeze:                     _Object_freeze,
     getOwnPropertyDescriptor:   _Object_getOwnPropertyDescriptor,
     getOwnPropertyDescriptors:  _Object_getOwnPropertyDescriptors,
     getPrototypeOf:             _Object_getPrototypeOf,
@@ -27,7 +28,8 @@ const
 _Reflect;
 const _Set                  = Set;
 const _String               = String;
-const _Symbol_hasInstance   = Symbol.hasInstance;
+const _Symbol               = Symbol;
+const _Symbol_hasInstance   = _Symbol.hasInstance;
 const _TypeError            = TypeError;
 
 const bindCall = callable => _Function_prototype.call.bind(callable);
@@ -155,14 +157,25 @@ typeSet =>
 const createGetConstructorName =
 typeSet => () => `(${[...typeSet].map(({ name }) => _String(name))})`;
 
-const createHandler =
-(objs, handlerPrototype) =>
+const createListFromArrayLike = _Function_prototype.apply.bind((...args) => args, null);
+
+const createProxy =
+(target, prototypeSet, handlerPrototype) =>
 {
+    const prototypeList = _Object_freeze([...prototypeSet]);
+    const objs = [target, ...prototypeList];
     const handler =
     {
         __proto__: handlerPrototype,
         get(target, prop, receiver)
         {
+            if (prop === prototypesLookupSymbol && isObject(receiver))
+            {
+                const descriptor =
+                _Object_getOwnPropertyDescriptor(receiver, prototypesLookupSymbol);
+                if (descriptor && descriptor.value === proxy)
+                    receiver.prototypeList = prototypeList;
+            }
             const obj = objs.find(propFilter(prop));
             if (obj !== undefined)
             {
@@ -183,17 +196,7 @@ const createHandler =
             return true;
         },
     };
-    return handler;
-};
-
-const createListFromArrayLike = _Function_prototype.apply.bind((...args) => args, null);
-
-const createProxy =
-(target, prototypeSet, handlerPrototype) =>
-{
-    const handler = createHandler([target, ...prototypeSet], handlerPrototype);
     const proxy = new _Proxy(target, handler);
-    prototypeSetMap.set(proxy, prototypeSet);
     return proxy;
 };
 
@@ -331,6 +334,24 @@ _Object_defineProperty(obj, prop, describeDataProperty(value, true, enumerable))
 const describeDataProperty =
 (value, mutable, enumerable) => ({ value, writable: mutable, enumerable, configurable: mutable });
 
+const doPrototypesLookup =
+obj =>
+{
+    const receiver = { [prototypesLookupSymbol]: obj };
+    _Reflect_get(obj, prototypesLookupSymbol, receiver);
+    const { prototypeList } = receiver;
+    if (prototypeList !== undefined)
+    {
+        const prototypes = [...prototypeList];
+        for (const prototype of prototypes)
+        {
+            if (!isObject(prototype))
+                throw _TypeError('Corrupt prototype list');
+        }
+        return prototypes;
+    }
+};
+
 const getNewObjectPropertyDescriptors =
 (type, args = EMPTY_ARRAY, newTarget) =>
 _Object_getOwnPropertyDescriptors(_Reflect_construct(type, args, newTarget));
@@ -345,8 +366,9 @@ const { getPrototypeListOf } =
             const prototype = _Object_getPrototypeOf(obj);
             if (prototype !== null)
             {
-                const prototypeSet = prototypeSetMap.get(prototype);
-                prototypes = prototypeSet ? [...prototypeSet] : [prototype];
+                prototypes = doPrototypesLookup(prototype);
+                if (!prototypes)
+                    prototypes = [prototype];
             }
             else
                 prototypes = [];
@@ -358,7 +380,7 @@ const { getPrototypeListOf } =
 const getPrototypesOf =
 obj =>
 {
-    let prototypes = prototypeSetMap.get(obj);
+    let prototypes = doPrototypesLookup(obj);
     if (!prototypes)
     {
         const prototype = _Object_getPrototypeOf(obj);
@@ -572,6 +594,6 @@ const objOrNullOrUndefinedTypes = ['function', 'object', 'undefined'];
 
 const propFilter = prop => obj => prop in obj;
 
-const prototypeSetMap = new WeakMap();
+const prototypesLookupSymbol = _Symbol.for('Polytype prototypes lookup');
 
 export { classes, defineGlobally, getPrototypeListOf };
