@@ -100,9 +100,7 @@ describe
             () =>
             {
                 const SuperType = imitateFunctionPrototype();
-                const Type =
-                function ()
-                { };
+                const Type = Function();
                 Object.setPrototypeOf(Type, SuperType);
                 assert.doesNotThrow(() => classes(Type));
             },

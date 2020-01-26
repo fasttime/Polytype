@@ -23,9 +23,9 @@ describe
                         c.aProp = 'A';
                         c.bProp = 'B';
                         assert.strictEqual(c.getSuper(A).someMethod(), 'A');
-                        const Bʼ = Function();
-                        Bʼ.prototype = B.prototype;
-                        assert.strictEqual(c.getSuper(Bʼ).someMethod(), 'B');
+                        const B2 = Function();
+                        B2.prototype = B.prototype;
+                        assert.strictEqual(c.getSuper(B2).someMethod(), 'B');
                     },
                 );
 

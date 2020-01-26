@@ -1,5 +1,14 @@
 /* eslint-env mocha */
-/* global assert, classes, createNullPrototypeFunction, document, maybeIt, newRealm */
+/*
+global
+assert,
+classes,
+createDeceptiveObject,
+createNullPrototypeFunction,
+document,
+maybeIt,
+newRealm,
+*/
 
 'use strict';
 
@@ -121,65 +130,73 @@ describe
             },
         );
 
-        it
+        describe
         (
             'returns the prototypes of a multiple inheritance constructor',
             () =>
             {
-                class A
-                { }
+                function test(classes)
+                {
+                    class A
+                    { }
 
-                class B
-                { }
+                    class B
+                    { }
 
-                class C extends classes(A, B)
-                { }
+                    class C extends classes(A, B)
+                    { }
 
-                testGetPrototypeListOf(C, [A, B]);
+                    testGetPrototypeListOf(C, [A, B]);
+                }
+
+                it('in the same realm', () => test(classes));
+
+                it
+                (
+                    'in another realm',
+                    async () =>
+                    {
+                        const { classes: classesʼ } = await newRealm(true);
+                        test(classesʼ);
+                    },
+                );
             },
         );
 
-        it.skip
-        (
-            'returns the prototypes of a multiple inheritance constructor in another realm',
-            async () =>
-            {
-                const { classes: classesʼ } = await newRealm(true);
-
-                class A
-                { }
-
-                class B
-                { }
-
-                class C extends classesʼ(A, B)
-                { }
-
-                testGetPrototypeListOf(C, [A, B]);
-            },
-        );
-
-        it
+        describe
         (
             'returns all prototypes of a multiple inheritance prototype excluding null and ' +
             'duplicates',
             () =>
             {
-                const A =
-                class
-                { };
-                const B = createNullPrototypeFunction();
-                const C =
-                class
-                { };
-                const D =
-                function ()
-                { };
-                D.prototype = A.prototype;
-                const ABCD =
-                class extends classes(A, B, C, D)
-                { };
-                testGetPrototypeListOf(ABCD.prototype, [A.prototype, C.prototype]);
+                function test(classes)
+                {
+                    const A =
+                    class
+                    { };
+                    const B = createNullPrototypeFunction();
+                    const C =
+                    class
+                    { };
+                    const D = Function();
+                    D.prototype = A.prototype;
+                    const ABCD =
+                    class extends classes(A, B, C, D)
+                    { };
+                    testGetPrototypeListOf(ABCD.prototype, [A.prototype, C.prototype]);
+                }
+
+                it('in the same realm', () => test(classes));
+
+                it
+                (
+                    'in another realm',
+                    async () =>
+                    {
+                        const { classes: classesʼ } = await newRealm(true);
+                        test(classesʼ);
+                    },
+                );
             },
         );
 
@@ -194,6 +211,17 @@ describe
         (
             'throws a TypeError with null',
             () => assert.throwsTypeError(() => Object.getPrototypeListOf(null)),
+        );
+
+        it
+        (
+            'throws a TypeError with a deceptive object',
+            ()  =>
+            {
+                const obj = createDeceptiveObject();
+                assert.throwsTypeError
+                (() => Object.getPrototypeListOf(obj), 'Corrupt prototype list');
+            },
         );
     },
 );

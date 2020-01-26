@@ -56,6 +56,23 @@
         );
     }
 
+    function createDeceptiveObject()
+    {
+        const prototypesLookupSymbol = Symbol.for('Polytype prototypes lookup');
+        const obj =
+        {
+            __proto__:
+            {
+                get [prototypesLookupSymbol]()
+                {
+                    Reflect.get(this, prototypesLookupSymbol, [42]);
+                    return undefined;
+                },
+            },
+        };
+        return obj;
+    }
+
     function createFunctionFromConstructor(Function)
     {
         const fn = Function();
@@ -327,9 +344,9 @@
     let polytypeMode;
     if (typeof module !== 'undefined')
     {
-        const { promises: { readFile } }                        = require('fs');
-        const { resolve }                                       = require('path');
-        const { createContext, runInContext, runInNewContext }  = require('vm');
+        const { promises: { readFile } }        = require('fs');
+        const { resolve }                       = require('path');
+        const { createContext, runInContext }   = require('vm');
 
         function loadPolytypeBase()
         {
@@ -342,16 +359,14 @@
         newRealm =
         async includePolytype =>
         {
-            let globalThat;
+            const context = createContext();
             if (includePolytype)
             {
                 const path = require.resolve('../lib/polytype.js');
                 const code = await readFile(path, 'utf8');
-                globalThat = createContext();
-                runInContext(code, globalThat);
+                runInContext(code, context);
             }
-            else
-                globalThat = runInNewContext('this');
+            const globalThat = runInContext('this', context);
             return globalThat;
         };
         const polytypePath =
@@ -446,7 +461,7 @@
             }
             finally
             {
-                iFrame.remove();
+                setTimeout(() => iFrame.remove());
             }
         };
 
@@ -490,6 +505,7 @@
         {
             assert,
             backupGlobals,
+            createDeceptiveObject,
             createFunctionFromConstructor,
             createFunctionWithGetPrototypeCount,
             createNullPrototypeFunction,

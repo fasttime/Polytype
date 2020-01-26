@@ -193,9 +193,7 @@ describe
                     () =>
                     {
                         const { A, C } = setupTestData(classes);
-                        const CConstructor =
-                        function ()
-                        { };
+                        const CConstructor = Function();
                         CConstructor.prototype = Object.getPrototypeOf(C);
                         assert.instanceOf(C.getStaticSuper(A), CConstructor);
                     },

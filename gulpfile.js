@@ -8,8 +8,10 @@ async function bundle(inputPath, outputPath, format)
 {
     const { homepage, version } = require('./package.json');
     const { rollup }            = require('rollup');
+    const cleanup               = require('rollup-plugin-cleanup');
 
-    const inputOptions = { input: inputPath };
+    const cleanupPlugin = cleanup({ maxEmptyLines: -1 });
+    const inputOptions = { input: inputPath, plugins: [cleanupPlugin] };
     const bundle = await rollup(inputOptions);
     const outputOptions =
     {
@@ -37,12 +39,12 @@ function minify(srcGlobs, module, extname)
     return stream;
 }
 
-async function readFileAsString(inputPath)
+function readFileAsString(inputPath)
 {
     const { promises: { readFile } } = require('fs');
 
-    const input = String(await readFile(inputPath));
-    return input;
+    const promise = readFile(inputPath, 'utf8');
+    return promise;
 }
 
 task

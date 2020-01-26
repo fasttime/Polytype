@@ -171,10 +171,9 @@ const createProxy =
         {
             if (prop === prototypesLookupSymbol && isObject(receiver))
             {
-                const descriptor =
-                _Object_getOwnPropertyDescriptor(receiver, prototypesLookupSymbol);
+                const descriptor = _Object_getOwnPropertyDescriptor(receiver, 'target');
                 if (descriptor && descriptor.value === proxy)
-                    receiver.prototypeList = prototypeList;
+                    _Reflect_get(receiver, prototypesLookupSymbol, prototypeList);
             }
             const obj = objs.find(propFilter(prop));
             if (obj !== undefined)
@@ -337,9 +336,16 @@ const describeDataProperty =
 const doPrototypesLookup =
 obj =>
 {
-    const receiver = { [prototypesLookupSymbol]: obj };
+    let prototypeList;
+    const receiver =
+    {
+        target: obj,
+        get [prototypesLookupSymbol]() // eslint-disable-line getter-return
+        {
+            prototypeList = this;
+        },
+    };
     _Reflect_get(obj, prototypesLookupSymbol, receiver);
-    const { prototypeList } = receiver;
     if (prototypeList !== undefined)
     {
         const prototypes = [...prototypeList];
@@ -545,7 +551,7 @@ const isNativeFunction =
     {
         return false;
     }
-    const groups = /^function ?(.*)\(\) {\s+\[native code]\s+}$/.exec(str);
+    const groups = /^function (.*)\(\) {\s+\[native code]\s}$/.exec(str);
     const returnValue = groups && groups[1] === name && !isConstructor(obj);
     return returnValue;
 };

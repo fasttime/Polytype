@@ -1,9 +1,9 @@
-
 /* eslint-env mocha */
 /*
 global
 assert,
 classes,
+createDeceptiveObject,
 createFunctionFromConstructor,
 createNullPrototypeFunction,
 document,
@@ -18,13 +18,6 @@ describe
     '[Symbol.hasInstance]',
     () =>
     {
-        function test(argDescription, type, arg, expectedResult)
-        {
-            const description = `returns ${expectedResult} ${argDescription}`;
-
-            it(description, () => assert.strictEqual(hasInstance.call(type, arg), expectedResult));
-        }
-
         let hasInstance;
 
         before
@@ -87,10 +80,9 @@ describe
             'is defined only on superclasses',
             async () =>
             {
-                const { Function: Functionʼ, Object: Objectʼ } = await newRealm();
-                const A =
-                function ()
-                { };
+                const { Function: Functionʼ, Object: Objectʼ, classes: classesʼ } =
+                await newRealm(true);
+                const A = Function();
                 A.prototype.constructor = null;
                 const B =
                 () =>
@@ -99,9 +91,7 @@ describe
                 const C = { __proto__: B };
                 C.prototype = { __proto__: B.prototype };
                 C.prototype.constructor = C;
-                const D =
-                function ()
-                { };
+                const D = Function();
                 Object.setPrototypeOf(D, C);
                 D.prototype = { __proto__: C.prototype };
                 D.prototype.constructor = D;
@@ -109,7 +99,13 @@ describe
                 const F =
                 class extends E
                 { };
-                const _ADF = classes(A, D, F);
+                const G =
+                class
+                { };
+                const H =
+                class extends classesʼ(G)
+                { };
+                const _ADFH = classes(A, D, F, H);
                 const hasInstanceDescriptorMapObj =
                 {
                     [Symbol.hasInstance]:
@@ -126,25 +122,83 @@ describe
                 assert.notOwnProperty(D, Symbol.hasInstance);
                 assert.hasOwnPropertyDescriptors(E, hasInstanceDescriptorMapObj);
                 assert.notOwnProperty(F, Symbol.hasInstance);
-                assert.notOwnProperty(_ADF, Symbol.hasInstance);
+                assert.hasOwnPropertyDescriptors(G, hasInstanceDescriptorMapObj);
+                assert.notOwnProperty(H, Symbol.hasInstance);
+                assert.notOwnProperty(_ADFH, Symbol.hasInstance);
                 assert.hasOwnPropertyDescriptors(Objectʼ, hasInstanceDescriptorMapObj);
                 assert.hasOwnPropertyDescriptors(Functionʼ, hasInstanceDescriptorMapObj);
             },
         );
 
-        test('when this is not callable', { prototype: Object.prototype }, { }, false);
+        it
+        (
+            'returns false when this is not callable',
+            () =>
+            {
+                const actual = hasInstance.call({ prototype: Object.prototype }, { });
+                assert.isFalse(actual);
+            },
+        );
 
-        test('when this is null', null, { }, false);
+        it
+        (
+            'returns false when this is null',
+            () =>
+            {
+                const actual = hasInstance.call(null, { }); // eslint-disable-line no-useless-call
+                assert.isFalse(actual);
+            },
+        );
 
-        test('when this has null prototype', { __proto__: null }, { }, false);
+        it
+        (
+            'returns false when this has null prototype',
+            () =>
+            {
+                const actual = hasInstance.call({ __proto__: null }, { });
+                assert.isFalse(actual);
+            },
+        );
 
-        test('with null argument', Object, null, false);
+        it
+        (
+            'returns false with null argument',
+            () =>
+            {
+                const actual = hasInstance.call(Object, null);
+                assert.isFalse(actual);
+            },
+        );
 
-        test('with undefined argument', Object, undefined, false);
+        it
+        (
+            'returns false with undefined argument',
+            () =>
+            {
+                const actual = hasInstance.call(Object, undefined);
+                assert.isFalse(actual);
+            },
+        );
 
-        test('with boolean type argument', Boolean, true, false);
+        it
+        (
+            'returns false with boolean type argument',
+            () =>
+            {
+                const actual = hasInstance.call(Boolean, true);
+                assert.isFalse(actual);
+            },
+        );
 
-        test('with number type argument', Number, 1, false);
+        it
+        (
+            'returns false with number type argument',
+            () =>
+            {
+                const actual = hasInstance.call(Number, 1);
+                assert.isFalse(actual);
+            },
+        );
 
         maybeIt
         (
@@ -152,14 +206,30 @@ describe
             'returns false with bigint type argument',
             () =>
             {
-                const expected = hasInstance.call(Boolean, BigInt(1));
-                assert.isFalse(expected);
+                const actual = hasInstance.call(Boolean, BigInt(1));
+                assert.isFalse(actual);
             },
         );
 
-        test('with string type argument', String, 'foo', false);
+        it
+        (
+            'returns false with string type argument',
+            () =>
+            {
+                const actual = hasInstance.call(String, 'foo');
+                assert.isFalse(actual);
+            },
+        );
 
-        test('with symbol type argument', Symbol, Symbol.iterator, false);
+        it
+        (
+            'returns false with symbol type argument',
+            () =>
+            {
+                const actual = hasInstance.call(Symbol, Symbol.iterator);
+                assert.isFalse(actual);
+            },
+        );
 
         maybeIt
         (
@@ -167,19 +237,35 @@ describe
             'returns true with document.all',
             () =>
             {
-                const expected = hasInstance.call(Object, document.all);
-                assert.isTrue(expected);
+                const actual = hasInstance.call(Object, document.all);
+                assert.isTrue(actual);
             },
         );
 
-        test('when the argument is the prototype of this', Symbol, Symbol.prototype, false);
+        it
+        (
+            'returns false when the argument is the prototype of this',
+            () =>
+            {
+                const actual = hasInstance.call(Symbol, Symbol.prototype);
+                assert.isFalse(actual);
+            },
+        );
 
         describe
         (
             'when this is a function with property \'prototype\' null',
             () =>
             {
-                test('with a primitive argument', createNullPrototypeFunction(), 1, false);
+                it
+                (
+                    'returns false with a primitive argument',
+                    () =>
+                    {
+                        const actual = hasInstance.call(createNullPrototypeFunction(), 1);
+                        assert.isFalse(actual);
+                    },
+                );
 
                 it
                 (
@@ -190,6 +276,18 @@ describe
                         assert.throwsTypeError(fn);
                     },
                 );
+            },
+        );
+
+        it
+        (
+            'throws a TypeError with a deceptive object',
+            ()  =>
+            {
+                const fn = Function();
+                const obj = createDeceptiveObject();
+                assert.throwsTypeError
+                (() => hasInstance.call(fn, obj), 'Corrupt prototype list');
             },
         );
     },

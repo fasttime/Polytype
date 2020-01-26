@@ -33,9 +33,7 @@ describe
                         class
                         { };
                         const C = { __proto__: B, prototype: { __proto__: B.prototype } };
-                        const D =
-                        function ()
-                        { };
+                        const D = Function();
                         Object.setPrototypeOf(D, C);
                         D.prototype = { __proto__: C.prototype };
                         const E = createFunctionFromConstructor(Functionʼ);
@@ -59,20 +57,18 @@ describe
                     'with bound types',
                     () =>
                     {
-                        const A =
-                        function ()
-                        { };
+                        const A = Function();
                         Object.setPrototypeOf(A, Object);
-                        const Aʼʼ = A.bind().bind();
+                        const Aˀˀ = A.bind().bind();
                         A.prototype = { __proto__: null };
                         const B =
                         class extends A
                         { };
-                        const Bʼʼ = B.bind().bind();
+                        const Bˀˀ = B.bind().bind();
                         classes(A, B);
                         const a = new A();
-                        assert.instanceOf(a, Aʼʼ);
-                        assert.notInstanceOf(a, Bʼʼ);
+                        assert.instanceOf(a, Aˀˀ);
+                        assert.notInstanceOf(a, Bˀˀ);
                     },
                 );
             },
