@@ -19,12 +19,13 @@ describe
     {
         function testGetPrototypeListOf(obj, expected)
         {
-            const actual = Object.getPrototypeListOf(obj);
-            assert.deepEqual(actual, expected);
+            const actual1 = Object.getPrototypeListOf(obj);
+            assert.deepEqual(actual1, expected);
+            const actual2 = Object.getPrototypeListOf(obj);
             assert.notStrictEqual
             (
-                Object.getPrototypeListOf(obj),
-                actual,
+                actual2,
+                actual1,
                 'Multiple invocations of Object.getPrototypeListOf should not return the same ' +
                 'object.',
             );

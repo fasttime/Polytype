@@ -215,7 +215,7 @@ task
         const { content } = toc(input, { firsth1: false });
         const template = Handlebars.compile(input, { noEscape: true });
         const output = template({ toc: content, version });
-        await writeFile('readme.md', output);
+        await writeFile('readme.md', output, { mode: 0o444 });
     },
 );
 
