@@ -169,12 +169,15 @@ const createProxy =
         __proto__: handlerPrototype,
         get(target, prop, receiver)
         {
-            if (prop === prototypesLookupSymbol && isObject(receiver))
-            {
-                const descriptor = _Object_getOwnPropertyDescriptor(receiver, 'target');
-                if (descriptor && descriptor.value === proxy)
-                    _Reflect_get(receiver, prototypesLookupSymbol, prototypeList);
-            }
+            if
+            (
+                prop === prototypesLookupSymbol &&
+                isObject(receiver) &&
+                _Object_getPrototypeOf(receiver) === null &&
+                receiver !== proxy &&
+                receiver.target === proxy
+            )
+                receiver.prototypeList = prototypeList;
             const obj = objs.find(propFilter(prop));
             if (obj !== undefined)
             {
@@ -336,16 +339,9 @@ const describeDataProperty =
 const doPrototypesLookup =
 obj =>
 {
-    let prototypeList;
-    const receiver =
-    {
-        target: obj,
-        get [prototypesLookupSymbol]() // eslint-disable-line getter-return
-        {
-            prototypeList = this;
-        },
-    };
+    const receiver = { __proto__: null, target: obj };
     _Reflect_get(obj, prototypesLookupSymbol, receiver);
+    const { prototypeList } = receiver;
     if (prototypeList !== undefined)
     {
         const prototypes = [...prototypeList];

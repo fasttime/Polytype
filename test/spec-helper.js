@@ -65,7 +65,7 @@
             {
                 get [prototypesLookupSymbol]()
                 {
-                    Reflect.get(this, prototypesLookupSymbol, [42]);
+                    this.prototypeList = [42];
                     return undefined;
                 },
             },
