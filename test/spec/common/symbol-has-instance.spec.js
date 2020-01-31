@@ -285,9 +285,15 @@ describe
             ()  =>
             {
                 const fn = Function();
-                const obj = createDeceptiveObject();
-                assert.throwsTypeError
-                (() => hasInstance.call(fn, obj), 'Corrupt prototype list');
+                {
+                    const obj = createDeceptiveObject();
+                    assert.throwsTypeError
+                    (() => hasInstance.call(fn, obj), 'Corrupt prototype list');
+                }
+                {
+                    const obj = createDeceptiveObject(null);
+                    assert.throwsTypeError(() => hasInstance.call(fn, obj));
+                }
             },
         );
     },

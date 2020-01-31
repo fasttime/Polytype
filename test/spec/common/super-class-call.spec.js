@@ -15,31 +15,48 @@ describe
             {
                 it
                 (
-                    'invokes a direct superclass method',
+                    'invokes a superclass method',
                     () =>
                     {
-                        const { A, B, C } = setupTestData(classes);
-                        const c = new C();
-                        c.aProp = 'A';
-                        c.bProp = 'B';
-                        assert.strictEqual(c.getSuper(A).someMethod(), 'A');
-                        const B2 = Function();
-                        B2.prototype = B.prototype;
-                        assert.strictEqual(c.getSuper(B2).someMethod(), 'B');
-                    },
-                );
+                        class A
+                        {
+                            someMethod(...args)
+                            {
+                                const returnValue = { args, name: 'A' };
+                                return returnValue;
+                            }
+                        }
 
-                it
-                (
-                    'invokes an indirect superclass method',
-                    () =>
-                    {
-                        const { A, B, C, E } = setupTestData(classes);
-                        const e = new E();
-                        e.aProp = 'A';
-                        e.bProp = 'B';
-                        assert.strictEqual(e.getSuper(C).getSuper(A).someMethod(), 'A');
-                        assert.strictEqual(e.getSuper(C).getSuper(B).someMethod(), 'B');
+                        class B
+                        {
+                            someMethod(...args)
+                            {
+                                const returnValue = { args, name: 'B' };
+                                return returnValue;
+                            }
+                        }
+
+                        class C extends classes(B)
+                        { }
+
+                        class D extends classes(A, C)
+                        {
+                            callSomeMethodInSuperClass(superType, ...args)
+                            {
+                                const returnValue = super.class(superType).someMethod(...args);
+                                return returnValue;
+                            }
+                        }
+
+                        const d = new D();
+                        assert.deepEqual
+                        (d.callSomeMethodInSuperClass(A, 1, 2), { args: [1, 2], name: 'A' });
+                        assert.deepEqual
+                        (d.callSomeMethodInSuperClass(C, 3, 4), { args: [3, 4], name: 'B' });
+                        const C2 = Function();
+                        C2.prototype = C.prototype;
+                        assert.deepEqual
+                        (d.callSomeMethodInSuperClass(C2, 5, 6), { args: [5, 6], name: 'B' });
                     },
                 );
 
@@ -179,14 +196,43 @@ describe
             {
                 it
                 (
-                    'invokes a direct superclass method',
+                    'invokes a superclass method',
                     () =>
                     {
-                        const { A, B, C } = setupTestData(classes);
-                        A.aProp = Symbol();
-                        B.bProp = Symbol();
-                        assert.strictEqual(C.getStaticSuper(A).someStaticMethod(), A.aProp);
-                        assert.strictEqual(C.getStaticSuper(B).someStaticMethod(), B.bProp);
+                        class A
+                        {
+                            static someMethod(...args)
+                            {
+                                const returnValue = { args, name: 'A' };
+                                return returnValue;
+                            }
+                        }
+
+                        class B
+                        {
+                            static someMethod(...args)
+                            {
+                                const returnValue = { args, name: 'B' };
+                                return returnValue;
+                            }
+                        }
+
+                        class C extends classes(B)
+                        { }
+
+                        class D extends classes(A, C)
+                        {
+                            static callSomeMethodInSuperClass(superType, ...args)
+                            {
+                                const returnValue = super.class(superType).someMethod(...args);
+                                return returnValue;
+                            }
+                        }
+
+                        assert.deepEqual
+                        (D.callSomeMethodInSuperClass(A, 1, 2), { args: [1, 2], name: 'A' });
+                        assert.deepEqual
+                        (D.callSomeMethodInSuperClass(C, 3, 4), { args: [3, 4], name: 'B' });
                     },
                 );
 

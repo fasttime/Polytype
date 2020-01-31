@@ -56,7 +56,7 @@
         );
     }
 
-    function createDeceptiveObject()
+    function createDeceptiveObject(prototypeList = [42])
     {
         const prototypesLookupSymbol = Symbol.for('Polytype prototypes lookup');
         const obj =
@@ -65,7 +65,7 @@
             {
                 get [prototypesLookupSymbol]()
                 {
-                    this.prototypeList = [42];
+                    this.prototypeList = prototypeList;
                     return undefined;
                 },
             },
@@ -200,14 +200,6 @@
                     this: this,
                 };
             }
-            someMethod()
-            {
-                return this.aProp;
-            }
-            static someStaticMethod()
-            {
-                return this.aProp;
-            }
         }
 
         class B
@@ -266,14 +258,6 @@
                     setter: 'bStaticSet',
                     this: this,
                 };
-            }
-            someMethod()
-            {
-                return this.bProp;
-            }
-            static someStaticMethod()
-            {
-                return this.bProp;
             }
         }
 

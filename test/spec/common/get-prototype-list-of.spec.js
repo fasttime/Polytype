@@ -219,9 +219,15 @@ describe
             'throws a TypeError with a deceptive object',
             ()  =>
             {
-                const obj = createDeceptiveObject();
-                assert.throwsTypeError
-                (() => Object.getPrototypeListOf(obj), 'Corrupt prototype list');
+                {
+                    const obj = createDeceptiveObject();
+                    assert.throwsTypeError
+                    (() => Object.getPrototypeListOf(obj), 'Corrupt prototype list');
+                }
+                {
+                    const obj = createDeceptiveObject(null);
+                    assert.throwsTypeError(() => Object.getPrototypeListOf(obj));
+                }
             },
         );
     },
