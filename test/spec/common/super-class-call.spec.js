@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, setupTestData */
+/* global assert, classes */
 
 'use strict';
 
@@ -62,48 +62,92 @@ describe
 
                 it
                 (
-                    'invokes a direct superclass getter',
+                    'does not invoke a method in a different superclass',
                     () =>
                     {
-                        const { A, B, C, callData } = setupTestData(classes);
+                        class A
+                        {
+                            someMethod()
+                            { }
+                        }
+
+                        class B
+                        { }
+
+                        class C extends classes(A, B)
+                        {
+                            callSomeMethodInSuperClass(superType, ...args)
+                            {
+                                const returnValue = super.class(superType).someMethod(...args);
+                                return returnValue;
+                            }
+                        }
+
                         const c = new C();
-                        {
-                            const actual = c.getSuper(A).aGetOnly;
-                            assert.deepEqual(callData.A.args, []);
-                            assert.strictEqual(callData.A.getter, 'aGetOnly');
-                            assert.strictEqual(callData.A.this, c);
-                            assert.strictEqual(callData.A.value, actual);
-                        }
-                        {
-                            const actual = c.getSuper(B).bGetOnly;
-                            assert.deepEqual(callData.B.args, []);
-                            assert.strictEqual(callData.B.getter, 'bGetOnly');
-                            assert.strictEqual(callData.B.this, c);
-                            assert.strictEqual(callData.B.value, actual);
-                        }
+                        assert.throwsTypeError(() => c.callSomeMethodInSuperClass(B));
                     },
                 );
 
                 it
                 (
-                    'invokes an indirect superclass getter',
+                    'invokes a superclass getter',
                     () =>
                     {
-                        const { A, B, C, E, callData } = setupTestData(classes);
-                        const e = new E();
+                        class A
                         {
-                            const actual = e.getSuper(C).getSuper(A).aGetOnly;
-                            assert.deepEqual(callData.A.args, []);
-                            assert.strictEqual(callData.A.getter, 'aGetOnly');
-                            assert(e.isPrototypeOf(callData.A.this));
-                            assert.strictEqual(callData.A.value, actual);
+                            get someProperty()
+                            {
+                                // eslint-disable-next-line prefer-rest-params
+                                const value = { this: this, arguments, name: 'A' };
+                                return value;
+                            }
+                        }
+
+                        class B
+                        {
+                            get someProperty()
+                            {
+                                // eslint-disable-next-line prefer-rest-params
+                                const value = { this: this, arguments, name: 'B' };
+                                return value;
+                            }
+                        }
+
+                        class C extends classes(B)
+                        { }
+
+                        class D extends classes(A, C)
+                        {
+                            getSomePropertyInSuperClass(superType)
+                            {
+                                const value = super.class(superType).someProperty;
+                                return value;
+                            }
+                        }
+
+                        const d = new D();
+                        {
+                            const { arguments: args, this: that, name } =
+                            d.getSomePropertyInSuperClass(A);
+                            assert.strictEqual(that, d);
+                            assert.isEmpty(args);
+                            assert.strictEqual(name, 'A');
                         }
                         {
-                            const actual = e.getSuper(C).getSuper(B).bGetOnly;
-                            assert.deepEqual(callData.B.args, []);
-                            assert.strictEqual(callData.B.getter, 'bGetOnly');
-                            assert(e.isPrototypeOf(callData.B.this));
-                            assert.strictEqual(callData.B.value, actual);
+                            const { arguments: args, this: that, name } =
+                            d.getSomePropertyInSuperClass(C);
+                            assert.strictEqual(that, d);
+                            assert.isEmpty(args);
+                            assert.strictEqual(name, 'B');
+                        }
+                        const C2 = Function();
+                        C2.prototype = C.prototype;
+                        {
+                            const { arguments: args, this: that, name } =
+                            d.getSomePropertyInSuperClass(C2);
+                            assert.strictEqual(that, d);
+                            assert.isEmpty(args);
+                            assert.strictEqual(name, 'B');
                         }
                     },
                 );
@@ -113,60 +157,94 @@ describe
                     'does not invoke a getter in a different superclass',
                     () =>
                     {
-                        const { A, B, C, callData } = setupTestData(classes);
+                        class A
+                        {
+                            get someProperty()
+                            {
+                                return 'foo';
+                            }
+                        }
+
+                        class B
+                        { }
+
+                        class C extends classes(A, B)
+                        {
+                            getSomePropertyInSuperClass(superType)
+                            {
+                                const value = super.class(superType).someProperty;
+                                return value;
+                            }
+                        }
+
                         const c = new C();
-                        delete callData.A;
-                        delete callData.B;
-                        {
-                            const actual = c.getSuper(A).bGetOnly;
-                            assert.strictEqual(actual, undefined);
-                            assert.isEmpty(callData);
-                        }
-                        {
-                            const actual = c.getSuper(B).aGetOnly;
-                            assert.strictEqual(actual, undefined);
-                            assert.isEmpty(callData);
-                        }
+                        assert.isUndefined(c.getSomePropertyInSuperClass(B));
                     },
                 );
 
                 it
                 (
-                    'invokes a direct superclass setter',
+                    'invokes a superclass setter',
                     () =>
                     {
-                        const { A, B, C, callData } = setupTestData(classes);
-                        const c = new C();
+                        let callData = null;
 
-                        c.getSuper(A).aSetOnly = 42;
-                        assert.deepEqual(callData.A.args, [42]);
-                        assert.strictEqual(callData.A.setter, 'aSetOnly');
-                        assert.strictEqual(callData.A.this, c);
+                        class A
+                        {
+                            set someProperty(value) // eslint-disable-line accessor-pairs
+                            {
+                                // eslint-disable-next-line prefer-rest-params
+                                Object.assign(callData, { this: this, arguments, name: 'A' });
+                            }
+                        }
 
-                        c.getSuper(B).bSetOnly = 'foo';
-                        assert.deepEqual(callData.B.args, ['foo']);
-                        assert.strictEqual(callData.B.setter, 'bSetOnly');
-                        assert.strictEqual(callData.B.this, c);
-                    },
-                );
+                        class B
+                        {
+                            set someProperty(value) // eslint-disable-line accessor-pairs
+                            {
+                                // eslint-disable-next-line prefer-rest-params
+                                Object.assign(callData, { this: this, arguments, name: 'B' });
+                            }
+                        }
 
-                it
-                (
-                    'invokes an indirect superclass setter',
-                    () =>
-                    {
-                        const { A, B, C, E, callData } = setupTestData(classes);
-                        const e = new E();
+                        class C extends classes(B)
+                        { }
 
-                        e.getSuper(C).getSuper(A).aSetOnly = 42;
-                        assert.deepEqual(callData.A.args, [42]);
-                        assert.strictEqual(callData.A.setter, 'aSetOnly');
-                        assert(e.isPrototypeOf(callData.A.this));
+                        class D extends classes(A, C)
+                        {
+                            setSomePropertyInSuperClass(superType, value)
+                            {
+                                const returnValue = callData = { };
+                                super.class(superType).someProperty = value;
+                                callData = null;
+                                return returnValue;
+                            }
+                        }
 
-                        e.getSuper(C).getSuper(B).bSetOnly = 'foo';
-                        assert.deepEqual(callData.B.args, ['foo']);
-                        assert.strictEqual(callData.B.setter, 'bSetOnly');
-                        assert(e.isPrototypeOf(callData.B.this));
+                        const d = new D();
+                        {
+                            const { arguments: args, this: that, name } =
+                            d.setSomePropertyInSuperClass(A, 'foo');
+                            assert.strictEqual(that, d);
+                            assert.deepEqual([...args], ['foo']);
+                            assert.strictEqual(name, 'A');
+                        }
+                        {
+                            const { arguments: args, this: that, name } =
+                            d.setSomePropertyInSuperClass(C, 'bar');
+                            assert.strictEqual(that, d);
+                            assert.deepEqual([...args], ['bar']);
+                            assert.strictEqual(name, 'B');
+                        }
+                        const C2 = Function();
+                        C2.prototype = C.prototype;
+                        {
+                            const { arguments: args, this: that, name } =
+                            d.setSomePropertyInSuperClass(C2, 'baz');
+                            assert.strictEqual(that, d);
+                            assert.deepEqual([...args], ['baz']);
+                            assert.strictEqual(name, 'B');
+                        }
                     },
                 );
 
@@ -175,15 +253,26 @@ describe
                     'does not invoke a setter in a different superclass',
                     () =>
                     {
-                        const { A, B, C, callData } = setupTestData(classes);
+                        class A
+                        {
+                            set someProperty(value) // eslint-disable-line accessor-pairs
+                            { }
+                        }
+
+                        class B
+                        { }
+
+                        class C extends classes(A, B)
+                        {
+                            setSomePropertyInSuperClass(superType, value)
+                            {
+                                super.class(superType).someProperty = value;
+                            }
+                        }
+
                         const c = new C();
-                        delete callData.A;
-                        delete callData.B;
-                        c.getSuper(A).bSetOnly = 42;
-                        c.getSuper(B).aSetOnly = 13;
-                        assert.ownProperty(c, 'aSetOnly');
-                        assert.ownProperty(c, 'bSetOnly');
-                        assert.isEmpty(callData);
+                        c.setSomePropertyInSuperClass(B, 42);
+                        assert.ownProperty(c, 'someProperty');
                     },
                 );
             },
@@ -238,52 +327,81 @@ describe
 
                 it
                 (
-                    'invokes a direct superclass getter',
+                    'does not invoke a method in a different superclass',
                     () =>
                     {
-                        function createCallData(args, className, target)
-                        {
-                            const callData = { args: [...args], className, this: target };
-                            return callData;
-                        }
-
                         class A
                         {
-                            static get staticCallData()
+                            static someMethod()
+                            { }
+                        }
+
+                        class B
+                        { }
+
+                        class C extends classes(A, B)
+                        {
+                            static callSomeMethodInSuperClass(superType, ...args)
+                            {
+                                const returnValue = super.class(superType).someMethod(...args);
+                                return returnValue;
+                            }
+                        }
+
+                        assert.throwsTypeError(() => C.callSomeMethodInSuperClass(B));
+                    },
+                );
+
+                it
+                (
+                    'invokes a superclass getter',
+                    () =>
+                    {
+                        class A
+                        {
+                            static get someProperty()
                             {
                                 // eslint-disable-next-line prefer-rest-params
-                                const callData = createCallData(arguments, 'A', this);
-                                return callData;
+                                const value = { this: this, arguments, name: 'A' };
+                                return value;
                             }
                         }
 
                         class B
                         {
-                            static get staticCallData()
+                            static get someProperty()
                             {
                                 // eslint-disable-next-line prefer-rest-params
-                                const callData = createCallData(arguments, 'B', this);
-                                return callData;
+                                const value = { this: this, arguments, name: 'B' };
+                                return value;
                             }
                         }
 
-                        class C extends classes(A, B)
+                        class C extends classes(B)
+                        { }
+
+                        class D extends classes(A, C)
                         {
-                            static getStaticCallData(type)
+                            static getSomePropertyInSuperClass(superType)
                             {
-                                return super.class(type).staticCallData;
+                                const value = super.class(superType).someProperty;
+                                return value;
                             }
                         }
 
                         {
-                            const actual = C.getStaticCallData(A);
-                            const expected = { args: [], className: 'A', this: C };
-                            assert.deepEqual(actual, expected);
+                            const { this: that, arguments: args, name } =
+                            D.getSomePropertyInSuperClass(A);
+                            assert.strictEqual(that, D);
+                            assert.isEmpty(args);
+                            assert.strictEqual(name, 'A');
                         }
                         {
-                            const actual = C.getStaticCallData(B);
-                            const expected = { args: [], className: 'B', this: C };
-                            assert.deepEqual(actual, expected);
+                            const { this: that, arguments: args, name } =
+                            D.getSomePropertyInSuperClass(C);
+                            assert.strictEqual(that, D);
+                            assert.isEmpty(args);
+                            assert.strictEqual(name, 'B');
                         }
                     },
                 );
@@ -293,34 +411,83 @@ describe
                     'does not invoke a getter in a different superclass',
                     () =>
                     {
-                        const { A, B, C, callData } = setupTestData(classes);
+                        class A
                         {
-                            const actual = C.getStaticSuper(A).bStaticGet;
-                            assert.strictEqual(actual, undefined);
-                            assert.isEmpty(callData);
+                            static get someProperty()
+                            {
+                                return 'foo';
+                            }
                         }
+
+                        class B
+                        { }
+
+                        class C extends classes(A, B)
                         {
-                            const actual = C.getStaticSuper(B).aStaticGet;
-                            assert.strictEqual(actual, undefined);
-                            assert.isEmpty(callData);
+                            static getSomePropertyInSuperClass(superType)
+                            {
+                                const value = super.class(superType).someProperty;
+                                return value;
+                            }
                         }
+
+                        assert.isUndefined(C.getSomePropertyInSuperClass(B));
                     },
                 );
 
                 it
                 (
-                    'invokes a direct superclass setter',
+                    'invokes a superclass setter',
                     () =>
                     {
-                        const { A, B, C, callData } = setupTestData(classes);
-                        C.getStaticSuper(A).aStaticSet = 42;
-                        assert.deepEqual(callData.A.args, [42]);
-                        assert.strictEqual(callData.A.setter, 'aStaticSet');
-                        assert.strictEqual(callData.A.this.name, 'C');
-                        C.getStaticSuper(B).bStaticSet = 42;
-                        assert.deepEqual(callData.B.args, [42]);
-                        assert.strictEqual(callData.B.setter, 'bStaticSet');
-                        assert.strictEqual(callData.B.this.name, 'C');
+                        let callData = null;
+
+                        class A
+                        {
+                            static set someProperty(value) // eslint-disable-line accessor-pairs
+                            {
+                                // eslint-disable-next-line prefer-rest-params
+                                Object.assign(callData, { this: this, arguments, name: 'A' });
+                            }
+                        }
+
+                        class B
+                        {
+                            static set someProperty(value) // eslint-disable-line accessor-pairs
+                            {
+                                // eslint-disable-next-line prefer-rest-params
+                                Object.assign(callData, { this: this, arguments, name: 'B' });
+                            }
+                        }
+
+                        class C extends classes(B)
+                        { }
+
+                        class D extends classes(A, C)
+                        {
+                            static setSomePropertyInSuperClass(superType, value)
+                            {
+                                const returnValue = callData = { };
+                                super.class(superType).someProperty = value;
+                                callData = null;
+                                return returnValue;
+                            }
+                        }
+
+                        {
+                            const { arguments: args, this: that, name } =
+                            D.setSomePropertyInSuperClass(A, 'foo');
+                            assert.strictEqual(that, D);
+                            assert.deepEqual([...args], ['foo']);
+                            assert.strictEqual(name, 'A');
+                        }
+                        {
+                            const { arguments: args, this: that, name } =
+                            D.setSomePropertyInSuperClass(C, 'bar');
+                            assert.strictEqual(that, D);
+                            assert.deepEqual([...args], ['bar']);
+                            assert.strictEqual(name, 'B');
+                        }
                     },
                 );
 
@@ -329,10 +496,25 @@ describe
                     'does not invoke a setter in a different superclass',
                     () =>
                     {
-                        const { A, B, C, E, callData } = setupTestData(classes);
-                        E.getStaticSuper(C).getStaticSuper(A).bStaticSet = 42;
-                        E.getStaticSuper(C).getStaticSuper(B).aStaticSet = 13;
-                        assert.isEmpty(callData);
+                        class A
+                        {
+                            static set someProperty(value) // eslint-disable-line accessor-pairs
+                            { }
+                        }
+
+                        class B
+                        { }
+
+                        class C extends classes(A, B)
+                        {
+                            static setSomePropertyInSuperClass(superType, value)
+                            {
+                                super.class(superType).someProperty = value;
+                            }
+                        }
+
+                        C.setSomePropertyInSuperClass(B, 42);
+                        assert.ownProperty(C, 'someProperty');
                     },
                 );
             },

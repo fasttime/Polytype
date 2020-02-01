@@ -58,9 +58,18 @@ describe
                     'cannot be called with new',
                     () =>
                     {
-                        const { A, C } = setupTestData(classes);
-                        const c = new C();
-                        assert.throwsTypeError(() => c.newSuper(A), /\bis not a constructor\b/);
+                        class Foo extends classes(Object)
+                        {
+                            newSuper(type)
+                            {
+                                const superClass = super.class;
+                                new superClass(type); // eslint-disable-line new-cap
+                            }
+                        }
+
+                        const foo = new Foo();
+                        assert.throwsTypeError
+                        (() => foo.newSuper(Object), /\bis not a constructor\b/);
                     },
                 );
 
@@ -181,9 +190,17 @@ describe
                     'cannot be called with new',
                     () =>
                     {
-                        const { A, C } = setupTestData(classes);
+                        class Foo extends classes(Object)
+                        {
+                            static newSuper(type)
+                            {
+                                const superClass = super.class;
+                                new superClass(type); // eslint-disable-line new-cap
+                            }
+                        }
+
                         assert.throwsTypeError
-                        (() => C.newStaticSuper(A), /\bis not a constructor\b/);
+                        (() => Foo.newSuper(Object), /\bis not a constructor\b/);
                     },
                 );
 

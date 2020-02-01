@@ -156,50 +156,12 @@
             }
             aMethod()
             { }
-            get aGetOnly()
-            {
-                const value = Symbol();
-                callData.A =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    getter: 'aGetOnly',
-                    this: this,
-                    value,
-                };
-                return value;
-            }
             set aSetOnly(arg) // eslint-disable-line accessor-pairs
-            {
-                callData.A =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    setter: 'aSetOnly',
-                    this: this,
-                };
-            }
+            { }
             static aStatic()
             { }
-            static get aStaticGet()
-            {
-                const value = Symbol();
-                callData.A =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    getter: 'aStaticGet',
-                    this: this,
-                    value,
-                };
-                return value;
-            }
-            static set aStaticSet(arg) // eslint-disable-line accessor-pairs
-            {
-                callData.A =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    setter: 'aStaticSet',
-                    this: this,
-                };
-            }
+            static set aStaticSetOnly(arg) // eslint-disable-line accessor-pairs
+            { }
         }
 
         class B
@@ -215,50 +177,8 @@
             }
             bMethod()
             { }
-            get bGetOnly()
-            {
-                const value = Symbol();
-                callData.B =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    getter: 'bGetOnly',
-                    this: this,
-                    value,
-                };
-                return value;
-            }
-            set bSetOnly(arg) // eslint-disable-line accessor-pairs
-            {
-                callData.B =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    setter: 'bSetOnly',
-                    this: this,
-                };
-            }
             static bStatic()
             { }
-            static get bStaticGet()
-            {
-                const value = Symbol();
-                callData.B =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    getter: 'bStaticGet',
-                    this: this,
-                    value,
-                };
-                return value;
-            }
-            static set bStaticSet(arg) // eslint-disable-line accessor-pairs
-            {
-                callData.B =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    setter: 'bStaticSet',
-                    this: this,
-                };
-            }
         }
 
         class C extends classes(A, B)
@@ -270,16 +190,6 @@
             static getStaticSuper(type)
             {
                 return super.class(type);
-            }
-            static newStaticSuper(type)
-            {
-                const superClass = super.class;
-                new superClass(type); // eslint-disable-line new-cap
-            }
-            newSuper(type)
-            {
-                const superClass = super.class;
-                new superClass(type); // eslint-disable-line new-cap
             }
         }
 

@@ -86,32 +86,6 @@ describe
 
                 it
                 (
-                    'direct superclass getters',
-                    () =>
-                    {
-                        const { C, callData } = setupTestData(classes);
-                        const c = new C();
-                        const actual = c.aGetOnly;
-                        assert.deepEqual
-                        (callData.A, { args: [], getter: 'aGetOnly', this: c, value: actual });
-                    },
-                );
-
-                it
-                (
-                    'indirect superclass getters',
-                    () =>
-                    {
-                        const { E, callData } = setupTestData(classes);
-                        const e = new E();
-                        const actual = e.aGetOnly;
-                        assert.deepEqual
-                        (callData.A, { args: [], getter: 'aGetOnly', this: e, value: actual });
-                    },
-                );
-
-                it
-                (
                     'value overwriting',
                     () =>
                     {
@@ -152,32 +126,6 @@ describe
                                 b.a = 42;
                             },
                         );
-                    },
-                );
-
-                it
-                (
-                    'direct superclass setters',
-                    () =>
-                    {
-                        const { C, callData } = setupTestData(classes);
-                        const c = new C();
-                        c.aSetOnly = 42;
-                        assert.deepEqual
-                        (callData.A, { args: [42], setter: 'aSetOnly', this: c });
-                    },
-                );
-
-                it
-                (
-                    'indirect superclass setters',
-                    () =>
-                    {
-                        const { E, callData } = setupTestData(classes);
-                        const e = new E();
-                        e.aSetOnly = 42;
-                        assert.deepEqual
-                        (callData.A, { args: [42], setter: 'aSetOnly', this: e });
                     },
                 );
             },
@@ -250,31 +198,7 @@ describe
                     () =>
                     {
                         const { C } = setupTestData(classes);
-                        assert.strictEqual(C.aStaticSet, undefined);
-                    },
-                );
-
-                it
-                (
-                    'direct superclass getters',
-                    () =>
-                    {
-                        const { C, callData } = setupTestData(classes);
-                        const actual = C.aStaticGet;
-                        assert.deepEqual
-                        (callData.A, { args: [], getter: 'aStaticGet', this: C, value: actual });
-                    },
-                );
-
-                it
-                (
-                    'indirect superclass getters',
-                    () =>
-                    {
-                        const { E, callData } = setupTestData(classes);
-                        const actual = E.aStaticGet;
-                        assert.deepEqual
-                        (callData.A, { args: [], getter: 'aStaticGet', this: E, value: actual });
+                        assert.strictEqual(C.aStaticSetOnly, undefined);
                     },
                 );
 
@@ -318,28 +242,6 @@ describe
                                 B.aProp = 'B';
                             },
                         );
-                    },
-                );
-
-                it
-                (
-                    'direct superclass setters',
-                    () =>
-                    {
-                        const { C, callData } = setupTestData(classes);
-                        C.aStaticSet = 42;
-                        assert.deepEqual(callData.A, { args: [42], setter: 'aStaticSet', this: C });
-                    },
-                );
-
-                it
-                (
-                    'indirect superclass setters',
-                    () =>
-                    {
-                        const { E, callData } = setupTestData(classes);
-                        E.aStaticSet = 42;
-                        assert.deepEqual(callData.A, { args: [42], setter: 'aStaticSet', this: E });
                     },
                 );
             },
