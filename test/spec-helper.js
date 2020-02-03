@@ -256,9 +256,23 @@
             const context = createContext();
             if (includePolytype)
             {
-                const path = require.resolve('../lib/polytype.js');
-                const code = await readFile(path, 'utf8');
-                runInContext(code, context);
+                if (extension === '.js')
+                {
+                    const path = require.resolve(polytypePath);
+                    const code = await readFile(path, 'utf8');
+                    runInContext(code, context);
+                }
+                else
+                {
+                    const { wrap } = require('module');
+
+                    const path = require.resolve('../lib/polytype.cjs');
+                    const code = await readFile(path, 'utf8');
+                    const wrappedCode = wrap(code);
+                    const exports = { };
+                    runInContext(wrappedCode, context)(exports);
+                    exports.defineGlobally();
+                }
             }
             const globalThat = runInContext('this', context);
             return globalThat;
@@ -318,6 +332,47 @@
             },
         );
 
+        const loadESModule =
+        (document, src) =>
+        new Promise
+        (
+            (resolve, reject) =>
+            {
+                const script = document.createElement('script');
+                document.reject =
+                ({ message }) =>
+                {
+                    reject(message);
+                    script.remove();
+                };
+                document.resolve =
+                () =>
+                {
+                    resolve();
+                    script.remove();
+                };
+                script.type = 'module';
+                script.innerText =
+                `
+                (async () =>
+                {
+                    try
+                    {
+                        const { defineGlobally } = await import(${JSON.stringify(src)});
+                        defineGlobally();
+                        document.resolve();
+                    }
+                    catch ({ message })
+                    {
+                        document.reject(message);
+                    }
+                }
+                )();
+                `;
+                document.head.appendChild(script);
+            },
+        );
+
         const loadScript =
         (document, src) =>
         new Promise
@@ -350,7 +405,7 @@
             {
                 const window = await loadIFrame(iFrame);
                 if (includePolytype)
-                    await loadScript(window.document, '../lib/polytype.js');
+                    await loadPolytypeInIFrame(window.document, polytypePath);
                 return window;
             }
             finally
@@ -361,6 +416,7 @@
 
         const urlParams = new URLSearchParams(location.search);
         const extname = urlParams.get('extname');
+        let loadPolytypeInIFrame;
         let polytypePath;
         try
         {
@@ -375,7 +431,8 @@
         switch (extension)
         {
         case '.js':
-            loadPolytype = () => loadScript(document, '../lib/polytype.js');
+            loadPolytype = () => loadScript(document, polytypePath);
+            loadPolytypeInIFrame = loadScript;
             break;
         case '.mjs':
             {
@@ -389,6 +446,7 @@
                     return defineGlobally;
                 };
             }
+            loadPolytypeInIFrame = loadESModule;
             break;
         }
     }
