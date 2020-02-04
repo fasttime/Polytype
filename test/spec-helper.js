@@ -238,9 +238,9 @@
     let polytypeMode;
     if (typeof module !== 'undefined')
     {
-        const { promises: { readFile } }        = require('fs');
-        const { resolve }                       = require('path');
-        const { createContext, runInContext }   = require('vm');
+        const { promises: { readFile } }                        = require('fs');
+        const { resolve }                                       = require('path');
+        const { SourceTextModule, createContext, runInContext } = require('vm');
 
         function loadPolytypeBase()
         {
@@ -250,41 +250,29 @@
             return returnValue;
         }
 
-        newRealm =
-        async includePolytype =>
-        {
-            const context = createContext();
-            if (includePolytype)
-            {
-                if (extension === '.js')
-                {
-                    const path = require.resolve(polytypePath);
-                    const code = await readFile(path, 'utf8');
-                    runInContext(code, context);
-                }
-                else
-                {
-                    const { wrap } = require('module');
-
-                    const path = require.resolve('../lib/polytype.cjs');
-                    const code = await readFile(path, 'utf8');
-                    const wrappedCode = wrap(code);
-                    const exports = { };
-                    runInContext(wrappedCode, context)(exports);
-                    exports.defineGlobally();
-                }
-            }
-            const globalThat = runInContext('this', context);
-            return globalThat;
-        };
         const polytypePath =
         getPolytypePath(process.argv[2], ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
         const extension = getExtension(polytypePath);
+        {
+            const path = require.resolve(polytypePath);
+            const codePromise = readFile(path, 'utf8');
+            newRealm =
+            async includePolytype =>
+            {
+                const context = createContext();
+                if (includePolytype)
+                    await runInVM(await codePromise, context);
+                const globalThat = runInContext('this', context);
+                return globalThat;
+            };
+        }
+        let runInVM;
         switch (extension)
         {
         case '.js':
             loadPolytype = loadPolytypeBase;
             polytypeMode = 'global';
+            runInVM = runInContext;
             break;
         case '.cjs':
             loadPolytype =
@@ -295,6 +283,18 @@
                 return defineGlobally;
             };
             polytypeMode = 'module';
+            {
+                const { wrap } = require('module');
+
+                runInVM =
+                (code, context) =>
+                {
+                    const wrappedCode = wrap(code);
+                    const exports = { };
+                    runInContext(wrappedCode, context)(exports);
+                    exports.defineGlobally();
+                };
+            }
             break;
         case '.mjs':
             {
@@ -312,6 +312,22 @@
                 };
             }
             polytypeMode = 'module';
+            runInVM =
+            async (code, context) =>
+            {
+                const sourceTextModule =
+                new SourceTextModule
+                (
+                    `
+                    import { defineGlobally } from 'polytype';
+                    defineGlobally;
+                    `,
+                    { context },
+                );
+                await sourceTextModule.link(() => new SourceTextModule(code, { context }));
+                const { result: defineGlobally } = await sourceTextModule.evaluate();
+                defineGlobally();
+            };
             break;
         }
     }

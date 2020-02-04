@@ -550,7 +550,7 @@ Polytype was successfully tested in the following browsers/JavaScript engines.
 * Edge 79+
 * Firefox 67+
 * Opera 58+
-* Node.js 12+
+* Node.js 13.2+
 
 The minimum supported TypeScript version is 3.5.
 

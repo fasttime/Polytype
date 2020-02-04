@@ -52,9 +52,10 @@ task
     'clean',
     async () =>
     {
-        const del = require('del');
+        const { promises: { rmdir } } = require('fs');
 
-        await del(['.nyc_output', 'coverage', 'lib', 'readme.md', 'test/spec-runner.html']);
+        const paths = ['.nyc_output', 'coverage', 'lib', 'readme.md', 'test/spec-runner.html'];
+        await Promise.all(paths.map(path => rmdir(path, { recursive: true })));
     },
 );
 

@@ -14,7 +14,7 @@ function testExecArgv(regExp)
 
 const { execArgv } = process;
 
-if (!testExecArgv(/^--experimental-modules(?![^=])/))
+if (!testExecArgv(/^--experimental-vm-modules(?![^=])/))
 {
     const { fork } = require('child_process');
 
@@ -22,7 +22,7 @@ if (!testExecArgv(/^--experimental-modules(?![^=])/))
     const childExecArgv = execArgv.filter(execArg => !INSPECT_BRK_REG_EXP.test(execArg));
     if (childExecArgv.length < execArgv.length)
         childExecArgv.unshift('inspect');
-    childExecArgv.push('--experimental-modules', '--no-warnings');
+    childExecArgv.push('--experimental-vm-modules', '--no-warnings');
     const childProcess = fork(modulePath, args, { execArgv: childExecArgv });
     childProcess.on
     (
