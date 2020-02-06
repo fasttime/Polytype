@@ -300,7 +300,7 @@
             {
                 const postrequire = require('postrequire');
 
-                const modulePath = resolve(__dirname, '../lib/polytype.mjs');
+                const modulePath = resolve(__dirname, polytypePath);
                 loadPolytype =
                 async () =>
                 {
@@ -315,18 +315,10 @@
             runInVM =
             async (code, context) =>
             {
-                const sourceTextModule =
-                new SourceTextModule
-                (
-                    `
-                    import { defineGlobally } from 'polytype';
-                    defineGlobally;
-                    `,
-                    { context },
-                );
-                await sourceTextModule.link(() => new SourceTextModule(code, { context }));
-                const { result: defineGlobally } = await sourceTextModule.evaluate();
-                defineGlobally();
+                const sourceTextModule = new SourceTextModule(code, { context });
+                await sourceTextModule.link(() => null);
+                await sourceTextModule.evaluate();
+                sourceTextModule.namespace.defineGlobally();
             };
             break;
         }
