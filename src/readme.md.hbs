@@ -36,10 +36,6 @@ with exported definitions and a script build where all definitions are accessibl
 objects.
 Apart from this, both builds provide the same features and are available in the standard package.
 
-You are free to choose whichever build of Polytype best fits your requirements, but make sure to
-remain consistent throughout your application: mixing the module and the script builds together is
-not recommended and may produce unexpected results.
-
 ### In Node.js
 
 If you are using Node.js, you can install Polytype with [npm](https://www.npmjs.org).
@@ -370,7 +366,6 @@ Instead, `getPrototypeListOf` will be defined globally as `Object.getPrototypeLi
 
 If a property in a base class is added, removed or modified at runtime, the changes are immediately
 reflected in all derived classes.
-This is the magic of proxies.
 
 ```js
 const c = new ColoredCircle();

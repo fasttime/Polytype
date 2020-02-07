@@ -58,17 +58,16 @@ describe
                     () =>
                     {
                         const A = Function();
-                        Object.setPrototypeOf(A, Object);
-                        const Aˀˀ = A.bind().bind();
+                        const Aˀ = A.bind();
                         A.prototype = { __proto__: null };
                         const B =
                         class extends A
                         { };
-                        const Bˀˀ = B.bind().bind();
-                        classes(A, B);
+                        const Bˀ = B.bind();
+                        classes(B);
                         const a = new A();
-                        assert.instanceOf(a, Aˀˀ);
-                        assert.notInstanceOf(a, Bˀˀ);
+                        assert.instanceOf(a, Aˀ);
+                        assert.notInstanceOf(a, Bˀ);
                     },
                 );
             },
