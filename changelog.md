@@ -1,3 +1,9 @@
+<a name="0.8.0"></a>
+## [0.8.0](https://github.com/fasttime/Polytype/releases/tag/0.8.0) (2020-02-08)
+
+* It is now safe to load Polytype multiple times even from mixed sources and in different realms.
+* Dropped support for Node.js &lt; 13.2.
+
 <a name="0.7.0"></a>
 ## [0.7.0](https://github.com/fasttime/Polytype/releases/tag/0.7.0) (2020-01-20)
 
