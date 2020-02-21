@@ -1,3 +1,8 @@
+<a name="0.8.1"></a>
+## [0.8.1](https://github.com/fasttime/Polytype/releases/tag/0.8.1) (2020-02-21)
+
+* Fixed and clarified parts of the documentation.
+
 <a name="0.8.0"></a>
 ## [0.8.0](https://github.com/fasttime/Polytype/releases/tag/0.8.0) (2020-02-08)
 

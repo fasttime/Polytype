@@ -1,6 +1,6 @@
 {
   "name": "polytype",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Dynamic multiple inheritance for JavaScript and TypeScript. Without mixins.",
   "keywords": [
     "class",
@@ -47,7 +47,7 @@
     "mocha-bar": "~0.0.4",
     "nyc": "~15.0.0",
     "postrequire": "~0.1.1",
-    "rollup": "~1.31.0",
+    "rollup": "~1.31.1",
     "rollup-plugin-cleanup": "~3.1.1",
     "semver": "~7.1.3",
     "typescript": "~3.8.2"
