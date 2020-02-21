@@ -6,7 +6,7 @@
 [multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance) to JavaScript and
 TypeScript with a simple syntax.
 “Dynamic” means that changes to base classes at runtime are reflected immediately in all derived
-classes just like programmers would expect when working with single prototype inheritance.
+classes just as programmers would expect when working with single prototype inheritance.
 
 As of today, Polytype runs in **current versions of all major browsers** and in
 **Node.js**<sup>([*](#compatibility))</sup>.
@@ -280,7 +280,7 @@ extends classes(Circle, ColoredObject)
 
 ### `instanceof`
 
-The `instanceof` operator works just like it should.
+The `instanceof` operator works just as it should.
 
 ```js
 const c = new ColoredCircle();
@@ -411,11 +411,17 @@ Polytype strives to make up for this deficiency, but some important limitations 
 
 ### `for...in` iterations
 
-In plain TypeScript, without Polytype, a `for...in` iteration over a class constructor will
-enumerate not only names of static fields defined on that class, but also names of static fields
-defined on all base classes in its prototype chain.
+Following previous work made in TypeScript and other transpilers, some newer JavaScript engines have
+implemented support for
+[static fields](https://github.com/tc39/proposal-static-class-features#static-public-fields).
+Static fields are only one way of defining
+[enumerable properties][Enumerability and ownership of properties] on a class constructor.
 
-```ts
+When only single inheritance is used, a `for...in` iteration over a class constructor enumerates not
+only names of enumerable properties defined on the constructor of that class, but also names of
+enumerable properties defined on all constructors in its prototype chain.
+
+```js
 class FooClass
 {
     static foo = "foo";
@@ -430,17 +436,12 @@ for (const name in BarClass)
     console.log(name); // Prints "bar" and "foo".
 ```
 
-Additionally, some newer JavaScript engines have implemented support for
-[static public fields](https://github.com/tc39/proposal-static-class-features#static-public-fields),
-which work much like in TypeScript, but without transpiling.
-Even in JavaScript, a `for...in` iteration over a class constructor will include names of static
-fields defined on base classes.
+As it happens, this behavior no longer holds with Polytype multiple inheritance.
+The effect is that names of static fields and other enumerable properties defined on a base
+constructor are not enumerated by `for...in` statements when the inheritance line crosses a class
+listed in some `extends classes(...)` clause.
 
-Anyway, this behavior breaks with Polytype inheritance on static fields: names of static fields
-defined on base classes are not enumerated by `for...in` statements if the inheritance line crosses
-the constructor of a class in some `extends classes(...)` clause.
-
-```ts
+```js
 class BazClass extends classes(FooClass)
 {
     static baz = "baz";
@@ -488,52 +489,56 @@ inheritance, and it may not match your expectations if you come from a C++ backg
 
 ### Ambiguous protected instance members
 
-TypeScript class members can have
-[protected](https://www.typescriptlang.org/docs/handbook/classes.html#understanding-protected)
-access: protected members are inherited just like public members but can only be accessed in the
-body of the defining class itself or of a derived class.
-If a derived class inherits from multiple base classes, it is possible for inherited members in
+When a derived class inherits from multiple base classes, it is possible for inherited members in
 different base classes to share the same property key, i.e. the same name, the same index or the
 same symbol.
-In this case, Polytype provides the syntax `super.class(DirectBaseClass)[propertyKey]` to specify
+For these cases, Polytype provides the syntax `super.class(DirectBaseClass)[propertyKey]` to specify
 the base class containing the member to be accessed.
-This works fine for all public or static members, but results in a compiler error when applied to
-protected instance members.
+This works all the time in JavaScript and works in TypeScript for any public or static member, but
+results in a compiler error when applied to a
+[protected](https://www.typescriptlang.org/docs/handbook/classes.html#understanding-protected)
+instance member.
 
 ```ts
-class Apple
+class RecordLeft
 {
     protected id: number;
 }
 
-class Banana
+class RecordRight
 {
-    protected id: number;
+    protected id: string;
 }
 
-class Bananapple extends classes(Apple, Banana)
+class Record extends classes(RecordLeft, RecordRight)
 {
-    get bananaId()
+    printRightId(): void
     {
-        return super.class(Banana).id; // error TS2446: Property 'id' is protected…
+        // error TS2446: Property 'id' is protected…
+        console.log(super.class(RecordRight).id.padStart(10, ' '));
     }
 }
 ```
 
-As a workaround, you could use an intermediate class to expose the inherited member with a different
-name without making it public.
+As a type‐safe workaround, you could use an intermediate class to expose the inherited member using
+a different name without making it public.
 
 ```ts
-class BananaProxy extends Banana
+class RecordRightProxy extends RecordRight
 {
-    get bananaId()
+    protected get rightId()
     {
         return super.id;
     }
 }
 
-class Bananapple extends classes(Apple, Banana)
-{ }
+class Record extends classes(RecordLeft, RecordRightProxy)
+{
+    printRightId(): void
+    {
+        console.log(super.rightId.padStart(10, ' ')); // OK
+    }
+}
 ```
 
 ## Compatibility
@@ -558,3 +563,5 @@ ECMAScript 2020 or higher syntax.
 https://raw.githubusercontent.com/fasttime/Polytype/0.8.0/lib/polytype.min.js
 [Why Use for...in?]:
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#Why_Use_for...in
+[Enumerability and ownership of properties]:
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties
