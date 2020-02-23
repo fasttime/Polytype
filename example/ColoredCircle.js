@@ -14,6 +14,11 @@ class Circle
         this.centerX = centerX;
         this.centerY = centerY;
     }
+    reset()
+    {
+        this.moveTo(0, 0);
+        this.radius = 1;
+    }
     toString()
     {
         return `circle with center (${this.centerX}, ${this.centerY}) and radius ${this.radius}`;
@@ -25,6 +30,7 @@ class ColoredObject
     constructor(color) { this.color = color; }
     static areSameColor(obj1, obj2) { return obj1.color === obj2.color; }
     paint() { console.log(`painting in ${this.color}`); }
+    reset() { this.color = "white"; }
     toString() { return `${this.color} object`; }
 }
 
@@ -42,6 +48,11 @@ extends classes(Circle, ColoredObject) // Base classes as comma‐separated para
     paint()
     {
         super.paint(); // Using method paint from some base class
+    }
+    reset()
+    {
+        for (const baseClass of getPrototypeListOf(ColoredCircle))
+            baseClass.reset();
     }
     toString()
     {

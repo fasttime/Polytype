@@ -27,6 +27,7 @@ As of today, Polytype runs in **current versions of all major browsers** and in
   * [`in`](#in)
   * [`isPrototypeOf`](#isprototypeof)
   * [Finding the base classes](#finding-the-base-classes)
+  * [Dispatching invocations to multiple base classes](#dispatching-invocations-to-multiple-base-classes)
   * [Dynamic base class changes](#dynamic-base-class-changes)
 - [TypeScript support](#typescript-support)
 - [Caveats](#caveats)
@@ -136,6 +137,11 @@ class Circle
         this.centerX = centerX;
         this.centerY = centerY;
     }
+    reset()
+    {
+        this.moveTo(0, 0);
+        this.radius = 1;
+    }
     toString()
     {
         return `circle with center (${this.centerX}, ${this.centerY}) and radius ${this.radius}`;
@@ -147,6 +153,7 @@ class ColoredObject
     constructor(color) { this.color = color; }
     static areSameColor(obj1, obj2) { return obj1.color === obj2.color; }
     paint() { console.log(`painting in ${this.color}`); }
+    reset() { this.color = "white"; }
     toString() { return `${this.color} object`; }
 }
 
@@ -203,8 +210,8 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
-More generally, `super.class(DirectBaseClass)[propertyKey]` can be used to reference a property of a
-particular base class in the body of a derived class.
+More generally, `super.class(DirectBaseClass)[propertyKey]` can be used to reference a (possibly
+inherited) property of a particular direct base class in the body of a derived class.
 
 **Note:**
 In TypeScript, the syntax described here cannot be used to access protected instance members, so it
@@ -225,7 +232,8 @@ ColoredObject.areSameColor(c1, c2)
 
 ### Invoking multiple base constructors
 
-Use arrays to group together parameters for each base constructor in the derived class constructor.
+In the constructor of a derived class, use arrays to group together parameters to be passed to the
+constructors of each direct base class.
 
 ```js
 class ColoredCircle
@@ -260,7 +268,7 @@ extends classes(Circle, ColoredObject)
 }
 ```
 
-There is no need to specify an array of parameters for each base constructor.
+There is no need to specify an array of parameters for each direct base constructor.
 If the parameter arrays are omitted, the base constructors will still be invoked without parameters.
 
 ```js
@@ -359,7 +367,7 @@ const DirectBaseClass = Object.getPrototypeOf(DerivedClass);
 ```
 
 If a class has no explicit `extends` clause, `Object.getPrototypeOf` returns `Function.prototype`,
-the base of all classes.
+the ancestor of all classes.
 
 Of course this method cannot work with multiple inheritance, since there is no way to return
 multiple classes without packing them in some kind of structure.
@@ -379,8 +387,43 @@ console.log(getBaseNames(Int8Array));       // ["TypedArray"]
 console.log(getBaseNames(Circle));          // [""] i.e. [Function.prototype.name]
 ```
 
-If you use the script build of Polytype, no functions will be exported.
+When the the script build of Polytype is used, no functions will be exported.
 Instead, `getPrototypeListOf` will be defined globally as `Object.getPrototypeListOf`.
+
+### Dispatching invocations to multiple base classes
+
+Sometimes it is useful to have a method or setter invocation dispatched to all direct base classes
+rather than just to one of them.
+Common examples are event handlers and Angular lifecycle hooks implemented in multiple base classes.
+
+Polytype has no dedicated syntax for this use case: simply override the method or setter in the
+derived class and invoke the base implementations from there.
+
+```js
+class ColoredCircle
+extends classes(Circle, ColoredObject)
+{
+    reset()
+    {
+        super.class(Circle).reset();
+        super.class(ColoredObject).reset();
+    }
+}
+```
+
+This can also be done with an iteration instead of referencing the base classes one by one.
+
+```js
+class ColoredCircle
+extends classes(Circle, ColoredObject)
+{
+    reset()
+    {
+        for (const baseClass of getPrototypeListOf(ColoredCircle))
+            baseClass.reset();
+    }
+}
+```
 
 ### Dynamic base class changes
 
@@ -493,7 +536,7 @@ When a derived class inherits from multiple base classes, it is possible for inh
 different base classes to share the same property key, i.e. the same name, the same index or the
 same symbol.
 For these cases, Polytype provides the syntax `super.class(DirectBaseClass)[propertyKey]` to specify
-the base class containing the member to be accessed.
+the direct base class containing the member to be accessed.
 This works all the time in JavaScript and works in TypeScript for any public or static member, but
 results in a compiler error when applied to a
 [protected](https://www.typescriptlang.org/docs/handbook/classes.html#understanding-protected)
@@ -512,7 +555,7 @@ class RecordRight
 
 class Record extends classes(RecordLeft, RecordRight)
 {
-    printRightId(): void
+    public printRightId(): void
     {
         // error TS2446: Property 'id' is protected…
         console.log(super.class(RecordRight).id.padStart(10, ' '));
@@ -520,13 +563,13 @@ class Record extends classes(RecordLeft, RecordRight)
 }
 ```
 
-As a type‐safe workaround, you could use an intermediate class to expose the inherited member using
-a different name without making it public.
+As a type‐safe workaround, use an intermediate class to expose the inherited member using a
+different name without making it public.
 
 ```ts
 class RecordRightProxy extends RecordRight
 {
-    protected get rightId()
+    protected get rightId(): string
     {
         return super.id;
     }
@@ -534,7 +577,7 @@ class RecordRightProxy extends RecordRight
 
 class Record extends classes(RecordLeft, RecordRightProxy)
 {
-    printRightId(): void
+    public printRightId(): void
     {
         console.log(super.rightId.padStart(10, ' ')); // OK
     }
