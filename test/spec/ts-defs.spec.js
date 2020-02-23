@@ -427,7 +427,7 @@ const actualize =
         }
         try
         {
-            const program = createProgram(fileNames, compilerOptions, host);
+            const program = createProgram(fileNames, options, host);
             return program;
         }
         finally
@@ -436,7 +436,19 @@ const actualize =
         }
     }
 
+    const
+    {
+        convertCompilerOptionsFromJson,
+        createCompilerHost,
+        createProgram,
+        createSourceFile,
+        flattenDiagnosticMessageText,
+        getPreEmitDiagnostics,
+    } =
+    require('typescript');
+
     const { compilerOptions } = require('../../tsconfig.json');
+    const { options } = convertCompilerOptionsFromJson(compilerOptions);
     let pkgPath;
     let header;
     switch (polytypeMode)
@@ -450,17 +462,7 @@ const actualize =
         header = 'export { };\n';
         break;
     }
-    compilerOptions.types = [pkgPath];
-    const
-    {
-        createCompilerHost,
-        createProgram,
-        createSourceFile,
-        flattenDiagnosticMessageText,
-        getPreEmitDiagnostics,
-    } =
-    require('typescript');
-
+    options.types = [pkgPath];
     const fileNames = [];
     testCases.forEach
     (
