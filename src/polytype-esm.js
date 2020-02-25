@@ -205,23 +205,20 @@ const createProxy =
 const createSuper =
 (obj, superTarget) =>
 {
-    const resolve =
-    reflectCall =>
-    {
-        const returnValue = reflectCall();
-        _Object_setPrototypeOf(superObj, superTarget);
-        return returnValue;
-    };
-
     const superHandler =
     {
-        get: (target, prop) => resolve(() => _Reflect_get(obj, prop, superTarget)),
-        set: (target, prop, value) => resolve(() => _Reflect_set(obj, prop, value, superTarget)),
+        get:
+        (target, prop) =>
+        {
+            let value = _Reflect_get(obj, prop, superTarget);
+            if (isCallable(value))
+                value = _Function_prototype_bind_call(value, superTarget);
+            return value;
+        },
+        set: (target, prop, value) => _Reflect_set(obj, prop, value, superTarget),
     };
-
     const superProxy = new _Proxy(superTarget, superHandler);
-    const superObj = { __proto__: superProxy };
-    return superObj;
+    return superProxy;
 };
 
 const createSuperPrototypeSelector =

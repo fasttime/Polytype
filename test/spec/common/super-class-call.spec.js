@@ -22,7 +22,7 @@ describe
                         {
                             someMethod(...args)
                             {
-                                const returnValue = { args, name: 'A' };
+                                const returnValue = { this: this, args, name: 'A' };
                                 return returnValue;
                             }
                         }
@@ -31,13 +31,18 @@ describe
                         {
                             someMethod(...args)
                             {
-                                const returnValue = { args, name: 'B' };
+                                const returnValue = { this: this, args, name: 'B' };
                                 return returnValue;
                             }
                         }
 
+                        Object.setPrototypeOf(B.prototype.someMethod, null);
+
                         class C extends classes(B)
                         { }
+
+                        const C2 = Function();
+                        C2.prototype = C.prototype;
 
                         class D extends classes(A, C)
                         {
@@ -49,14 +54,27 @@ describe
                         }
 
                         const d = new D();
-                        assert.deepEqual
-                        (d.callSomeMethodInSuperClass(A, 1, 2), { args: [1, 2], name: 'A' });
-                        assert.deepEqual
-                        (d.callSomeMethodInSuperClass(C, 3, 4), { args: [3, 4], name: 'B' });
-                        const C2 = Function();
-                        C2.prototype = C.prototype;
-                        assert.deepEqual
-                        (d.callSomeMethodInSuperClass(C2, 5, 6), { args: [5, 6], name: 'B' });
+                        {
+                            const { this: that, args, name } =
+                            d.callSomeMethodInSuperClass(A, 1, 2);
+                            assert.strictEqual(that, d);
+                            assert.deepEqual(args, [1, 2]);
+                            assert.strictEqual(name, 'A');
+                        }
+                        {
+                            const { this: that, args, name } =
+                            d.callSomeMethodInSuperClass(C, 3, 4);
+                            assert.strictEqual(that, d);
+                            assert.deepEqual(args, [3, 4]);
+                            assert.strictEqual(name, 'B');
+                        }
+                        {
+                            const { this: that, args, name } =
+                            d.callSomeMethodInSuperClass(C2, 5, 6);
+                            assert.strictEqual(that, d);
+                            assert.deepEqual(args, [5, 6]);
+                            assert.strictEqual(name, 'B');
+                        }
                     },
                 );
 
@@ -292,7 +310,7 @@ describe
                         {
                             static someMethod(...args)
                             {
-                                const returnValue = { args, name: 'A' };
+                                const returnValue = { this: this, args, name: 'A' };
                                 return returnValue;
                             }
                         }
@@ -301,10 +319,12 @@ describe
                         {
                             static someMethod(...args)
                             {
-                                const returnValue = { args, name: 'B' };
+                                const returnValue = { this: this, args, name: 'B' };
                                 return returnValue;
                             }
                         }
+
+                        Object.setPrototypeOf(B.someMethod, null);
 
                         class C extends classes(B)
                         { }
@@ -318,10 +338,20 @@ describe
                             }
                         }
 
-                        assert.deepEqual
-                        (D.callSomeMethodInSuperClass(A, 1, 2), { args: [1, 2], name: 'A' });
-                        assert.deepEqual
-                        (D.callSomeMethodInSuperClass(C, 3, 4), { args: [3, 4], name: 'B' });
+                        {
+                            const { this: that, args, name } =
+                            D.callSomeMethodInSuperClass(A, 1, 2);
+                            assert.strictEqual(that, D);
+                            assert.deepEqual(args, [1, 2]);
+                            assert.strictEqual(name, 'A');
+                        }
+                        {
+                            const { this: that, args, name } =
+                            D.callSomeMethodInSuperClass(C, 3, 4);
+                            assert.strictEqual(that, D);
+                            assert.deepEqual(args, [3, 4]);
+                            assert.strictEqual(name, 'B');
+                        }
                     },
                 );
 
