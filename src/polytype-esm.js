@@ -20,6 +20,7 @@ const _Proxy                = Proxy;
 const _Reflect              = Reflect;
 const
 {
+    apply:      _Reflect_apply,
     construct:  _Reflect_construct,
     get:        _Reflect_get,
     ownKeys:    _Reflect_ownKeys,
@@ -212,13 +213,32 @@ const createSuper =
         {
             let value = _Reflect_get(obj, prop, superTarget);
             if (isCallable(value))
-                value = _Function_prototype_bind_call(value, superTarget);
+            {
+                const superMethodHandler = createSuperMethodHandler(superTarget, superProxy);
+                value = new Proxy(value, superMethodHandler);
+            }
             return value;
         },
         set: (target, prop, value) => _Reflect_set(obj, prop, value, superTarget),
     };
     const superProxy = new _Proxy(superTarget, superHandler);
     return superProxy;
+};
+
+const createSuperMethodHandler =
+(superTarget, superProxy) =>
+{
+    const handler =
+    {
+        apply(target, thisArg, args)
+        {
+            if (thisArg === superProxy)
+                thisArg = superTarget;
+            const returnValue = _Reflect_apply(target, thisArg, args);
+            return returnValue;
+        },
+    };
+    return handler;
 };
 
 const createSuperPrototypeSelector =

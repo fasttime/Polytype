@@ -51,24 +51,44 @@ describe
                                 const returnValue = super.class(superType).someMethod(...args);
                                 return returnValue;
                             }
+
+                            getSomeMethodInSuperClass(superType)
+                            {
+                                const { someMethod } = super.class(superType);
+                                return someMethod;
+                            }
                         }
 
                         const d = new D();
-                        {
+                        { // method from direct base class
                             const { this: that, args, name } =
                             d.callSomeMethodInSuperClass(A, 1, 2);
                             assert.strictEqual(that, d);
                             assert.deepEqual(args, [1, 2]);
                             assert.strictEqual(name, 'A');
                         }
-                        {
+                        { // bound method from direct base class
+                            const someBoundMethod = new D().getSomeMethodInSuperClass(A).bind(d);
+                            const { this: that, args, name } = someBoundMethod(1, 2, 3);
+                            assert.strictEqual(that, d);
+                            assert.deepEqual(args, [1, 2, 3]);
+                            assert.strictEqual(name, 'A');
+                        }
+                        { // unbound method from direct base class
+                            const someUnboundMethod = new D().getSomeMethodInSuperClass(A);
+                            const { this: that, args, name } = someUnboundMethod(1, 2, 3, 4);
+                            assert.isUndefined(that);
+                            assert.deepEqual(args, [1, 2, 3, 4]);
+                            assert.strictEqual(name, 'A');
+                        }
+                        { // null prototype method from indirect base class
                             const { this: that, args, name } =
                             d.callSomeMethodInSuperClass(C, 3, 4);
                             assert.strictEqual(that, d);
                             assert.deepEqual(args, [3, 4]);
                             assert.strictEqual(name, 'B');
                         }
-                        {
+                        { // method from unconventional inheritance
                             const { this: that, args, name } =
                             d.callSomeMethodInSuperClass(C2, 5, 6);
                             assert.strictEqual(that, d);
@@ -147,21 +167,21 @@ describe
                         }
 
                         const d = new D();
-                        {
+                        { // property from direct base class
                             const { arguments: args, this: that, name } =
                             d.getSomePropertyInSuperClass(A);
                             assert.strictEqual(that, d);
                             assert.isEmpty(args);
                             assert.strictEqual(name, 'A');
                         }
-                        {
+                        { // property from indirect base class
                             const { arguments: args, this: that, name } =
                             d.getSomePropertyInSuperClass(C);
                             assert.strictEqual(that, d);
                             assert.isEmpty(args);
                             assert.strictEqual(name, 'B');
                         }
-                        {
+                        { // property from unconventional inheritance
                             const { arguments: args, this: that, name } =
                             d.getSomePropertyInSuperClass(C2);
                             assert.strictEqual(that, d);
@@ -244,21 +264,21 @@ describe
                         }
 
                         const d = new D();
-                        {
+                        { // property from direct base class
                             const { arguments: args, this: that, name } =
                             d.setSomePropertyInSuperClass(A, 'foo');
                             assert.strictEqual(that, d);
                             assert.deepEqual([...args], ['foo']);
                             assert.strictEqual(name, 'A');
                         }
-                        {
+                        { // property from indirect base class
                             const { arguments: args, this: that, name } =
                             d.setSomePropertyInSuperClass(C, 'bar');
                             assert.strictEqual(that, d);
                             assert.deepEqual([...args], ['bar']);
                             assert.strictEqual(name, 'B');
                         }
-                        {
+                        { // property from unconventional inheritance
                             const { arguments: args, this: that, name } =
                             d.setSomePropertyInSuperClass(C2, 'baz');
                             assert.strictEqual(that, d);
@@ -338,16 +358,37 @@ describe
                                 const returnValue = super.class(superType).someMethod(...args);
                                 return returnValue;
                             }
+
+                            static getSomeMethodInSuperClass(superType)
+                            {
+                                const { someMethod } = super.class(superType);
+                                return someMethod;
+                            }
                         }
 
-                        {
+                        { // method from direct base class
                             const { this: that, args, name } =
                             D.callSomeMethodInSuperClass(A, 1, 2);
                             assert.strictEqual(that, D);
                             assert.deepEqual(args, [1, 2]);
                             assert.strictEqual(name, 'A');
                         }
-                        {
+                        { // bound method from direct base class
+                            const someBoundMethod =
+                            { __proto__: D }.getSomeMethodInSuperClass(A).bind(D);
+                            const { this: that, args, name } = someBoundMethod(1, 2, 3);
+                            assert.strictEqual(that, D);
+                            assert.deepEqual(args, [1, 2, 3]);
+                            assert.strictEqual(name, 'A');
+                        }
+                        { // unbound method from direct base class
+                            const someBoundMethod = { __proto__: D }.getSomeMethodInSuperClass(A);
+                            const { this: that, args, name } = someBoundMethod(1, 2, 3, 4);
+                            assert.isUndefined(that);
+                            assert.deepEqual(args, [1, 2, 3, 4]);
+                            assert.strictEqual(name, 'A');
+                        }
+                        { // null prototype method from indirect base class
                             const { this: that, args, name } =
                             D.callSomeMethodInSuperClass(C, 3, 4);
                             assert.strictEqual(that, D);
@@ -421,14 +462,14 @@ describe
                             }
                         }
 
-                        {
+                        { // property from direct base class
                             const { this: that, arguments: args, name } =
                             D.getSomePropertyInSuperClass(A);
                             assert.strictEqual(that, D);
                             assert.isEmpty(args);
                             assert.strictEqual(name, 'A');
                         }
-                        {
+                        { // property from indirect base class
                             const { this: that, arguments: args, name } =
                             D.getSomePropertyInSuperClass(C);
                             assert.strictEqual(that, D);
@@ -506,14 +547,14 @@ describe
                             }
                         }
 
-                        {
+                        { // property from direct base class
                             const { arguments: args, this: that, name } =
                             D.setSomePropertyInSuperClass(A, 'foo');
                             assert.strictEqual(that, D);
                             assert.deepEqual([...args], ['foo']);
                             assert.strictEqual(name, 'A');
                         }
-                        {
+                        { // property from indirect base class
                             const { arguments: args, this: that, name } =
                             D.setSomePropertyInSuperClass(C, 'bar');
                             assert.strictEqual(that, D);
