@@ -134,6 +134,9 @@ describe
                         class C extends classes(B)
                         { }
 
+                        const C2 = Function();
+                        C2.prototype = C.prototype;
+
                         class D extends classes(A, C)
                         {
                             getSomePropertyInSuperClass(superType)
@@ -158,8 +161,6 @@ describe
                             assert.isEmpty(args);
                             assert.strictEqual(name, 'B');
                         }
-                        const C2 = Function();
-                        C2.prototype = C.prototype;
                         {
                             const { arguments: args, this: that, name } =
                             d.getSomePropertyInSuperClass(C2);
@@ -228,6 +229,9 @@ describe
                         class C extends classes(B)
                         { }
 
+                        const C2 = Function();
+                        C2.prototype = C.prototype;
+
                         class D extends classes(A, C)
                         {
                             setSomePropertyInSuperClass(superType, value)
@@ -254,8 +258,6 @@ describe
                             assert.deepEqual([...args], ['bar']);
                             assert.strictEqual(name, 'B');
                         }
-                        const C2 = Function();
-                        C2.prototype = C.prototype;
                         {
                             const { arguments: args, this: that, name } =
                             d.setSomePropertyInSuperClass(C2, 'baz');
