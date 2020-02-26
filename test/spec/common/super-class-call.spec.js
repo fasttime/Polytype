@@ -13,88 +13,135 @@ describe
             'in nonstatic context',
             () =>
             {
-                it
+                describe
                 (
                     'invokes a superclass method',
                     () =>
                     {
-                        class A
-                        {
-                            someMethod(...args)
+                        let A;
+                        let C;
+                        let C2;
+                        let D;
+                        let d;
+
+                        before
+                        (
+                            () =>
                             {
-                                const returnValue = { this: this, args, name: 'A' };
-                                return returnValue;
-                            }
-                        }
+                                A =
+                                class
+                                {
+                                    someMethod(...args)
+                                    {
+                                        const returnValue = { this: this, args, name: 'A' };
+                                        return returnValue;
+                                    }
+                                };
 
-                        class B
-                        {
-                            someMethod(...args)
+                                class B
+                                {
+                                    someMethod(...args)
+                                    {
+                                        const returnValue = { this: this, args, name: 'B' };
+                                        return returnValue;
+                                    }
+                                }
+
+                                Object.setPrototypeOf(B.prototype.someMethod, null);
+
+                                C =
+                                class extends classes(B)
+                                { };
+
+                                C2 = Function();
+                                C2.prototype = C.prototype;
+
+                                D =
+                                class extends classes(A, C)
+                                {
+                                    callSomeMethodInSuperClass(superType, ...args)
+                                    {
+                                        const returnValue =
+                                        super.class(superType).someMethod(...args);
+                                        return returnValue;
+                                    }
+
+                                    getSomeMethodInSuperClass(superType)
+                                    {
+                                        const { someMethod } = super.class(superType);
+                                        return someMethod;
+                                    }
+                                };
+
+                                d = new D();
+                            },
+                        );
+
+                        it
+                        (
+                            'from direct base class',
+                            () =>
                             {
-                                const returnValue = { this: this, args, name: 'B' };
-                                return returnValue;
-                            }
-                        }
+                                const { this: that, args, name } =
+                                d.callSomeMethodInSuperClass(A, 1, 2);
+                                assert.strictEqual(that, d);
+                                assert.deepEqual(args, [1, 2]);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                        Object.setPrototypeOf(B.prototype.someMethod, null);
-
-                        class C extends classes(B)
-                        { }
-
-                        const C2 = Function();
-                        C2.prototype = C.prototype;
-
-                        class D extends classes(A, C)
-                        {
-                            callSomeMethodInSuperClass(superType, ...args)
+                        it
+                        (
+                            'from direct base class as a bound function',
+                            () =>
                             {
-                                const returnValue = super.class(superType).someMethod(...args);
-                                return returnValue;
-                            }
+                                const someBoundMethod =
+                                new D().getSomeMethodInSuperClass(A).bind(d);
+                                const { this: that, args, name } = someBoundMethod(1, 2, 3);
+                                assert.strictEqual(that, d);
+                                assert.deepEqual(args, [1, 2, 3]);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                            getSomeMethodInSuperClass(superType)
+                        it
+                        (
+                            'from direct base class as an unbound function',
+                            () =>
                             {
-                                const { someMethod } = super.class(superType);
-                                return someMethod;
-                            }
-                        }
+                                const someUnboundMethod = new D().getSomeMethodInSuperClass(A);
+                                const { this: that, args, name } = someUnboundMethod(1, 2, 3, 4);
+                                assert.isUndefined(that);
+                                assert.deepEqual(args, [1, 2, 3, 4]);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                        const d = new D();
-                        { // method from direct base class
-                            const { this: that, args, name } =
-                            d.callSomeMethodInSuperClass(A, 1, 2);
-                            assert.strictEqual(that, d);
-                            assert.deepEqual(args, [1, 2]);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // bound method from direct base class
-                            const someBoundMethod = new D().getSomeMethodInSuperClass(A).bind(d);
-                            const { this: that, args, name } = someBoundMethod(1, 2, 3);
-                            assert.strictEqual(that, d);
-                            assert.deepEqual(args, [1, 2, 3]);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // unbound method from direct base class
-                            const someUnboundMethod = new D().getSomeMethodInSuperClass(A);
-                            const { this: that, args, name } = someUnboundMethod(1, 2, 3, 4);
-                            assert.isUndefined(that);
-                            assert.deepEqual(args, [1, 2, 3, 4]);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // null prototype method from indirect base class
-                            const { this: that, args, name } =
-                            d.callSomeMethodInSuperClass(C, 3, 4);
-                            assert.strictEqual(that, d);
-                            assert.deepEqual(args, [3, 4]);
-                            assert.strictEqual(name, 'B');
-                        }
-                        { // method from unconventional inheritance
-                            const { this: that, args, name } =
-                            d.callSomeMethodInSuperClass(C2, 5, 6);
-                            assert.strictEqual(that, d);
-                            assert.deepEqual(args, [5, 6]);
-                            assert.strictEqual(name, 'B');
-                        }
+                        it
+                        (
+                            'with null prototype from indirect base class',
+                            () =>
+                            {
+                                const { this: that, args, name } =
+                                d.callSomeMethodInSuperClass(C, 3, 4);
+                                assert.strictEqual(that, d);
+                                assert.deepEqual(args, [3, 4]);
+                                assert.strictEqual(name, 'B');
+                            },
+                        );
+
+                        it
+                        (
+                            'unconventionally inherited',
+                            () =>
+                            {
+                                const { this: that, args, name } =
+                                d.callSomeMethodInSuperClass(C2, 5, 6);
+                                assert.strictEqual(that, d);
+                                assert.deepEqual(args, [5, 6]);
+                                assert.strictEqual(name, 'B');
+                            },
+                        );
                     },
                 );
 
@@ -126,68 +173,99 @@ describe
                     },
                 );
 
-                it
+                describe
                 (
                     'invokes a superclass getter',
                     () =>
                     {
-                        class A
-                        {
-                            get someProperty()
+                        let A;
+                        let C;
+                        let C2;
+                        let d;
+
+                        before
+                        (
+                            () =>
                             {
-                                // eslint-disable-next-line prefer-rest-params
-                                const value = { this: this, arguments, name: 'A' };
-                                return value;
-                            }
-                        }
+                                A =
+                                class
+                                {
+                                    get someProperty()
+                                    {
+                                        // eslint-disable-next-line prefer-rest-params
+                                        const value = { this: this, arguments, name: 'A' };
+                                        return value;
+                                    }
+                                };
 
-                        class B
-                        {
-                            get someProperty()
+                                class B
+                                {
+                                    get someProperty()
+                                    {
+                                        // eslint-disable-next-line prefer-rest-params
+                                        const value = { this: this, arguments, name: 'B' };
+                                        return value;
+                                    }
+                                }
+
+                                C =
+                                class extends classes(B)
+                                { };
+
+                                C2 = Function();
+                                C2.prototype = C.prototype;
+
+                                class D extends classes(A, C)
+                                {
+                                    getSomePropertyInSuperClass(superType)
+                                    {
+                                        const value = super.class(superType).someProperty;
+                                        return value;
+                                    }
+                                }
+
+                                d = new D();
+                            },
+                        );
+
+                        it
+                        (
+                            'from direct base class',
+                            () =>
                             {
-                                // eslint-disable-next-line prefer-rest-params
-                                const value = { this: this, arguments, name: 'B' };
-                                return value;
-                            }
-                        }
+                                const { arguments: args, this: that, name } =
+                                d.getSomePropertyInSuperClass(A);
+                                assert.strictEqual(that, d);
+                                assert.isEmpty(args);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                        class C extends classes(B)
-                        { }
-
-                        const C2 = Function();
-                        C2.prototype = C.prototype;
-
-                        class D extends classes(A, C)
-                        {
-                            getSomePropertyInSuperClass(superType)
+                        it
+                        (
+                            'from indirect base class',
+                            () =>
                             {
-                                const value = super.class(superType).someProperty;
-                                return value;
-                            }
-                        }
+                                const { arguments: args, this: that, name } =
+                                d.getSomePropertyInSuperClass(C);
+                                assert.strictEqual(that, d);
+                                assert.isEmpty(args);
+                                assert.strictEqual(name, 'B');
+                            },
+                        );
 
-                        const d = new D();
-                        { // property from direct base class
-                            const { arguments: args, this: that, name } =
-                            d.getSomePropertyInSuperClass(A);
-                            assert.strictEqual(that, d);
-                            assert.isEmpty(args);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // property from indirect base class
-                            const { arguments: args, this: that, name } =
-                            d.getSomePropertyInSuperClass(C);
-                            assert.strictEqual(that, d);
-                            assert.isEmpty(args);
-                            assert.strictEqual(name, 'B');
-                        }
-                        { // property from unconventional inheritance
-                            const { arguments: args, this: that, name } =
-                            d.getSomePropertyInSuperClass(C2);
-                            assert.strictEqual(that, d);
-                            assert.isEmpty(args);
-                            assert.strictEqual(name, 'B');
-                        }
+                        it
+                        (
+                            'unconventionally inherited',
+                            () =>
+                            {
+                                const { arguments: args, this: that, name } =
+                                d.getSomePropertyInSuperClass(C2);
+                                assert.strictEqual(that, d);
+                                assert.isEmpty(args);
+                                assert.strictEqual(name, 'B');
+                            },
+                        );
                     },
                 );
 
@@ -221,70 +299,102 @@ describe
                     },
                 );
 
-                it
+                describe
                 (
                     'invokes a superclass setter',
                     () =>
                     {
+                        let A;
+                        let C;
+                        let C2;
+                        let d;
                         let callData = null;
 
-                        class A
-                        {
-                            set someProperty(value) // eslint-disable-line accessor-pairs
+                        before
+                        (
+                            () =>
                             {
-                                // eslint-disable-next-line prefer-rest-params
-                                Object.assign(callData, { this: this, arguments, name: 'A' });
-                            }
-                        }
+                                A =
+                                class
+                                {
+                                    set someProperty(value) // eslint-disable-line accessor-pairs
+                                    {
+                                        Object.assign
+                                        // eslint-disable-next-line prefer-rest-params
+                                        (callData, { this: this, arguments, name: 'A' });
+                                    }
+                                };
 
-                        class B
-                        {
-                            set someProperty(value) // eslint-disable-line accessor-pairs
+                                class B
+                                {
+                                    set someProperty(value) // eslint-disable-line accessor-pairs
+                                    {
+                                        Object.assign
+                                        // eslint-disable-next-line prefer-rest-params
+                                        (callData, { this: this, arguments, name: 'B' });
+                                    }
+                                }
+
+                                C =
+                                class extends classes(B)
+                                { };
+
+                                C2 = Function();
+                                C2.prototype = C.prototype;
+
+                                class D extends classes(A, C)
+                                {
+                                    setSomePropertyInSuperClass(superType, value)
+                                    {
+                                        const returnValue = callData = { };
+                                        super.class(superType).someProperty = value;
+                                        callData = null;
+                                        return returnValue;
+                                    }
+                                }
+
+                                d = new D();
+                            },
+                        );
+
+                        it
+                        (
+                            'from direct base class',
+                            () =>
                             {
-                                // eslint-disable-next-line prefer-rest-params
-                                Object.assign(callData, { this: this, arguments, name: 'B' });
-                            }
-                        }
+                                const { arguments: args, this: that, name } =
+                                d.setSomePropertyInSuperClass(A, 'foo');
+                                assert.strictEqual(that, d);
+                                assert.deepEqual([...args], ['foo']);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                        class C extends classes(B)
-                        { }
-
-                        const C2 = Function();
-                        C2.prototype = C.prototype;
-
-                        class D extends classes(A, C)
-                        {
-                            setSomePropertyInSuperClass(superType, value)
+                        it
+                        (
+                            'from indirect base class',
+                            () =>
                             {
-                                const returnValue = callData = { };
-                                super.class(superType).someProperty = value;
-                                callData = null;
-                                return returnValue;
-                            }
-                        }
+                                const { arguments: args, this: that, name } =
+                                d.setSomePropertyInSuperClass(C, 'bar');
+                                assert.strictEqual(that, d);
+                                assert.deepEqual([...args], ['bar']);
+                                assert.strictEqual(name, 'B');
+                            },
+                        );
 
-                        const d = new D();
-                        { // property from direct base class
-                            const { arguments: args, this: that, name } =
-                            d.setSomePropertyInSuperClass(A, 'foo');
-                            assert.strictEqual(that, d);
-                            assert.deepEqual([...args], ['foo']);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // property from indirect base class
-                            const { arguments: args, this: that, name } =
-                            d.setSomePropertyInSuperClass(C, 'bar');
-                            assert.strictEqual(that, d);
-                            assert.deepEqual([...args], ['bar']);
-                            assert.strictEqual(name, 'B');
-                        }
-                        { // property from unconventional inheritance
-                            const { arguments: args, this: that, name } =
-                            d.setSomePropertyInSuperClass(C2, 'baz');
-                            assert.strictEqual(that, d);
-                            assert.deepEqual([...args], ['baz']);
-                            assert.strictEqual(name, 'B');
-                        }
+                        it
+                        (
+                            'unconventionally inherited',
+                            () =>
+                            {
+                                const { arguments: args, this: that, name } =
+                                d.setSomePropertyInSuperClass(C2, 'baz');
+                                assert.strictEqual(that, d);
+                                assert.deepEqual([...args], ['baz']);
+                                assert.strictEqual(name, 'B');
+                            },
+                        );
                     },
                 );
 
@@ -323,78 +433,116 @@ describe
             'in static context',
             () =>
             {
-                it
+                describe
                 (
                     'invokes a superclass method',
                     () =>
                     {
-                        class A
-                        {
-                            static someMethod(...args)
+                        let A;
+                        let C;
+                        let D;
+
+                        before
+                        (
+                            () =>
                             {
-                                const returnValue = { this: this, args, name: 'A' };
-                                return returnValue;
-                            }
-                        }
+                                A =
+                                class
+                                {
+                                    static someMethod(...args)
+                                    {
+                                        const returnValue = { this: this, args, name: 'A' };
+                                        return returnValue;
+                                    }
+                                };
 
-                        class B
-                        {
-                            static someMethod(...args)
+                                class B
+                                {
+                                    static someMethod(...args)
+                                    {
+                                        const returnValue = { this: this, args, name: 'B' };
+                                        return returnValue;
+                                    }
+                                }
+
+                                Object.setPrototypeOf(B.someMethod, null);
+
+                                C =
+                                class extends classes(B)
+                                { };
+
+                                D =
+                                class extends classes(A, C)
+                                {
+                                    static callSomeMethodInSuperClass(superType, ...args)
+                                    {
+                                        const returnValue =
+                                        super.class(superType).someMethod(...args);
+                                        return returnValue;
+                                    }
+
+                                    static getSomeMethodInSuperClass(superType)
+                                    {
+                                        const { someMethod } = super.class(superType);
+                                        return someMethod;
+                                    }
+                                };
+                            },
+                        );
+
+                        it
+                        (
+                            'from direct base class',
+                            () =>
                             {
-                                const returnValue = { this: this, args, name: 'B' };
-                                return returnValue;
-                            }
-                        }
+                                const { this: that, args, name } =
+                                D.callSomeMethodInSuperClass(A, 1, 2);
+                                assert.strictEqual(that, D);
+                                assert.deepEqual(args, [1, 2]);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                        Object.setPrototypeOf(B.someMethod, null);
-
-                        class C extends classes(B)
-                        { }
-
-                        class D extends classes(A, C)
-                        {
-                            static callSomeMethodInSuperClass(superType, ...args)
+                        it
+                        (
+                            'from direct base class as a bound function',
+                            () =>
                             {
-                                const returnValue = super.class(superType).someMethod(...args);
-                                return returnValue;
-                            }
+                                const someBoundMethod =
+                                { __proto__: D }.getSomeMethodInSuperClass(A).bind(D);
+                                const { this: that, args, name } = someBoundMethod(1, 2, 3);
+                                assert.strictEqual(that, D);
+                                assert.deepEqual(args, [1, 2, 3]);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                            static getSomeMethodInSuperClass(superType)
+                        it
+                        (
+                            'from direct base class as an unbound function',
+                            () =>
                             {
-                                const { someMethod } = super.class(superType);
-                                return someMethod;
-                            }
-                        }
+                                const someBoundMethod =
+                                { __proto__: D }.getSomeMethodInSuperClass(A);
+                                const { this: that, args, name } = someBoundMethod(1, 2, 3, 4);
+                                assert.isUndefined(that);
+                                assert.deepEqual(args, [1, 2, 3, 4]);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                        { // method from direct base class
-                            const { this: that, args, name } =
-                            D.callSomeMethodInSuperClass(A, 1, 2);
-                            assert.strictEqual(that, D);
-                            assert.deepEqual(args, [1, 2]);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // bound method from direct base class
-                            const someBoundMethod =
-                            { __proto__: D }.getSomeMethodInSuperClass(A).bind(D);
-                            const { this: that, args, name } = someBoundMethod(1, 2, 3);
-                            assert.strictEqual(that, D);
-                            assert.deepEqual(args, [1, 2, 3]);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // unbound method from direct base class
-                            const someBoundMethod = { __proto__: D }.getSomeMethodInSuperClass(A);
-                            const { this: that, args, name } = someBoundMethod(1, 2, 3, 4);
-                            assert.isUndefined(that);
-                            assert.deepEqual(args, [1, 2, 3, 4]);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // null prototype method from indirect base class
-                            const { this: that, args, name } =
-                            D.callSomeMethodInSuperClass(C, 3, 4);
-                            assert.strictEqual(that, D);
-                            assert.deepEqual(args, [3, 4]);
-                            assert.strictEqual(name, 'B');
-                        }
+                        it
+                        (
+                            'with null prototype from indirect base class',
+                            () =>
+                            {
+                                const { this: that, args, name } =
+                                D.callSomeMethodInSuperClass(C, 3, 4);
+                                assert.strictEqual(that, D);
+                                assert.deepEqual(args, [3, 4]);
+                                assert.strictEqual(name, 'B');
+                            },
+                        );
                     },
                 );
 
@@ -425,57 +573,81 @@ describe
                     },
                 );
 
-                it
+                describe
                 (
                     'invokes a superclass getter',
                     () =>
                     {
-                        class A
-                        {
-                            static get someProperty()
+                        let A;
+                        let C;
+                        let D;
+
+                        before
+                        (
+                            () =>
                             {
-                                // eslint-disable-next-line prefer-rest-params
-                                const value = { this: this, arguments, name: 'A' };
-                                return value;
-                            }
-                        }
+                                A =
+                                class
+                                {
+                                    static get someProperty()
+                                    {
+                                        // eslint-disable-next-line prefer-rest-params
+                                        const value = { this: this, arguments, name: 'A' };
+                                        return value;
+                                    }
+                                };
 
-                        class B
-                        {
-                            static get someProperty()
+                                class B
+                                {
+                                    static get someProperty()
+                                    {
+                                        // eslint-disable-next-line prefer-rest-params
+                                        const value = { this: this, arguments, name: 'B' };
+                                        return value;
+                                    }
+                                }
+
+                                C =
+                                class extends classes(B)
+                                { };
+
+                                D =
+                                class extends classes(A, C)
+                                {
+                                    static getSomePropertyInSuperClass(superType)
+                                    {
+                                        const value = super.class(superType).someProperty;
+                                        return value;
+                                    }
+                                };
+                            },
+                        );
+
+                        it
+                        (
+                            'from direct base class',
+                            () =>
                             {
-                                // eslint-disable-next-line prefer-rest-params
-                                const value = { this: this, arguments, name: 'B' };
-                                return value;
-                            }
-                        }
+                                const { this: that, arguments: args, name } =
+                                D.getSomePropertyInSuperClass(A);
+                                assert.strictEqual(that, D);
+                                assert.isEmpty(args);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                        class C extends classes(B)
-                        { }
-
-                        class D extends classes(A, C)
-                        {
-                            static getSomePropertyInSuperClass(superType)
+                        it
+                        (
+                            'from indirect base class',
+                            () =>
                             {
-                                const value = super.class(superType).someProperty;
-                                return value;
-                            }
-                        }
-
-                        { // property from direct base class
-                            const { this: that, arguments: args, name } =
-                            D.getSomePropertyInSuperClass(A);
-                            assert.strictEqual(that, D);
-                            assert.isEmpty(args);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // property from indirect base class
-                            const { this: that, arguments: args, name } =
-                            D.getSomePropertyInSuperClass(C);
-                            assert.strictEqual(that, D);
-                            assert.isEmpty(args);
-                            assert.strictEqual(name, 'B');
-                        }
+                                const { this: that, arguments: args, name } =
+                                D.getSomePropertyInSuperClass(C);
+                                assert.strictEqual(that, D);
+                                assert.isEmpty(args);
+                                assert.strictEqual(name, 'B');
+                            },
+                        );
                     },
                 );
 
@@ -508,59 +680,86 @@ describe
                     },
                 );
 
-                it
+                describe
                 (
                     'invokes a superclass setter',
                     () =>
                     {
+                        let A;
+                        let C;
+                        let D;
                         let callData = null;
 
-                        class A
-                        {
-                            static set someProperty(value) // eslint-disable-line accessor-pairs
+                        before
+                        (
+                            () =>
                             {
-                                // eslint-disable-next-line prefer-rest-params
-                                Object.assign(callData, { this: this, arguments, name: 'A' });
-                            }
-                        }
+                                A =
+                                class
+                                {
+                                    // eslint-disable-next-line accessor-pairs
+                                    static set someProperty(value)
+                                    {
+                                        Object.assign
+                                        // eslint-disable-next-line prefer-rest-params
+                                        (callData, { this: this, arguments, name: 'A' });
+                                    }
+                                };
 
-                        class B
-                        {
-                            static set someProperty(value) // eslint-disable-line accessor-pairs
+                                class B
+                                {
+                                    // eslint-disable-next-line accessor-pairs
+                                    static set someProperty(value)
+                                    {
+                                        Object.assign
+                                        // eslint-disable-next-line prefer-rest-params
+                                        (callData, { this: this, arguments, name: 'B' });
+                                    }
+                                }
+
+                                C =
+                                class extends classes(B)
+                                { };
+
+                                D =
+                                class extends classes(A, C)
+                                {
+                                    static setSomePropertyInSuperClass(superType, value)
+                                    {
+                                        const returnValue = callData = { };
+                                        super.class(superType).someProperty = value;
+                                        callData = null;
+                                        return returnValue;
+                                    }
+                                };
+                            },
+                        );
+
+                        it
+                        (
+                            'from direct base class',
+                            () =>
                             {
-                                // eslint-disable-next-line prefer-rest-params
-                                Object.assign(callData, { this: this, arguments, name: 'B' });
-                            }
-                        }
+                                const { arguments: args, this: that, name } =
+                                D.setSomePropertyInSuperClass(A, 'foo');
+                                assert.strictEqual(that, D);
+                                assert.deepEqual([...args], ['foo']);
+                                assert.strictEqual(name, 'A');
+                            },
+                        );
 
-                        class C extends classes(B)
-                        { }
-
-                        class D extends classes(A, C)
-                        {
-                            static setSomePropertyInSuperClass(superType, value)
+                        it
+                        (
+                            'from indirect base class',
+                            () =>
                             {
-                                const returnValue = callData = { };
-                                super.class(superType).someProperty = value;
-                                callData = null;
-                                return returnValue;
-                            }
-                        }
-
-                        { // property from direct base class
-                            const { arguments: args, this: that, name } =
-                            D.setSomePropertyInSuperClass(A, 'foo');
-                            assert.strictEqual(that, D);
-                            assert.deepEqual([...args], ['foo']);
-                            assert.strictEqual(name, 'A');
-                        }
-                        { // property from indirect base class
-                            const { arguments: args, this: that, name } =
-                            D.setSomePropertyInSuperClass(C, 'bar');
-                            assert.strictEqual(that, D);
-                            assert.deepEqual([...args], ['bar']);
-                            assert.strictEqual(name, 'B');
-                        }
+                                const { arguments: args, this: that, name } =
+                                D.setSomePropertyInSuperClass(C, 'bar');
+                                assert.strictEqual(that, D);
+                                assert.deepEqual([...args], ['bar']);
+                                assert.strictEqual(name, 'B');
+                            },
+                        );
                     },
                 );
 
