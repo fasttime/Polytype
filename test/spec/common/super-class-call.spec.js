@@ -110,6 +110,10 @@ describe
                             () =>
                             {
                                 const someUnboundMethod = new D().getSomeMethodInSuperClass(A);
+                                someUnboundMethod.foo = 'bar';
+                                assert.strictEqual(A.prototype.someMethod.foo, 'bar');
+                                delete someUnboundMethod.foo;
+                                assert.notProperty(A.prototype.someMethod, 'foo');
                                 const { this: that, args, name } = someUnboundMethod(1, 2, 3, 4);
                                 assert.isUndefined(that);
                                 assert.deepEqual(args, [1, 2, 3, 4]);
@@ -225,6 +229,7 @@ describe
                                 }
 
                                 d = new D();
+                                Object.defineProperty(d, 'someProperty', { });
                             },
                         );
 
@@ -522,9 +527,13 @@ describe
                             'from direct base class as an unbound function',
                             () =>
                             {
-                                const someBoundMethod =
+                                const someUnboundMethod =
                                 { __proto__: D }.getSomeMethodInSuperClass(A);
-                                const { this: that, args, name } = someBoundMethod(1, 2, 3, 4);
+                                someUnboundMethod.foo = 'bar';
+                                assert.strictEqual(A.someMethod.foo, 'bar');
+                                delete someUnboundMethod.foo;
+                                assert.notProperty(A.someMethod, 'foo');
+                                const { this: that, args, name } = someUnboundMethod(1, 2, 3, 4);
                                 assert.isUndefined(that);
                                 assert.deepEqual(args, [1, 2, 3, 4]);
                                 assert.strictEqual(name, 'A');
@@ -620,6 +629,7 @@ describe
                                         return value;
                                     }
                                 };
+                                Object.defineProperty(D, 'someProperty', { });
                             },
                         );
 

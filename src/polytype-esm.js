@@ -33,6 +33,8 @@ const _Symbol               = Symbol;
 const _Symbol_hasInstance   = _Symbol.hasInstance;
 const _TypeError            = TypeError;
 
+const EMPTY_OBJECT = _Object_freeze({ __proto__: null });
+
 const bindCall = callable => _Function_prototype.call.bind(callable);
 
 const _Function_prototype_bind_call         = bindCall(_Function_prototype.bind);
@@ -215,13 +217,13 @@ const createSuper =
             if (isCallable(value))
             {
                 const superMethodHandler = createSuperMethodHandler(superTarget, superProxy);
-                value = new Proxy(value, superMethodHandler);
+                value = new _Proxy(value, superMethodHandler);
             }
             return value;
         },
         set: (target, prop, value) => _Reflect_set(obj, prop, value, superTarget),
     };
-    const superProxy = new _Proxy(superTarget, superHandler);
+    const superProxy = new _Proxy(EMPTY_OBJECT, superHandler);
     return superProxy;
 };
 
