@@ -9,6 +9,7 @@ const { createReadStream }  = require('fs');
 const { createServer }      = require('http');
 const { networkInterfaces } = require('os');
 const { extname, join }     = require('path');
+const { fileURLToPath }     = require('url');
 
 const mimeTypes =
 {
@@ -21,9 +22,9 @@ const port = 8080;
 
 createServer
 (
-    (request, response) =>
+    ({ url }, response) =>
     {
-        const requestUrl = request.url.replace(/\?[^]*/, '');
+        const requestUrl = fileURLToPath(new URL(url, 'file:'));
         const pathname = join(__dirname, requestUrl);
         const stream = createReadStream(pathname);
         stream.on

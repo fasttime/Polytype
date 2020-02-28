@@ -111,7 +111,8 @@ function createConstructorProxy(typeSet, prototypeSet)
     const getConstructorName = createGetConstructorName(typeSet);
     const superPrototypeSelector = createSuperPrototypeSelector(prototypeSet);
     const constructorTarget = createConstructorTarget(typeSet);
-    const constructorProxy = createProxy(constructorTarget, typeSet, constructorHandlerPrototype);
+    const constructorProxy =
+    createUnionProxy(constructorTarget, typeSet, constructorHandlerPrototype);
     const prototypeTarget =
     _Object_create
     (
@@ -121,7 +122,7 @@ function createConstructorProxy(typeSet, prototypeSet)
             class: describeDataProperty(superPrototypeSelector),
         },
     );
-    const prototypeProxy = createProxy(prototypeTarget, prototypeSet, commonHandlerPrototype);
+    const prototypeProxy = createUnionProxy(prototypeTarget, prototypeSet, commonHandlerPrototype);
     const constructorProperties =
     {
         class: describeDataProperty(superTypeSelector),
@@ -161,49 +162,6 @@ const createGetConstructorName =
 typeSet => () => `(${[...typeSet].map(({ name }) => _String(name))})`;
 
 const createListFromArrayLike = _Function_prototype.apply.bind((...args) => args, null);
-
-const createProxy =
-(target, prototypeSet, handlerPrototype) =>
-{
-    const prototypeList = _Object_freeze([...prototypeSet]);
-    const objs = [target, ...prototypeList];
-    const handler =
-    {
-        __proto__: handlerPrototype,
-        get(target, prop, receiver)
-        {
-            if
-            (
-                prop === prototypesLookupSymbol &&
-                isObject(receiver) &&
-                _Object_getPrototypeOf(receiver) === null &&
-                receiver !== proxy &&
-                receiver.target === proxy
-            )
-                receiver.prototypeList = prototypeList;
-            const obj = objs.find(propFilter(prop));
-            if (obj !== undefined)
-            {
-                const value = _Reflect_get(obj, prop, receiver);
-                return value;
-            }
-        },
-        has: (target, prop) => objs.some(propFilter(prop)),
-        set(target, prop, value, receiver)
-        {
-            const obj = objs.find(propFilter(prop));
-            if (obj !== undefined)
-            {
-                const success = _Reflect_set(obj, prop, value, receiver);
-                return success;
-            }
-            defineMutableDataProperty(receiver, prop, value, true);
-            return true;
-        },
-    };
-    const proxy = new _Proxy(target, handler);
-    return proxy;
-};
 
 const createSuper =
 (obj, superTarget) =>
@@ -334,6 +292,49 @@ function createTypeToSuperArgsMap(typeSet, args)
     }
     return typeToSuperArgsMap;
 }
+
+const createUnionProxy =
+(target, prototypeSet, handlerPrototype) =>
+{
+    const prototypeList = _Object_freeze([...prototypeSet]);
+    const objs = [target, ...prototypeList];
+    const handler =
+    {
+        __proto__: handlerPrototype,
+        get(target, prop, receiver)
+        {
+            if
+            (
+                prop === prototypesLookupSymbol &&
+                isObject(receiver) &&
+                _Object_getPrototypeOf(receiver) === null &&
+                receiver !== proxy &&
+                receiver.target === proxy
+            )
+                receiver.prototypeList = prototypeList;
+            const obj = objs.find(propFilter(prop));
+            if (obj !== undefined)
+            {
+                const value = _Reflect_get(obj, prop, receiver);
+                return value;
+            }
+        },
+        has: (target, prop) => objs.some(propFilter(prop)),
+        set(target, prop, value, receiver)
+        {
+            const obj = objs.find(propFilter(prop));
+            if (obj !== undefined)
+            {
+                const success = _Reflect_set(obj, prop, value, receiver);
+                return success;
+            }
+            defineMutableDataProperty(receiver, prop, value, true);
+            return true;
+        },
+    };
+    const proxy = new _Proxy(target, handler);
+    return proxy;
+};
 
 const defineGlobally =
 () =>
