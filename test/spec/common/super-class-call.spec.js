@@ -430,6 +430,51 @@ describe
                         assert.ownProperty(c, 'someProperty');
                     },
                 );
+
+                it
+                (
+                    'invokes a superclass getter/setter pair',
+                    () =>
+                    {
+                        class A
+                        {
+                            get someProperty()
+                            {
+                                return this.foo;
+                            }
+
+                            set someProperty(value)
+                            {
+                                this.foo = value;
+                            }
+                        }
+
+                        class B extends classes(A)
+                        {
+                            get someProperty()
+                            {
+                                return this.bar;
+                            }
+
+                            set someProperty(value)
+                            {
+                                this.bar = value;
+                            }
+
+                            increaseSomePropertyInSuperClass(superType)
+                            {
+                                super.class(superType).someProperty++;
+                            }
+                        }
+
+                        const b = new B();
+                        b.foo = 10;
+                        b.bar = 20;
+                        b.increaseSomePropertyInSuperClass(A);
+
+                        assert.strictEqual(b.foo, 11);
+                    },
+                );
             },
         );
 
@@ -797,6 +842,50 @@ describe
 
                         C.setSomePropertyInSuperClass(B, 42);
                         assert.ownProperty(C, 'someProperty');
+                    },
+                );
+
+                it
+                (
+                    'invokes a superclass getter/setter pair',
+                    () =>
+                    {
+                        class A
+                        {
+                            static get someProperty()
+                            {
+                                return this.foo;
+                            }
+
+                            static set someProperty(value)
+                            {
+                                this.foo = value;
+                            }
+                        }
+
+                        class B extends classes(A)
+                        {
+                            static get someProperty()
+                            {
+                                return this.bar;
+                            }
+
+                            static set someProperty(value)
+                            {
+                                this.bar = value;
+                            }
+
+                            static increaseSomePropertyInSuperClass(superType)
+                            {
+                                super.class(superType).someProperty++;
+                            }
+                        }
+
+                        B.foo = 10;
+                        B.bar = 20;
+                        B.increaseSomePropertyInSuperClass(A);
+
+                        assert.strictEqual(B.foo, 11);
                     },
                 );
             },
