@@ -1,3 +1,20 @@
+<a name="0.9.0"></a>
+## [0.9.0](https://github.com/fasttime/Polytype/releases/tag/0.9.0) (2020-02-29)
+
+* Fixes and breaking changes in the way `super.class(...)` works:
+  * Inside of methods called with `super.class(...).methodName(...)` or
+`super.class(...)[methodKey](...)`, the value of `this` is now the same as in the calling context.
+  * Increments, decrements and compound assignments on properties of a `super.class(...)` target
+work as intended.
+  * Getting a property from a `super.class(...)` target no longer throws a `TypeError` in some
+special cases where the current object (`this`) has a non‐configurable own property with the same
+key.
+  * Getting a property with function value from a `super.class(...)` target no longer retrieves the
+original function, but a proxy of it.
+This is a side effect of other changes.
+* New in documentation and code examples: *Dispatching invocations to multiple base classes*.
+* Minor improvements to the documentation.
+
 <a name="0.8.1"></a>
 ## [0.8.1](https://github.com/fasttime/Polytype/releases/tag/0.8.1) (2020-02-21)
 
