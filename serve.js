@@ -24,8 +24,15 @@ createServer
 (
     ({ url }, response) =>
     {
-        const requestUrl = fileURLToPath(new URL(url, 'file:'));
-        const pathname = join(__dirname, requestUrl);
+        const requestPath = fileURLToPath(new URL(url, 'file:'));
+        if (requestPath === '/favicon.ico')
+        {
+            const headers = { 'Content-Type': 'image/x-icon' };
+            response.writeHead(204, headers);
+            response.end();
+            return;
+        }
+        const pathname = join(__dirname, requestPath);
         const stream = createReadStream(pathname);
         stream.on
         (
@@ -34,7 +41,7 @@ createServer
             {
                 const headers = { };
                 {
-                    const ext = extname(requestUrl);
+                    const ext = extname(requestPath);
                     if (mimeTypes.hasOwnProperty(ext))
                         headers['Content-Type'] = mimeTypes[ext];
                 }
