@@ -75,12 +75,28 @@ describe
 
                 it
                 (
-                    'returns a proxy for any superclass argument',
+                    'returns a cached proxy for any superclass argument',
                     () =>
                     {
-                        const { A, C } = setupTestData(classes);
-                        const c = new C();
-                        assert.isObject(c.getSuper(A));
+                        class Foo
+                        { }
+
+                        class Bar
+                        { }
+
+                        class FooBar extends classes(Foo, Bar)
+                        {
+                            getSuperClass(superType)
+                            {
+                                return super.class(superType);
+                            }
+                        }
+
+                        const fooBar = new FooBar();
+                        const superBar = fooBar.getSuperClass(Bar);
+                        assert.isObject(superBar);
+                        assert.notStrictEqual(fooBar.getSuperClass(Foo), superBar);
+                        assert.strictEqual(fooBar.getSuperClass(Bar), superBar);
                     },
                 );
 
@@ -206,11 +222,27 @@ describe
 
                 it
                 (
-                    'returns a proxy for any superclass argument',
+                    'returns a cached proxy for any superclass argument',
                     () =>
                     {
-                        const { A, C } = setupTestData(classes);
-                        assert.isObject(C.getStaticSuper(A));
+                        class Foo
+                        { }
+
+                        class Bar
+                        { }
+
+                        class FooBar extends classes(Foo, Bar)
+                        {
+                            static getSuperClass(superType)
+                            {
+                                return super.class(superType);
+                            }
+                        }
+
+                        const superBar = FooBar.getSuperClass(Bar);
+                        assert.isObject(superBar);
+                        assert.notStrictEqual(FooBar.getSuperClass(Foo), superBar);
+                        assert.strictEqual(FooBar.getSuperClass(Bar), superBar);
                     },
                 );
 
