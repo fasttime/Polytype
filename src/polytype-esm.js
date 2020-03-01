@@ -1,5 +1,3 @@
-const EMPTY_ARRAY = [];
-
 const _Function_prototype   = Function.prototype;
 const _Map                  = Map;
 const _Object               = Object;
@@ -34,15 +32,35 @@ const _Symbol_hasInstance   = _Symbol.hasInstance;
 const _TypeError            = TypeError;
 const _WeakMap              = WeakMap;
 
+const COMMON_HANDLER_PROTOTYPE = { setPrototypeOf: () => false };
+
+const CONSTRUCTOR_HANDLER_PROTOTYPE =
+{
+    __proto__: COMMON_HANDLER_PROTOTYPE,
+    apply:
+    () =>
+    {
+        throw _TypeError('Constructor cannot be invoked without \'new\'');
+    },
+};
+
+const EMPTY_ARRAY = [];
+
 const EMPTY_OBJECT = _Object_freeze({ __proto__: null });
 
-const bindCall = callable => _Function_prototype.call.bind(callable);
+const OBJECT_OR_NULL_OR_UNDEFINED_TYPES = ['function', 'object', 'undefined'];
+
+const PROTOTYPES_LOOKUP_SYMBOL = _Symbol.for('Polytype prototypes lookup');
+
+let bindCall = callable => _Function_prototype.call.bind(callable);
 
 const _Function_prototype_bind_call         = bindCall(_Function_prototype.bind);
 const _Function_prototype_hasInstance_call  = bindCall(_Function_prototype[_Symbol_hasInstance]);
 const _Function_prototype_toString_call     = bindCall(_Function_prototype.toString);
 const _Object_prototype_hasOwnProperty_call = bindCall(_Object_prototype.hasOwnProperty);
 const _Object_prototype_valueOf_call        = bindCall(_Object_prototype.valueOf);
+
+bindCall = null;
 
 const checkDuplicateSuperType =
 (typeSet, type) =>
@@ -94,18 +112,6 @@ const { classes } =
     },
 };
 
-const commonHandlerPrototype = { setPrototypeOf: () => false };
-
-const constructorHandlerPrototype =
-{
-    __proto__: commonHandlerPrototype,
-    apply:
-    () =>
-    {
-        throw _TypeError('Constructor cannot be invoked without \'new\'');
-    },
-};
-
 function createConstructorProxy(typeSet, prototypeSet)
 {
     const superTypeSelector = createSuperTypeSelector(typeSet);
@@ -113,7 +119,7 @@ function createConstructorProxy(typeSet, prototypeSet)
     const superPrototypeSelector = createSuperPrototypeSelector(prototypeSet);
     const constructorTarget = createConstructorTarget(typeSet);
     const constructorProxy =
-    createUnionProxy(constructorTarget, typeSet, constructorHandlerPrototype);
+    createUnionProxy(constructorTarget, typeSet, CONSTRUCTOR_HANDLER_PROTOTYPE);
     const prototypeTarget =
     _Object_create
     (
@@ -123,7 +129,8 @@ function createConstructorProxy(typeSet, prototypeSet)
             class: describeDataProperty(superPrototypeSelector),
         },
     );
-    const prototypeProxy = createUnionProxy(prototypeTarget, prototypeSet, commonHandlerPrototype);
+    const prototypeProxy =
+    createUnionProxy(prototypeTarget, prototypeSet, COMMON_HANDLER_PROTOTYPE);
     const constructorProperties =
     {
         class: describeDataProperty(superTypeSelector),
@@ -318,7 +325,7 @@ const createUnionProxy =
         {
             if
             (
-                prop === prototypesLookupSymbol &&
+                prop === PROTOTYPES_LOOKUP_SYMBOL &&
                 isObject(receiver) &&
                 _Object_getPrototypeOf(receiver) === null &&
                 receiver !== proxy &&
@@ -373,7 +380,7 @@ const doPrototypesLookup =
 obj =>
 {
     const receiver = { __proto__: null, target: obj };
-    _Reflect_get(obj, prototypesLookupSymbol, receiver);
+    _Reflect_get(obj, PROTOTYPES_LOOKUP_SYMBOL, receiver);
     const { prototypeList } = receiver;
     if (prototypeList !== undefined)
     {
@@ -585,7 +592,8 @@ const isNativeFunction =
     return returnValue;
 };
 
-const isNonNullOrUndefinedPrimitive = obj => !objOrNullOrUndefinedTypes.includes(typeof obj);
+const isNonNullOrUndefinedPrimitive =
+obj => !OBJECT_OR_NULL_OR_UNDEFINED_TYPES.includes(typeof obj);
 
 const isNonNullPrimitive = obj => obj === undefined || isNonNullOrUndefinedPrimitive(obj);
 
@@ -625,10 +633,6 @@ type =>
     return name;
 };
 
-const objOrNullOrUndefinedTypes = ['function', 'object', 'undefined'];
-
 const propFilter = prop => obj => prop in obj;
-
-const prototypesLookupSymbol = _Symbol.for('Polytype prototypes lookup');
 
 export { classes, defineGlobally, getPrototypeListOf };

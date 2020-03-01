@@ -107,7 +107,8 @@ describe
                     {
                         const { E } = setupTestData(classes);
                         const e = new E();
-                        assert.throwsTypeError(() => e.getSuper({ }), 'Argument is not a function');
+                        assert.throwsTypeError
+                        (() => e.callSuper({ }), 'Argument is not a function');
                     },
                 );
 
@@ -120,7 +121,7 @@ describe
                         const e = new E();
                         assert.throwsTypeError
                         (
-                            () => e.getSuper(A),
+                            () => e.callSuper(A),
                             'Property \'prototype\' of argument does not match any direct ' +
                             'superclass',
                         );
@@ -253,7 +254,7 @@ describe
                     {
                         const { E } = setupTestData(classes);
                         assert.throwsTypeError
-                        (() => E.getStaticSuper({ }), 'Argument is not a function');
+                        (() => E.callStaticSuper({ }), 'Argument is not a function');
                     },
                 );
 
@@ -264,7 +265,7 @@ describe
                     {
                         const { A, E } = setupTestData(classes);
                         assert.throwsTypeError
-                        (() => E.getStaticSuper(A), 'Argument is not a direct superclass');
+                        (() => E.callStaticSuper(A), 'Argument is not a direct superclass');
                     },
                 );
             },

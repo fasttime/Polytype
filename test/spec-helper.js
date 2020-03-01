@@ -182,29 +182,20 @@
         }
 
         class C extends classes(A, B)
-        {
-            getSuper(type)
-            {
-                return super.class(type);
-            }
-            static getStaticSuper(type)
-            {
-                return super.class(type);
-            }
-        }
+        { }
 
         class D
         { }
 
         class E extends classes(C, D)
         {
-            getSuper(type)
+            callSuper(type)
             {
-                return super.class(type);
+                super.class(type);
             }
-            static getStaticSuper(type)
+            static callStaticSuper(type)
             {
-                return super.class(type);
+                super.class(type);
             }
         }
 

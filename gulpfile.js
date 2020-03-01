@@ -55,7 +55,8 @@ task
         const { promises: { rmdir } } = require('fs');
 
         const paths = ['.nyc_output', 'coverage', 'lib', 'readme.md', 'test/spec-runner.html'];
-        await Promise.all(paths.map(path => rmdir(path, { recursive: true })));
+        const options = { recursive: true };
+        await Promise.all(paths.map(path => rmdir(path, options)));
     },
 );
 
@@ -207,12 +208,25 @@ task
     'make-toc',
     async () =>
     {
-        const { version }                   = require('./package.json');
-        const { promises: { writeFile } }   = require('fs');
-        const Handlebars                    = require('handlebars');
-        const toc                           = require('markdown-toc');
+        const { version }                           = require('./package.json');
+        const { promises: { chmod, writeFile } }    = require('fs');
+        const Handlebars                            = require('handlebars');
+        const toc                                   = require('markdown-toc');
 
-        const input = await readFileAsString('src/readme.md.hbs');
+        const promises =
+        [
+            readFileAsString('src/readme.md.hbs'),
+            chmod('readme.md', 0o666)
+            .catch
+            (
+                reason =>
+                {
+                    if (reason.code !== 'ENOENT')
+                        throw reason;
+                },
+            ),
+        ];
+        const [input] = await Promise.all(promises);
         const { content } = toc(input, { firsth1: false });
         const template = Handlebars.compile(input, { noEscape: true });
         const output = template({ toc: content, version });
