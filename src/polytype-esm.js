@@ -30,7 +30,6 @@ const _String               = String;
 const _Symbol               = Symbol;
 const _Symbol_hasInstance   = _Symbol.hasInstance;
 const _TypeError            = TypeError;
-const _WeakMap              = WeakMap;
 
 const COMMON_HANDLER_PROTOTYPE = { setPrototypeOf: () => false };
 
@@ -212,7 +211,6 @@ const createSuperMethodHandler =
 const createSuperPrototypeSelector =
 prototypeSet =>
 {
-    const superCache = new _WeakMap();
     const { class: superPrototypeSelector } =
     {
         class(type)
@@ -227,12 +225,7 @@ prototypeSet =>
                 'Property \'prototype\' of argument is not an object';
                 throw _TypeError(message);
             }
-            let superObj = superCache.get(prototype);
-            if (!superObj)
-            {
-                superObj = createSuper(prototype, this);
-                superCache.set(prototype, superObj);
-            }
+            const superObj = createSuper(prototype, this);
             return superObj;
         },
     };
@@ -242,7 +235,6 @@ prototypeSet =>
 const createSuperTypeSelector =
 typeSet =>
 {
-    const superCache = new _WeakMap();
     const { class: superTypeSelector } =
     {
         class(type)
@@ -252,12 +244,7 @@ typeSet =>
                 checkNonCallableArgument(type);
                 throw _TypeError('Argument is not a direct superclass');
             }
-            let superObj = superCache.get(type);
-            if (!superObj)
-            {
-                superObj = createSuper(type, this);
-                superCache.set(type, superObj);
-            }
+            const superObj = createSuper(type, this);
             return superObj;
         },
     };

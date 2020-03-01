@@ -75,7 +75,7 @@ describe
 
                 it
                 (
-                    'returns a cached proxy for any superclass argument',
+                    'returns a distinct proxy for any object and superclass argument',
                     () =>
                     {
                         class Foo
@@ -93,10 +93,10 @@ describe
                         }
 
                         const fooBar = new FooBar();
-                        const superBar = fooBar.getSuperClass(Bar);
-                        assert.isObject(superBar);
-                        assert.notStrictEqual(fooBar.getSuperClass(Foo), superBar);
-                        assert.strictEqual(fooBar.getSuperClass(Bar), superBar);
+                        const superFoo = fooBar.getSuperClass(Foo);
+                        assert.isObject(superFoo);
+                        assert.notStrictEqual(superFoo, fooBar.getSuperClass(Bar));
+                        assert.notStrictEqual(superFoo, new FooBar().getSuperClass(Foo));
                     },
                 );
 
@@ -223,7 +223,7 @@ describe
 
                 it
                 (
-                    'returns a cached proxy for any superclass argument',
+                    'returns a distinct proxy for any object and superclass argument',
                     () =>
                     {
                         class Foo
@@ -240,10 +240,10 @@ describe
                             }
                         }
 
-                        const superBar = FooBar.getSuperClass(Bar);
-                        assert.isObject(superBar);
-                        assert.notStrictEqual(FooBar.getSuperClass(Foo), superBar);
-                        assert.strictEqual(FooBar.getSuperClass(Bar), superBar);
+                        const superFoo = FooBar.getSuperClass(Foo);
+                        assert.isObject(superFoo);
+                        assert.notStrictEqual(superFoo, FooBar.getSuperClass(Bar));
+                        assert.notStrictEqual(superFoo, { __proto__: FooBar }.getSuperClass(Foo));
                     },
                 );
 
