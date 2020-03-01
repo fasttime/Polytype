@@ -1,3 +1,8 @@
+<a name="0.9.1"></a>
+## [0.9.1](https://github.com/fasttime/Polytype/releases/tag/0.9.1) (2020-03-01)
+
+* Fixed a bug with `super.class(...)` target resolution due to flawed caching.
+
 <a name="0.9.0"></a>
 ## [0.9.0](https://github.com/fasttime/Polytype/releases/tag/0.9.0) (2020-02-29)
 
