@@ -2,41 +2,47 @@
 
 'use strict';
 
-const { dest, parallel, series, src, task } = require('gulp');
+const { parallel, series, task } = require('gulp');
 
-async function bundle(inputPath, outputPath, format)
+async function bundle(inputPath, format, outputPath, outputPathMin)
 {
     const { homepage, version } = require('./package.json');
     const { rollup }            = require('rollup');
     const cleanup               = require('rollup-plugin-cleanup');
 
+    function addOutput(file, compact, plugins)
+    {
+        const outputOptions =
+        {
+            banner: `// Polytype ${version} – ${homepage}\n`,
+            compact,
+            esModule: false,
+            file,
+            format,
+            plugins,
+        };
+        const promise = bundle.write(outputOptions);
+        outputPromises.push(promise);
+    }
+
     const cleanupPlugin = cleanup({ maxEmptyLines: -1 });
     const inputOptions = { input: inputPath, plugins: [cleanupPlugin] };
     const bundle = await rollup(inputOptions);
-    const outputOptions =
+    const outputPromises = [];
+    addOutput(outputPath);
+    if (outputPathMin != null)
     {
-        banner: `// Polytype ${version} – ${homepage}\n`,
-        esModule: false,
-        file: outputPath,
-        format,
-    };
-    await bundle.write(outputOptions);
-}
+        const { terser } = require('rollup-plugin-terser');
 
-function minify(srcGlobs, module, extname)
-{
-    const rename = require('gulp-rename');
-    const terser = require('gulp-terser');
-
-    const minifyOpts =
-    {
-        compress: { hoist_funs: true, passes: 2 },
-        module,
-        output: { comments: (node, comment) => comment.pos === 0 },
-    };
-    const stream =
-    src(srcGlobs).pipe(terser(minifyOpts)).pipe(rename({ extname })).pipe(dest('lib'));
-    return stream;
+        const minifyOpts =
+        {
+            compress: { hoist_funs: true, passes: 2 },
+            output: { comments: (node, comment) => comment.pos === 0 },
+        };
+        const terserPlugin = terser(minifyOpts);
+        addOutput(outputPathMin, true, [terserPlugin]);
+    }
+    await Promise.all(outputPromises);
 }
 
 function readFileAsString(inputPath)
@@ -54,7 +60,7 @@ task
     {
         const { promises: { rmdir } } = require('fs');
 
-        const paths = ['.nyc_output', 'coverage', 'lib', 'readme.md', 'test/spec-runner.html'];
+        const paths = ['coverage', 'lib', 'readme.md', 'test/spec-runner.html'];
         const options = { recursive: true };
         await Promise.all(paths.map(path => rmdir(path, options)));
     },
@@ -143,15 +149,19 @@ task
     },
 );
 
-task('bundle:cjs', () => bundle('src/polytype-esm.js', 'lib/polytype.cjs', 'cjs'));
+task('bundle:cjs', () => bundle('src/polytype-esm.js', 'cjs', 'lib/polytype.cjs'));
 
-task('bundle:esm', () => bundle('src/polytype-esm.js', 'lib/polytype.mjs', 'esm'));
+task
+(
+    'bundle:esm',
+    () => bundle('src/polytype-esm.js', 'esm', 'lib/polytype.mjs', 'lib/polytype.min.mjs'),
+);
 
-task('bundle:global', () => bundle('src/polytype-global.js', 'lib/polytype.js', 'iife'));
-
-task('minify:esm', () => minify('lib/polytype.mjs', true, '.min.mjs'));
-
-task('minify:global', () => minify('lib/polytype.js', false, '.min.js'));
+task
+(
+    'bundle:global',
+    () => bundle('src/polytype-global.js', 'iife', 'lib/polytype.js', 'lib/polytype.min.js'),
+);
 
 task
 (
@@ -161,14 +171,10 @@ task
         const { fork } = require('child_process');
 
         const { resolve } = require;
-        const nycPath = resolve('nyc/bin/nyc');
+        const c8Path = resolve('c8/bin/c8');
         const modulePath = resolve('./test/node-spec-runner');
         const childProcess =
-        fork
-        (
-            nycPath,
-            ['--extension=.cjs', '--reporter=html', '--reporter=text-summary', '--', modulePath],
-        );
+        fork(c8Path, ['--reporter=html', '--reporter=text-summary', modulePath]);
         childProcess.on('exit', code => callback(code && 'Test failed'));
     },
 );
@@ -242,12 +248,7 @@ task
         'clean',
         'make-ts-defs',
         'lint',
-        parallel
-        (
-            'bundle:cjs',
-            series('bundle:esm', 'minify:esm'),
-            series('bundle:global', 'minify:global'),
-        ),
+        parallel('bundle:cjs', 'bundle:esm', 'bundle:global'),
         'test',
         parallel('make-spec-runner', 'make-toc'),
     ),
@@ -259,12 +260,7 @@ task
     series
     (
         'make-ts-defs',
-        parallel
-        (
-            'bundle:cjs',
-            series('bundle:esm', 'minify:esm'),
-            series('bundle:global', 'minify:global'),
-        ),
+        parallel('bundle:cjs', 'bundle:esm', 'bundle:global'),
         parallel('make-spec-runner', 'make-toc'),
     ),
 );
