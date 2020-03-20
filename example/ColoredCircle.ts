@@ -55,7 +55,7 @@ extends classes(Circle, ColoredObject) // Base classes as comma‐separated para
     }
     public reset(): void
     {
-        for (const baseClass of getPrototypeListOf(ColoredCircle))
+        for (const baseClass of getPrototypeListOf(ColoredCircle) as { reset(): void; }[])
             baseClass.reset();
     }
     public toString(): string
