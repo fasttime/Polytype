@@ -1,3 +1,9 @@
+<a name="0.9.2"></a>
+## [0.9.2](https://github.com/fasttime/Polytype/releases/tag/0.9.2) (2020-03-20)
+
+* Replaced a dead link in the documentation.
+* Minor stylistic update to the code examples.
+
 <a name="0.9.1"></a>
 ## [0.9.1](https://github.com/fasttime/Polytype/releases/tag/0.9.1) (2020-03-01)
 
