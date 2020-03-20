@@ -95,13 +95,16 @@ import "polytype/global"; // ECMAScript module syntax
 ### In the browser
 
 In an HTML‐based application, the script build of Polytype can be simply embedded.
-Just download [polytype.min.js][polytype.min.js] from GitHub and include it in your HTML file.
+Just download
+[polytype.min.js](https://cdn.jsdelivr.net/npm/polytype@0.9.1/lib/polytype.min.js) and include
+it in your HTML file.
 
 ```html
 <script src="polytype.min.js"></script>
 ```
 
-Alternatively, you can hotlink the latest release using a CDN of your choice.
+Alternatively, you can hotlink the script from the latest release package using a CDN of your
+choice.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/polytype@0.9.1/lib/polytype.min.js"></script>
@@ -602,8 +605,6 @@ ECMAScript 2020 or higher syntax.
 
 [npm badge]: https://badge.fury.io/js/polytype.svg
 [npm url]: https://www.npmjs.com/package/polytype
-[polytype.min.js]:
-https://raw.githubusercontent.com/fasttime/Polytype/0.9.1/lib/polytype.min.js
 [Why Use for...in?]:
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#Why_Use_for...in
 [Enumerability and ownership of properties]:
