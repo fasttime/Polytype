@@ -32,13 +32,14 @@
   },
   "scripts": {
     "build": "npm install && gulp",
-    "serve": "./serve.js",
-    "test": "test/node-spec-runner.js"
+    "test": "test/node-spec-runner.js",
+    "test-serve": "test/serve.js"
   },
   "devDependencies": {
     "@fasttime/gulp-lint": "~0.24.0",
     "c8": "~7.1.0",
     "chai": "~4.2.0",
+    "glob": "~7.1.6",
     "gulp": "~4.0.2",
     "handlebars": "~4.7.3",
     "markdown-toc": "~1.2.0",

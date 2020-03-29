@@ -4,13 +4,14 @@
 
 'use strict';
 
-const chalk                 = require('chalk');
-const { createReadStream }  = require('fs');
-const { createServer }      = require('http');
-const { networkInterfaces } = require('os');
-const { extname, join }     = require('path');
-const { fileURLToPath }     = require('url');
+const chalk                         = require('chalk');
+const { createReadStream }          = require('fs');
+const { createServer }              = require('http');
+const { networkInterfaces }         = require('os');
+const { dirname, extname, join }    = require('path');
+const { fileURLToPath }             = require('url');
 
+const pathDir = dirname(__dirname);
 const mimeTypes =
 {
     '.css':     'text/css',
@@ -19,7 +20,6 @@ const mimeTypes =
     '.mjs':     'application/javascript',
 };
 const port = 8080;
-
 createServer
 (
     ({ url }, response) =>
@@ -32,7 +32,7 @@ createServer
             response.end();
             return;
         }
-        const pathname = join(__dirname, requestPath);
+        const pathname = join(pathDir, requestPath);
         const stream = createReadStream(pathname);
         stream.on
         (
