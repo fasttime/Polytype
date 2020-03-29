@@ -491,7 +491,7 @@ const installHasInstance =
         let installed = false;
         for (const prototype of prototypes)
         {
-            if (prototype !== null && installHasInstance(prototype, installedSet))
+            if (installHasInstance(prototype, installedSet))
                 installed = true;
         }
         if (!installed)
@@ -579,12 +579,11 @@ const isNativeFunction =
     return returnValue;
 };
 
-const isNonNullOrUndefinedPrimitive =
-obj => !OBJECT_OR_NULL_OR_UNDEFINED_TYPES.includes(typeof obj);
+const isNonNullPrimitive = obj => obj === undefined || isNonNullishPrimitive(obj);
 
-const isNonNullPrimitive = obj => obj === undefined || isNonNullOrUndefinedPrimitive(obj);
+const isNonNullishPrimitive = obj => !OBJECT_OR_NULL_OR_UNDEFINED_TYPES.includes(typeof obj);
 
-const isNonUndefinedPrimitive = obj => obj === null || isNonNullOrUndefinedPrimitive(obj);
+const isNonUndefinedPrimitive = obj => obj === null || isNonNullishPrimitive(obj);
 
 const isObject = obj => obj !== null && !isNonNullPrimitive(obj);
 
