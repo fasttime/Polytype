@@ -56,7 +56,7 @@
         );
     }
 
-    function createDeceptiveObject(prototypeList = [42])
+    function createDeceptiveObject(prototypes = [42])
     {
         const prototypesLookupSymbol = Symbol.for('Polytype prototypes lookup');
         const obj =
@@ -65,7 +65,7 @@
             {
                 get [prototypesLookupSymbol]()
                 {
-                    this.prototypeList = prototypeList;
+                    this.prototypes = prototypes;
                     return undefined;
                 },
             },

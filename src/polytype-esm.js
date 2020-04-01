@@ -6,7 +6,6 @@ const
     create:                     _Object_create,
     defineProperties:           _Object_defineProperties,
     defineProperty:             _Object_defineProperty,
-    freeze:                     _Object_freeze,
     getOwnPropertyDescriptor:   _Object_getOwnPropertyDescriptor,
     getOwnPropertyDescriptors:  _Object_getOwnPropertyDescriptors,
     getPrototypeOf:             _Object_getPrototypeOf,
@@ -45,11 +44,15 @@ const CONSTRUCTOR_HANDLER_PROTOTYPE =
 
 const EMPTY_ARRAY = [];
 
-const EMPTY_OBJECT = _Object_freeze({ __proto__: null });
+const EMPTY_OBJECT = _Object.freeze({ __proto__: null });
 
 const OBJECT_OR_NULL_OR_UNDEFINED_TYPES = ['function', 'object', 'undefined'];
 
-const PROTOTYPES_LOOKUP_SYMBOL = _Symbol.for('Polytype prototypes lookup');
+const PROTOTYPES_ITERABLE_KEY = 'prototypes';
+
+const PROTOTYPES_LOOKUP_KEY = _Symbol.for('Polytype prototypes lookup');
+
+const PROTOTYPES_TARGET_KEY = 'target';
 
 let bindCall = callable => _Function_prototype.call.bind(callable);
 
@@ -303,8 +306,7 @@ function createTypeToSuperArgsMap(typeSet, args)
 const createUnionProxy =
 (target, prototypeSet, handlerPrototype) =>
 {
-    const prototypeList = _Object_freeze([...prototypeSet]);
-    const objs = [target, ...prototypeList];
+    const objs = [target, ...prototypeSet];
     const handler =
     {
         __proto__: handlerPrototype,
@@ -312,13 +314,13 @@ const createUnionProxy =
         {
             if
             (
-                prop === PROTOTYPES_LOOKUP_SYMBOL &&
+                prop === PROTOTYPES_LOOKUP_KEY &&
                 isObject(receiver) &&
                 _Object_getPrototypeOf(receiver) === null &&
                 receiver !== proxy &&
-                receiver.target === proxy
+                receiver[PROTOTYPES_TARGET_KEY] === proxy
             )
-                receiver.prototypeList = prototypeList;
+                receiver[PROTOTYPES_ITERABLE_KEY] = prototypeSet.values();
             const obj = objs.find(propFilter(prop));
             if (obj !== undefined)
             {
@@ -366,12 +368,12 @@ const describeDataProperty =
 const doPrototypesLookup =
 obj =>
 {
-    const receiver = { __proto__: null, target: obj };
-    _Reflect_get(obj, PROTOTYPES_LOOKUP_SYMBOL, receiver);
-    const { prototypeList } = receiver;
-    if (prototypeList !== undefined)
+    const receiver = { __proto__: null, [PROTOTYPES_TARGET_KEY]: obj };
+    _Reflect_get(obj, PROTOTYPES_LOOKUP_KEY, receiver);
+    const prototypeIterable = receiver[PROTOTYPES_ITERABLE_KEY];
+    if (prototypeIterable !== undefined)
     {
-        const prototypes = [...prototypeList];
+        const prototypes = [...prototypeIterable];
         for (const prototype of prototypes)
         {
             if (!isObject(prototype))
@@ -482,8 +484,6 @@ function installAncestorProperties(...objSets)
 const installHasInstance =
 (obj, installedSet) =>
 {
-    if (isFunctionPrototype(obj))
-        return false;
     if (!installedSet.has(obj))
     {
         installedSet.add(obj);
@@ -491,13 +491,15 @@ const installHasInstance =
         let installed = false;
         for (const prototype of prototypes)
         {
-            if (installHasInstance(prototype, installedSet))
+            if (!isFunctionPrototype(prototype))
+            {
+                installHasInstance(prototype, installedSet);
                 installed = true;
+            }
         }
         if (!installed)
             defineHasInstanceProperty(obj);
     }
-    return true;
 };
 
 const isCallable = obj => typeof obj === 'function';
