@@ -54,7 +54,8 @@ const PROTOTYPES_LOOKUP_KEY = _Symbol.for('Polytype prototypes lookup');
 
 const PROTOTYPES_TARGET_KEY = 'target';
 
-let bindCall = callable => _Function_prototype.call.bind(callable);
+let _Function_prototype_call = _Function_prototype.call;
+let bindCall = callable => _Function_prototype_call.bind(callable);
 
 const _Function_prototype_bind_call         = bindCall(_Function_prototype.bind);
 const _Function_prototype_hasInstance_call  = bindCall(_Function_prototype[_Symbol_hasInstance]);
@@ -63,6 +64,7 @@ const _Object_prototype_hasOwnProperty_call = bindCall(_Object_prototype.hasOwnP
 const _Object_prototype_valueOf_call        = bindCall(_Object_prototype.valueOf);
 
 bindCall = null;
+_Function_prototype_call = null;
 
 const checkDuplicateSuperType =
 (typeSet, type) =>
