@@ -1,0 +1,23 @@
+name: Node.js CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+    - run: npm install
+    - run: gulp make-ts-defs
+    - run: gulp lint
+    - run: gulp bundle:cjs bundle:esm bundle:global
+    - run: npm test -- .cjs
+    - run: npm test -- .mjs
+    - run: npm test -- .min.mjs
+    - run: npm test -- .js
+    - run: npm test -- .min.js
