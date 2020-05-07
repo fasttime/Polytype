@@ -25,8 +25,7 @@ As of today, Polytype runs in **current versions of all major browsers** and in
   * constructors
   * methods, getters and setters – both static and nonstatic
   * value properties on base classes and base instance prototypes
-  * public [class fields](https://github.com/tc39/proposal-class-fields) (in engines that support
-    them)
+  * [public fields][Public fields] (in engines that support them)
 * `in`, `instanceof` and `isPrototypeOf` integration
 
 ## Setup Instructions
@@ -436,35 +435,37 @@ Polytype strives to make up for this deficiency, but some important limitations 
 
 ### `for...in` iterations
 
-Following previous work made in TypeScript and other transpilers, some newer JavaScript engines have
-implemented support for
-[static fields](https://github.com/tc39/proposal-static-class-features#static-public-fields).
-Static fields are only one way of defining
-[enumerable properties][Enumerability and ownership of properties] on a class constructor.
+Following previous work made in TypeScript and other transpilers, many newer JavaScript engines have
+implemented support for [public class fields][Public fields].
+Public fields are only one way of defining
+[enumerable properties][Enumerability and ownership of properties] on a class constructor or
+instance prototype.
 
-When only single inheritance is used, a `for...in` iteration over a class constructor enumerates not
-only names of enumerable properties defined on the constructor of that class, but also names of
-enumerable properties defined on all constructors in its prototype chain.
+When only single inheritance is used, a `for...in` iteration over an object that is an instance of a
+class enumerates not only names of enumerable properties defined on the object itself and on the
+instance prototype of its own class, but also names of enumerable properties defined on the instance
+prototypes of all its base classes.
 
 ```js
 class FooClass
 {
-    static foo = "foo";
+    foo = "foo";
 }
 
 class BarClass extends FooClass
 {
-    static bar = "bar";
+    bar = "bar";
 }
 
-for (const name in BarClass)
-    console.log(name); // Prints "bar" and "foo".
+const barObj = new BarClass();
+for (const name in barObj)
+    console.log(name); // Prints "foo" and "bar".
 ```
 
 As it happens, this behavior no longer holds with Polytype multiple inheritance.
-The effect is that names of static fields and other enumerable properties defined on a base
-constructor are not enumerated by `for...in` statements when the inheritance line crosses a class
-listed in some `extends classes(...)` clause.
+The effect is that names of public fields and other enumerable properties defined on a base class
+are not enumerated by `for...in` statements when the inheritance line crosses a class listed in some
+`extends classes(...)` clause.
 
 ```js
 class BazClass extends classes(FooClass)
@@ -472,7 +473,8 @@ class BazClass extends classes(FooClass)
     static baz = "baz";
 }
 
-for (const name in BazClass)
+const bazObj = new BazClass();
+for (const name in bazObj)
     console.log(name); // Prints just "baz".
 ```
 
@@ -589,6 +591,7 @@ ECMAScript 2020 or higher syntax.
 
 [npm badge]: https://badge.fury.io/js/polytype.svg
 [npm url]: https://www.npmjs.com/package/polytype
+[Public fields]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Class_fields#Public_fields
 [Why Use for...in?]:
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#Why_Use_for...in
 [Enumerability and ownership of properties]:
