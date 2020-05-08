@@ -36,7 +36,7 @@ describe
         console.timeLog &&
         // Returns an object that fulfills all of the following requirements in Node.js 12:
         // * It is a non-constructor function.
-        // * Has the same string representation as Function.prototype.
+        // * It has the same string representation as Function.prototype.
         // * It has no own properties.
         function ()
         {
