@@ -462,31 +462,29 @@ Public fields are only one way of defining
 [enumerable properties][Enumerability and ownership of properties] on a class constructor or
 instance prototype.
 
-When only single inheritance is used, a `for...in` iteration over an object that is an instance of a
-class enumerates not only names of enumerable properties defined on the object itself and on the
-instance prototype of its own class, but also names of enumerable properties defined on the instance
-prototypes of all its base classes.
+When only single inheritance is used, a `for...in` iteration over a class constructor enumerates not
+only names of enumerable properties defined on the constructor object itself, but also names of
+enumerable properties defined on all base constructors in its prototype chain.
 
 ```js
 class FooClass
 {
-    foo = "foo";
+    static foo = "foo";
 }
 
 class BarClass extends FooClass
 {
-    bar = "bar";
+    static bar = "bar";
 }
 
-const barObj = new BarClass();
-for (const name in barObj)
-    console.log(name); // Prints "foo" and "bar".
+for (const name in BarClass)
+    console.log(name); // Prints "bar" and "foo".
 ```
 
 As it happens, this behavior no longer holds with Polytype multiple inheritance.
-The effect is that names of public fields and other enumerable properties defined on a base class
-are not enumerated by `for...in` statements when the inheritance line crosses a class listed in some
-`extends classes(...)` clause.
+The effect is that names of static fields and other enumerable properties defined on a base
+constructor are not enumerated by `for...in` statements when the inheritance line crosses a class
+listed in some `extends classes(...)` clause.
 
 ```js
 class BazClass extends classes(FooClass)
@@ -494,8 +492,7 @@ class BazClass extends classes(FooClass)
     static baz = "baz";
 }
 
-const bazObj = new BazClass();
-for (const name in bazObj)
+for (const name in BazClass)
     console.log(name); // Prints just "baz".
 ```
 
