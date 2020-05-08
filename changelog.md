@@ -1,3 +1,11 @@
+<a name="0.9.3"></a>
+## [0.9.3](https://github.com/fasttime/Polytype/releases/tag/0.9.3) (2020-05-08)
+
+* Updated documentation:
+  * Referring to public class fields.
+  * Using Material Design browser icons.
+* Some minor optimizations.
+
 <a name="0.9.2"></a>
 ## [0.9.2](https://github.com/fasttime/Polytype/releases/tag/0.9.2) (2020-03-20)
 
