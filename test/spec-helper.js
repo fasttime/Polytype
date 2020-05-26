@@ -1,6 +1,6 @@
 /* eslint no-alert: off */
 /* eslint-env mocha, shared-node-browser */
-/* global __dirname, alert, chai, document, globalThis, location, process, reimport, require */
+/* global __dirname, alert, chai, document, location, process, reimport, require */
 
 'use strict';
 

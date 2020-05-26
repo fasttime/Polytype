@@ -106,7 +106,6 @@ task
         (
             {
                 src: 'src/**/*.{js,mjs}',
-                globals: ['globalThis'],
                 parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
                 rules: { 'prefer-named-capture-group': 'off' },
             },
@@ -122,7 +121,7 @@ task
             {
                 src: 'example/**/*.{js,ts}',
                 envs: 'node',
-                globals: ['classes', 'console'],
+                globals: ['classes'],
                 parserOptions:
                 { ecmaVersion: 2020, project: 'tsconfig.json', sourceType: 'module' },
                 rules:

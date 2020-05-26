@@ -28,12 +28,12 @@ declare namespace Polytype
     type IntersectionOf<T extends unknown[]> =
     UnboxedIntersectionOf<{ [key in keyof T]: [T[key]]; }> extends { 0: infer U; } ? U : never;
 
+    type NonEmptyArray<T> = [T, ...T[]];
+
     type ProtoType<T> = T extends { prototype: infer U; } ? U : never;
 
     type ReadonlyConstructorParameters<T extends new (...args: unknown[]) => unknown> =
     Readonly<ConstructorParameters<T>>;
-
-    type RequireNonEmpty<T> = T extends [] ? never : T;
 
     type UnboxedIntersectionOf<T extends unknown[]> =
     UnionOf<T> extends infer U ?
@@ -127,8 +127,7 @@ export interface SuperConstructorInvokeInfo<T extends Polytype.SuperConstructor>
 
 {{#* inline "classes"}}
 /** Allows defining a derived class that inherits from multiple base classes. */
-{{q}}classes<T extends Polytype.SuperConstructor[]>
-(...types: Polytype.RequireNonEmpty<T>):
+{{q}}classes<T extends Polytype.NonEmptyArray<Polytype.SuperConstructor>>(...types: T):
 Polytype.ClusteredConstructor<T>;
 {{/inline}}
 {{#* inline "getPrototypeListOf"}}

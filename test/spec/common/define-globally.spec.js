@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, backupGlobals, globalThis, loadPolytype, maybeDescribe, polytypeMode */
+/* global assert, backupGlobals, loadPolytype, maybeDescribe, polytypeMode */
 
 'use strict';
 

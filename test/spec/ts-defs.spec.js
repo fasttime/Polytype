@@ -305,8 +305,7 @@ class extends classes(B)
     {
         title: 'classes without arguments',
         code: 'classes();',
-        expectedMessage:
-        'Argument of type \'[]\' is not assignable to parameter of type \'never\'.',
+        expectedMessage: 'Expected at least 1 arguments, but got 0.',
     },
     {
         title: 'classes with an undefined argument',
