@@ -1,3 +1,10 @@
+<a name="0.9.4"></a>
+## [0.9.4](https://github.com/fasttime/Polytype/releases/tag/0.9.4) (2020-05-26)
+
+* Fixed inconsistent typing of `classes` in TypeScript 3.9.
+This change also improves the error message reported by the compiler when a call to `classes`
+without arguments is encountered.
+
 <a name="0.9.3"></a>
 ## [0.9.3](https://github.com/fasttime/Polytype/releases/tag/0.9.3) (2020-05-08)
 

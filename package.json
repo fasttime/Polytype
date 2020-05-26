@@ -1,6 +1,6 @@
 {
   "name": "polytype",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Dynamic multiple inheritance for JavaScript and TypeScript. Without mixins.",
   "keywords": [
     "class",
