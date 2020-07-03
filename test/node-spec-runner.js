@@ -43,6 +43,12 @@ const { promisify } = require('util');
 
 const TEST_PATTERN = 'spec/**/*.spec.js';
 
+{
+    const debug = testExecArgv(INSPECT_BRK_REG_EXP);
+    if (debug)
+        Mocha.Runnable.prototype.timeout = (...args) => args.length ? undefined : 0;
+}
+
 (async () =>
 {
     const mocha = new Mocha({ checkLeaks: true });
@@ -50,10 +56,6 @@ const TEST_PATTERN = 'spec/**/*.spec.js';
     const filenames = await promisify(glob)(TEST_PATTERN, { absolute: true, cwd: __dirname });
     for (const filename of filenames)
         mocha.addFile(filename);
-    {
-        const debug = testExecArgv(INSPECT_BRK_REG_EXP);
-        mocha.enableTimeouts(!debug);
-    }
     mocha.run
     (
         failures =>
