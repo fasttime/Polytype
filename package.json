@@ -51,7 +51,12 @@
     "rollup-plugin-cleanup": "latest",
     "rollup-plugin-terser": "latest",
     "semver": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "typescript_3.5": "npm:typescript@3.5",
+    "typescript_3.6": "npm:typescript@3.6",
+    "typescript_3.7": "npm:typescript@3.7",
+    "typescript_3.8": "npm:typescript@3.8",
+    "typescript_3.9": "npm:typescript@3.9"
   },
   "engines": {
     "node": ">=13.2.0"
