@@ -600,7 +600,7 @@ Polytype was successfully tested in the following browsers/JavaScript engines.
 <br>
  ![Opera](https://api.iconify.design/mdi:opera.svg) Opera 58+
 <br>
- ![Node.js](https://api.iconify.design/mdi:nodejs.svg) Node.js 13.2+
+ ![Node.js](https://api.iconify.design/mdi:nodejs.svg) Node.js 13.7+
 
 The minimum supported TypeScript version is 3.5.
 

@@ -59,6 +59,6 @@
     "typescript_3.9": "npm:typescript@3.9"
   },
   "engines": {
-    "node": ">=13.2.0"
+    "node": ">=13.7.0"
   }
 }
