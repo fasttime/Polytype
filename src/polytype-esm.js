@@ -1,3 +1,22 @@
+(
+    constructor =>
+    {
+        try
+        {
+            constructor();
+        }
+        catch
+        {
+            return;
+        }
+        throw Error('Polytype cannot be transpiled to ES5 or earlier code.');
+    }
+)
+(
+    class
+    { },
+);
+
 const _Function_prototype   = Function.prototype;
 const _Map                  = Map;
 const _Object               = Object;
