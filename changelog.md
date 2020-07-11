@@ -1,3 +1,9 @@
+<a name="0.10.0"></a>
+## [0.10.0](https://github.com/fasttime/Polytype/releases/tag/0.10.0) (2020-07-11)
+
+* Fail‐fast detection of transpilation to ES5 or earlier code.
+* Dropped support for Node.js &lt; 13.7.
+
 <a name="0.9.4"></a>
 ## [0.9.4](https://github.com/fasttime/Polytype/releases/tag/0.9.4) (2020-05-26)
 
