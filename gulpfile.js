@@ -183,7 +183,12 @@ task
         const c8Path = resolve('c8/bin/c8');
         const modulePath = resolve('./test/node-spec-runner');
         const childProcess =
-        fork(c8Path, ['--reporter=html', '--reporter=text-summary', modulePath]);
+        fork
+        (
+            c8Path,
+            ['--reporter=html', '--reporter=text-summary', modulePath],
+            { execArgv: ['--require=./test/patch-cov-source'] },
+        );
         childProcess.on('exit', code => callback(code && 'Test failed'));
     },
 );
