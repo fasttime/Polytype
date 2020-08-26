@@ -389,7 +389,7 @@ function defineTests(typescriptPkgName)
             'an object type or intersection of object types with statically known members.',
         },
         {
-            title: 'base class selector in nonstatic context out of class body',
+            title: 'Superclass selector in nonstatic context out of class body',
             code:
             `
     class Test extends classes(Object)
@@ -402,7 +402,7 @@ function defineTests(typescriptPkgName)
             '\'SuperPrototypeSelector<T>\' and its subclasses.',
         },
         {
-            title: 'base class selector in static context out of class body',
+            title: 'Superclass selector in static context out of class body',
             code:
             `
     class Test extends classes(Object)
@@ -550,5 +550,6 @@ describe
         describe('TypeScript 3.7', () => defineTests('typescript_3.7'));
         describe('TypeScript 3.8', () => defineTests('typescript_3.8'));
         describe('TypeScript 3.9', () => defineTests('typescript_3.9'));
+        describe('TypeScript 4.0', () => defineTests('typescript_4.0'));
     },
 );

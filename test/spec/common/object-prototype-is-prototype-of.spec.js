@@ -182,7 +182,7 @@ describe
 
         describe
         (
-            'works with derived types',
+            'works with subtypes',
             () =>
             {
                 function test(classes)
@@ -227,7 +227,7 @@ describe
 
         describe
         (
-            'works with derived prototypes',
+            'works with subprototypes',
             () =>
             {
                 function test(classes)

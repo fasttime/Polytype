@@ -79,7 +79,7 @@ describe
 
                         it
                         (
-                            'from direct base class',
+                            'from direct superclass',
                             () =>
                             {
                                 const { this: that, args, name } =
@@ -92,7 +92,7 @@ describe
 
                         it
                         (
-                            'from direct base class as a bound function',
+                            'from direct superclass as a bound function',
                             () =>
                             {
                                 const someBoundMethod =
@@ -106,7 +106,7 @@ describe
 
                         it
                         (
-                            'from direct base class as an unbound function',
+                            'from direct superclass as an unbound function',
                             () =>
                             {
                                 const someUnboundMethod = new D().getSomeMethodInSuperClass(A);
@@ -123,7 +123,7 @@ describe
 
                         it
                         (
-                            'with null prototype from indirect base class',
+                            'with null prototype from indirect superclass',
                             () =>
                             {
                                 const { this: that, args, name } =
@@ -235,7 +235,7 @@ describe
 
                         it
                         (
-                            'from direct base class',
+                            'from direct superclass',
                             () =>
                             {
                                 const { arguments: args, this: that, name } =
@@ -248,7 +248,7 @@ describe
 
                         it
                         (
-                            'from indirect base class',
+                            'from indirect superclass',
                             () =>
                             {
                                 const { arguments: args, this: that, name } =
@@ -364,7 +364,7 @@ describe
 
                         it
                         (
-                            'from direct base class',
+                            'from direct superclass',
                             () =>
                             {
                                 const { arguments: args, this: that, name } =
@@ -377,7 +377,7 @@ describe
 
                         it
                         (
-                            'from indirect base class',
+                            'from indirect superclass',
                             () =>
                             {
                                 const { arguments: args, this: that, name } =
@@ -542,7 +542,7 @@ describe
 
                         it
                         (
-                            'from direct base class',
+                            'from direct superclass',
                             () =>
                             {
                                 const { this: that, args, name } =
@@ -555,7 +555,7 @@ describe
 
                         it
                         (
-                            'from direct base class as a bound function',
+                            'from direct superclass as a bound function',
                             () =>
                             {
                                 const someBoundMethod =
@@ -569,7 +569,7 @@ describe
 
                         it
                         (
-                            'from direct base class as an unbound function',
+                            'from direct superclass as an unbound function',
                             () =>
                             {
                                 const someUnboundMethod =
@@ -587,7 +587,7 @@ describe
 
                         it
                         (
-                            'with null prototype from indirect base class',
+                            'with null prototype from indirect superclass',
                             () =>
                             {
                                 const { this: that, args, name } =
@@ -680,7 +680,7 @@ describe
 
                         it
                         (
-                            'from direct base class',
+                            'from direct superclass',
                             () =>
                             {
                                 const { this: that, arguments: args, name } =
@@ -693,7 +693,7 @@ describe
 
                         it
                         (
-                            'from indirect base class',
+                            'from indirect superclass',
                             () =>
                             {
                                 const { this: that, arguments: args, name } =
@@ -792,7 +792,7 @@ describe
 
                         it
                         (
-                            'from direct base class',
+                            'from direct superclass',
                             () =>
                             {
                                 const { arguments: args, this: that, name } =
@@ -805,7 +805,7 @@ describe
 
                         it
                         (
-                            'from indirect base class',
+                            'from indirect superclass',
                             () =>
                             {
                                 const { arguments: args, this: that, name } =

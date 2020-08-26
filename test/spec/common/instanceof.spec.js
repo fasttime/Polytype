@@ -24,7 +24,7 @@ describe
             {
                 it
                 (
-                    'with all base types',
+                    'with all supertypes',
                     async () =>
                     {
                         const { Function: Functionʼ, Object: Objectʼ } = await newRealm();

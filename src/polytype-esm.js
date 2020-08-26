@@ -45,8 +45,7 @@ const
 _Reflect;
 const _Set                  = Set;
 const _String               = String;
-const _Symbol               = Symbol;
-const _Symbol_hasInstance   = _Symbol.hasInstance;
+const _Symbol_hasInstance   = Symbol.hasInstance;
 const _TypeError            = TypeError;
 
 const COMMON_HANDLER_PROTOTYPE = { setPrototypeOf: () => false };
@@ -54,8 +53,7 @@ const COMMON_HANDLER_PROTOTYPE = { setPrototypeOf: () => false };
 const CONSTRUCTOR_HANDLER_PROTOTYPE =
 {
     __proto__: COMMON_HANDLER_PROTOTYPE,
-    apply:
-    () =>
+    apply()
     {
         throw _TypeError('Constructor cannot be invoked without \'new\'');
     },
@@ -69,7 +67,7 @@ const OBJECT_OR_NULL_OR_UNDEFINED_TYPES = ['function', 'object', 'undefined'];
 
 const PROTOTYPES_ITERABLE_KEY = 'prototypes';
 
-const PROTOTYPES_LOOKUP_KEY = _Symbol.for('Polytype prototypes lookup');
+const PROTOTYPES_LOOKUP_KEY = Symbol.for('Polytype prototypes lookup');
 
 const PROTOTYPES_TARGET_KEY = 'target';
 
@@ -199,8 +197,7 @@ const createSuper =
 {
     const superHandler =
     {
-        get:
-        (target, prop) =>
+        get(target, prop)
         {
             let value = _Reflect_get(obj, prop, superTarget);
             if (isCallable(value))
