@@ -3,28 +3,6 @@
 
 'use strict';
 
-function areFieldInitializersSupported()
-{
-    try
-    {
-        eval
-        (
-            `
-            (
-                class
-                {
-                    foo = 1;
-                }
-            )`,
-        );
-        return true;
-    }
-    catch
-    {
-        return false;
-    }
-}
-
 describe
 (
     'classes',
@@ -133,9 +111,8 @@ describe
             },
         );
 
-        maybeIt
+        it
         (
-            areFieldInitializersSupported(),
             'does not invoke field initializers',
             () =>
             {
@@ -179,9 +156,8 @@ describe
                     () => assert.throwsTypeError(() => classes(null), 'null is not a constructor'),
                 );
 
-                maybeIt
+                it
                 (
-                    typeof BigInt === 'function',
                     'with a bigint argument',
                     () =>
                     assert.throwsTypeError(() => classes(BigInt(42)), '42 is not a constructor'),

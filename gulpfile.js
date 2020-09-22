@@ -4,16 +4,6 @@
 
 const { parallel, series, task } = require('gulp');
 
-{ // Suppress deprecation warning DEP0097
-    const { emitWarning } = process;
-    process.emitWarning =
-    (warning, type, code, ...extraArgs) =>
-    {
-        if (code !== 'DEP0097')
-            emitWarning(warning, type, code, ...extraArgs);
-    };
-}
-
 async function bundle(inputPath, format, outputPath, outputPathMin)
 {
     const { homepage, version } = require('./package.json');
@@ -149,7 +139,16 @@ task
                         },
                     ],
                     'no-unused-vars':
-                    ['error', { varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$' }],
+                    [
+                        'error',
+                        {
+                            args: 'none',
+                            caughtErrors: 'all',
+                            ignoreRestSiblings: true,
+                            vars: 'local',
+                            varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$',
+                        },
+                    ],
                     'quotes':       ['error', 'double'],
                 },
             },

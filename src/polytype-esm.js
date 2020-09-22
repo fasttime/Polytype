@@ -28,7 +28,6 @@ const
     getOwnPropertyDescriptor:   _Object_getOwnPropertyDescriptor,
     getOwnPropertyDescriptors:  _Object_getOwnPropertyDescriptors,
     getPrototypeOf:             _Object_getPrototypeOf,
-    prototype:                  _Object_prototype,
     setPrototypeOf:             _Object_setPrototypeOf,
 } =
 _Object;
@@ -39,7 +38,6 @@ const
     apply:      _Reflect_apply,
     construct:  _Reflect_construct,
     get:        _Reflect_get,
-    ownKeys:    _Reflect_ownKeys,
     set:        _Reflect_set,
 } =
 _Reflect;
@@ -77,8 +75,7 @@ let bindCall = callable => _Function_prototype_call.bind(callable);
 const _Function_prototype_bind_call         = bindCall(_Function_prototype.bind);
 const _Function_prototype_hasInstance_call  = bindCall(_Function_prototype[_Symbol_hasInstance]);
 const _Function_prototype_toString_call     = bindCall(_Function_prototype.toString);
-const _Object_prototype_hasOwnProperty_call = bindCall(_Object_prototype.hasOwnProperty);
-const _Object_prototype_valueOf_call        = bindCall(_Object_prototype.valueOf);
+const _Object_prototype_valueOf_call        = bindCall(_Object.prototype.valueOf);
 
 bindCall = null;
 _Function_prototype_call = null;
@@ -168,20 +165,22 @@ typeSet =>
     const constructorTarget =
     function (...args)
     {
-        const typeToSuperArgsMap = createTypeToSuperArgsMap(typeSet, args);
-        const newTarget = new.target;
-        for (const type of typeSet)
+        const descriptorMapObjList = [];
         {
-            const superArgs = typeToSuperArgsMap.get(type);
-            const descriptorMapObj = getNewObjectPropertyDescriptors(type, superArgs, newTarget);
-            const props = _Reflect_ownKeys(descriptorMapObj);
-            for (const prop of props)
+            const typeToSuperArgsMap = createTypeToSuperArgsMap(typeSet, args);
+            const newTarget = new.target;
+            for (const type of typeSet)
             {
-                if (_Object_prototype_hasOwnProperty_call(this, prop))
-                    delete descriptorMapObj[prop];
+                const superArgs = typeToSuperArgsMap.get(type) ?? EMPTY_ARRAY;
+                const newObj = _Reflect_construct(type, superArgs, newTarget);
+                const descriptorMapObj = _Object_getOwnPropertyDescriptors(newObj);
+                descriptorMapObjList.push(descriptorMapObj);
             }
-            _Object_defineProperties(this, descriptorMapObj);
         }
+        for (const descriptorMapObj of descriptorMapObjList)
+            _Object_defineProperties(this, descriptorMapObj);
+        for (let descriptorMapObj; descriptorMapObj = descriptorMapObjList.pop();)
+            _Object_defineProperties(this, descriptorMapObj);
     };
     _Object_setPrototypeOf(constructorTarget, null);
     return constructorTarget;
@@ -400,10 +399,6 @@ obj =>
         return prototypes;
     }
 };
-
-const getNewObjectPropertyDescriptors =
-(type, args = EMPTY_ARRAY, newTarget) =>
-_Object_getOwnPropertyDescriptors(_Reflect_construct(type, args, newTarget));
 
 const { getPrototypeListOf } =
 {

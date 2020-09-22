@@ -393,36 +393,6 @@ describe
                     },
                 );
 
-                it
-                (
-                    'sets but does not overwrite own properties on this',
-                    () =>
-                    {
-                        function A()
-                        {
-                            this.foo = 'bar';
-                        }
-
-                        function B()
-                        {
-                            this.foo = 'baz';
-                            this[Symbol.species] = B;
-                        }
-
-                        function C()
-                        {
-                            this[Symbol.species] = C;
-                        }
-
-                        class D extends classes(A, B, C)
-                        { }
-
-                        const d = new D();
-                        assert.strictEqual(d.foo, 'bar');
-                        assert.strictEqual(d[Symbol.species], B);
-                    },
-                );
-
                 describe
                 (
                     'throws a TypeError',

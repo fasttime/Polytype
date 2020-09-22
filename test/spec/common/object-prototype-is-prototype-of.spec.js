@@ -87,9 +87,8 @@ describe
             },
         );
 
-        maybeIt
+        it
         (
-            typeof BigInt === 'function',
             'returns false with bigint type argument',
             () =>
             {
