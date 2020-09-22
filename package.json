@@ -60,6 +60,6 @@
     "typescript_4.0": "npm:typescript@4.0"
   },
   "engines": {
-    "node": ">=13.7.0"
+    "node": ">=14.0.0"
   }
 }

@@ -42,11 +42,11 @@ As of today, Polytype runs in **current versions of all major browsers** and in
 * Works in Node.js and in most browsers
 * Full TypeScript support
 * Zero dependencies
-* Qualified or unqualified access to all base class features
+* Access to all base class features
   * constructors
   * methods, getters and setters – both static and nonstatic
   * value properties on base classes and base instance prototypes
-  * [public fields][Public fields] (in engines that support them)
+  * [public instance fields][Public instance fields]
 * `in`, `instanceof` and `isPrototypeOf` integration
 
 ## Setup Instructions
@@ -456,29 +456,28 @@ Polytype strives to make up for this deficiency, but some important limitations 
 
 ### `for...in` iterations
 
-Following previous work made in TypeScript and other transpilers, many newer JavaScript engines have
-implemented support for [public class fields][Public fields].
-Public fields are only one way of defining
-[enumerable properties][Enumerability and ownership of properties] on a class constructor or
-instance prototype.
-
 When only single inheritance is used, a `for...in` iteration over a class constructor enumerates not
-only names of enumerable properties defined on the constructor object itself, but also names of
-enumerable properties defined on all base constructors in its prototype chain.
+only names of [enumerable properties][Enumerability and ownership of properties] defined on the
+constructor object itself, but also names of enumerable properties defined on all base constructors
+in its prototype chain.
+Enumerable properties on class constructors can be defined with a static field, or assigned
+dynamically.
 
 ```js
-class FooClass
+class FooBarClass
 {
     static foo = "foo";
 }
 
-class BarClass extends FooClass
+FooBarClass.bar = "bar";
+
+class BazClass extends FooBarClass
 {
-    static bar = "bar";
+    static baz = "baz";
 }
 
-for (const name in BarClass)
-    console.log(name); // Prints "bar" and "foo".
+for (const name in BazClass)
+    console.log(name); // Prints "baz", "foo" and "bar".
 ```
 
 As it happens, this behavior no longer holds with Polytype multiple inheritance.
@@ -487,7 +486,7 @@ constructor are not enumerated by `for...in` statements when the inheritance lin
 listed in some `extends classes(...)` clause.
 
 ```js
-class BazClass extends classes(FooClass)
+class BazClass extends classes(FooBarClass)
 {
     static baz = "baz";
 }
@@ -590,17 +589,17 @@ class Record extends classes(RecordLeft, RecordRightProxy)
 
 Polytype was successfully tested in the following browsers/JavaScript engines.
 
- ![Chrome](https://api.iconify.design/mdi:google-chrome.svg) Chrome 71+
+ ![Chrome](https://api.iconify.design/mdi:google-chrome.svg) Chrome 80+
 <br>
- ![Safari](https://api.iconify.design/mdi:apple-safari.svg) Safari 13+
+ ![Safari](https://api.iconify.design/mdi:apple-safari.svg) Safari 14+
 <br>
- ![Edge](https://api.iconify.design/mdi:microsoft-edge.svg) Edge 79+
+ ![Edge](https://api.iconify.design/mdi:microsoft-edge.svg) Edge 80+
 <br>
- ![Firefox](https://api.iconify.design/mdi:firefox.svg) Firefox 67+
+ ![Firefox](https://api.iconify.design/mdi:firefox.svg) Firefox 72+
 <br>
- ![Opera](https://api.iconify.design/mdi:opera.svg) Opera 58+
+ ![Opera](https://api.iconify.design/mdi:opera.svg) Opera 67+
 <br>
- ![Node.js](https://api.iconify.design/mdi:nodejs.svg) Node.js 13.7+
+ ![Node.js](https://api.iconify.design/mdi:nodejs.svg) Node.js 14+
 
 The minimum supported TypeScript version is 3.5.
 
@@ -609,7 +608,7 @@ ECMAScript 2020 or higher syntax.
 
 [npm badge]: https://badge.fury.io/js/polytype.svg
 [npm url]: https://www.npmjs.com/package/polytype
-[Public fields]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Class_fields#Public_fields
+[Public instance fields]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Public_class_fields#Public_instance_fields
 [Why Use for...in?]:
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#Why_Use_for...in
 [Enumerability and ownership of properties]:
