@@ -1,3 +1,18 @@
+<a name="0.11.0"></a>
+## [0.11.0](https://github.com/fasttime/Polytype/releases/tag/0.11.0) (2020-09-23)
+
+* Stricter own property transfer logic in class instantiation: all own properties with the same key
+defined by different base constructors or field initializers must be mutually redefinable now, or
+else a `TypeError` is thrown.
+This change prohibits combining configurable and unconfigurable definitions, or supplying different
+unconfigurable definitions unless they have the same enumerability and are all writable.
+Other constraints are unchanged:
+  * If different own property definitions with the same key are found, the first definition in base
+class order is applied.
+  * Own property definition order respects base class order.
+* Dropped support for older engines.
+* Updated documentation.
+
 <a name="0.10.0"></a>
 ## [0.10.0](https://github.com/fasttime/Polytype/releases/tag/0.10.0) (2020-07-11)
 
