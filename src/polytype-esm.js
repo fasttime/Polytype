@@ -480,7 +480,11 @@ function installAncestorProperties(...objSets)
                     if (prototype === null)
                     {
                         const descriptor = _Object_getOwnPropertyDescriptor(obj, 'isPrototypeOf');
-                        if (descriptor && isNativeFunction(descriptor.value, 'isPrototypeOf'))
+                        if
+                        (
+                            descriptor &&
+                            isNonConstructorNativeFunction(descriptor.value, 'isPrototypeOf')
+                        )
                         {
                             descriptor.value = isPrototypeOf;
                             _Object_defineProperty(obj, 'isPrototypeOf', descriptor);
@@ -550,7 +554,7 @@ const isConstructorArgumentHandler =
 const isFunctionPrototype =
 obj =>
 {
-    if (isNativeFunction(obj, ''))
+    if (isNonConstructorNativeFunction(obj, ''))
     {
         const descriptor = _Object_getOwnPropertyDescriptor(obj, _Symbol_hasInstance);
         if
@@ -559,7 +563,7 @@ obj =>
             !descriptor.writable &&
             !descriptor.enumerable &&
             !descriptor.configurable &&
-            isNativeFunction(descriptor.value, '[Symbol.hasInstance]')
+            isNonConstructorNativeFunction(descriptor.value, '[Symbol.hasInstance]')
         )
             return true;
     }
@@ -577,7 +581,7 @@ function isInPrototypeTree(target, obj)
     return false;
 }
 
-const isNativeFunction =
+const isNonConstructorNativeFunction =
 (obj, name) =>
 {
     let str;
