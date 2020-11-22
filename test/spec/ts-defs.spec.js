@@ -5,17 +5,6 @@
 
 function defineTests(typescriptPkgName)
 {
-    const switchByTypeScriptVersion =
-    (versionRange, messageTrue, messageFalse) =>
-    {
-        const { coerce, satisfies } = require('semver');
-        const { versionMajorMinor } = require(typescriptPkgName);
-
-        const { version } = coerce(versionMajorMinor);
-        const message = satisfies(version, versionRange) ? messageTrue : messageFalse;
-        return message;
-    };
-
     const testCases =
     [
         {
@@ -168,43 +157,83 @@ function defineTests(typescriptPkgName)
             super.class(B)._sb();
         }
     }
-
-    void (C.prototype as A);
-    void (C.prototype as B);
             `,
         },
         {
-            title: 'Hyperinheritance',
+            title: 'Merging of nonstatic members',
             code:
             `
-    class T1 { static st1(): void { } }
-    class T2 { static st2(): void { } }
-    class T3 { static st3(): void { } }
-    class T4 { static st4(): void { } }
-    class T5 { static st5(): void { } }
-    class T6 { static st6(): void { } }
-    class T7 { static st7(): void { } }
-    class T8 { static st8(): void { } }
-    class T9 { static st9(): void { } }
-    class T10 { static st10(): void { } }
-    class T11 { static st11(): void { } }
+    class A { m1 = 'a'; m2 = 1; }
+    class B { m1 = 1;   m2 = 2; }
+    class C extends classes(A, B) { }
 
-    class U extends classes(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
-    {
-        static st()
+    const c = new C();
+
+    const test1: never = c.m1; // c.m1 should be a never
+
+    // @ts-expect-error
+    const test2a: typeof c.m2 = undefined as unknown; // c.m2 should not be any or unknown
+    const test2b: number = c.m2;
+    const test2c: typeof c.m2 = test2b; // c.m2 should be a number
+            `,
+        },
         {
-            this.st1();
-            this.st11();
-            super.st1();
-            super.st11();
-            super.class(T1).st1();
-            super.class(T11).st11();
-        }
-    }
+            title: 'Merging of static members',
+            code:
+            `
+    class A { static sm1 = 'a'; static sm2 = 1; }
+    class B { static sm1 = 1;   static sm2 = 2; }
+    class C extends classes(A, B) { }
+
+    // @ts-expect-error
+    const test1a: typeof C.sm1 = undefined as unknown; // C.sm1 should not be any or unknown
+    const test1b: string = C.sm1;
+    const test1c: typeof C.sm1 = test1b; // C.sm1 should be a string
+
+    // @ts-expect-error
+    const test2a: typeof C.sm2 = undefined as unknown; // C.sm2 should not be any or unknown
+    const test2b: number = C.sm2;
+    const test2c: typeof C.sm2 = test2b; // C.sm2 should be a number
+            `,
+        },
+        {
+            title: 'Assignability of constructors and prototypes',
+            code:
+            `
+    class T1    { m1 = 1 as const; }
+    class T2    { m2 = 2 as const; }
+    class T3    { m3 = 3 as const; }
+    class T4    { m4 = 4 as const; }
+    class T5    { m5 = 5 as const; }
+    class T6    { m6 = 6 as const; }
+    class T7    { m7 = 7 as const; }
+    class T8    { m8 = 8 as const; }
+    class T9    { m9 = 9 as const; }
+    class T10   { m10 = 10 as const; }
+    class T11   { m11 = 11 as const; }
+    class U extends classes(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) { }
 
     void (U.prototype as T1);
+    void (U.prototype as T2);
+    void (U.prototype as T3);
+    void (U.prototype as T4);
+    void (U.prototype as T5);
+    void (U.prototype as T6);
+    void (U.prototype as T7);
+    void (U.prototype as T8);
+    void (U.prototype as T9);
+    void (U.prototype as T10);
     void (U.prototype as T11);
     void (U as typeof T1);
+    void (U as typeof T2);
+    void (U as typeof T3);
+    void (U as typeof T4);
+    void (U as typeof T5);
+    void (U as typeof T6);
+    void (U as typeof T7);
+    void (U as typeof T8);
+    void (U as typeof T9);
+    void (U as typeof T10);
     void (U as typeof T11);
             `,
         },
@@ -231,27 +260,17 @@ function defineTests(typescriptPkgName)
     };
             `,
             expectedMessage:
-            switchByTypeScriptVersion
-            (
-                '<3.6',
-                // TypeScript before 3.6
-                'Argument of type \'{ super: typeof A; }\' is not assignable to parameter of ' +
-                'type \'readonly []\'.\n' +
-                '  Object literal may only specify known properties, and \'super\' does not ' +
-                'exist in type \'readonly []\'.',
-                // TypeScript 3.6 or later
-                'No overload matches this call.\n' +
-                '  Overload 1 of 2, \'(args_0?: readonly [] | undefined): ' +
-                'ClusteredPrototype<[typeof B]>\', gave the following error.\n' +
-                '    Argument of type \'{ super: typeof A; }\' is not assignable to parameter of ' +
-                'type \'readonly []\'.\n' +
-                '      Object literal may only specify known properties, and \'super\' does not ' +
-                'exist in type \'readonly []\'.\n' +
-                '  Overload 2 of 2, \'(...args: Readonly<SuperConstructorInvokeInfo<typeof ' +
-                'B>>[]): ClusteredPrototype<[typeof B]>\', gave the following error.\n' +
-                '    Type \'typeof A\' is not assignable to type \'typeof B\'.\n' +
-                '      Property \'b\' is missing in type \'A\' but required in type \'B\'.',
-            ),
+            'No overload matches this call.\n' +
+            '  Overload 1 of 2, \'(args_0?: readonly [] | undefined): ' +
+            'ClusteredPrototype<[typeof B]>\', gave the following error.\n' +
+            '    Argument of type \'{ super: typeof A; }\' is not assignable to parameter of ' +
+            'type \'readonly []\'.\n' +
+            '      Object literal may only specify known properties, and \'super\' does not ' +
+            'exist in type \'readonly []\'.\n' +
+            '  Overload 2 of 2, \'(...args: Readonly<SuperConstructorInvokeInfo<typeof B>>[]): ' +
+            'ClusteredPrototype<[typeof B]>\', gave the following error.\n' +
+            '    Type \'typeof A\' is not assignable to type \'typeof B\'.\n' +
+            '      Property \'b\' is missing in type \'A\' but required in type \'B\'.',
         },
         {
             title: 'super.class in nonstatic context with indirect superclass',
@@ -534,7 +553,7 @@ function defineTests(typescriptPkgName)
             (
                 currentPolytypeMode === undefined || currentPolytypeMode === polytypeMode,
                 testCase.title,
-                () => assert.deepEqual(testCase.actualMessages, expectedMessages),
+                () => assert.deepStrictEqual(testCase.actualMessages, expectedMessages),
             );
         },
     );
@@ -545,11 +564,7 @@ describe
     'TypeScript definitions',
     () =>
     {
-        describe('TypeScript 3.5', () => defineTests('typescript_3.5'));
-        describe('TypeScript 3.6', () => defineTests('typescript_3.6'));
-        describe('TypeScript 3.7', () => defineTests('typescript_3.7'));
-        describe('TypeScript 3.8', () => defineTests('typescript_3.8'));
-        describe('TypeScript 3.9', () => defineTests('typescript_3.9'));
         describe('TypeScript 4.0', () => defineTests('typescript_4.0'));
+        describe('TypeScript 4.1', () => defineTests('typescript_4.1'));
     },
 );

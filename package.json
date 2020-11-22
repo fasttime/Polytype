@@ -50,14 +50,9 @@
     "rollup": "latest",
     "rollup-plugin-cleanup": "latest",
     "rollup-plugin-terser": "latest",
-    "semver": "latest",
     "typescript": "latest",
-    "typescript_3.5": "npm:typescript@3.5",
-    "typescript_3.6": "npm:typescript@3.6",
-    "typescript_3.7": "npm:typescript@3.7",
-    "typescript_3.8": "npm:typescript@3.8",
-    "typescript_3.9": "npm:typescript@3.9",
-    "typescript_4.0": "npm:typescript@4.0"
+    "typescript_4.0": "npm:typescript@4.0",
+    "typescript_4.1": "npm:typescript@4.1"
   },
   "engines": {
     "node": ">=14.0.0"
