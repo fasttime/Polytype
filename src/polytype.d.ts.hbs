@@ -4,26 +4,18 @@ declare namespace Polytype
 {
     // Helpers /////////////////////////////////////////////////////////////////////////////////////
 
-    type Enrich<T, U> = T & Omit<U, keyof T>;
+    type Enrich<MainType, ExtraType> = MainType & Omit<ExtraType, keyof MainType>;
 
-    type EnrichTimes
-    <
-        T,
-        U1 = never,
-        U2 = never,
-        U3 = never,
-        U4 = never,
-        U5 = never,
-        U6 = never,
-        U7 = never,
-        U8 = never,
-        U9 = never,
-        U10 = never,
-    >
-    =
-    Enrich<Enrich<Enrich<Enrich<Enrich<Enrich<Enrich<Enrich<Enrich<Enrich<
-    T,
-    U1>, U2>, U3>, U4>, U5>, U6>, U7>, U8>, U9>, U10>;
+    type EnrichMore<MainType, ExtraTypes extends unknown[]> =
+    EnrichMoreProps<MainType, ExtraTypes>[ExtraTypes extends [] ? 0 : 1];
+
+    interface EnrichMoreProps<MainType, ExtraTypes extends unknown[]>
+    {
+        0: MainType;
+        1:
+        ExtraTypes extends [infer ExtraHead, ...infer ExtraTail] ?
+        EnrichMore<Enrich<MainType, ExtraHead>, ExtraTail> : never;
+    }
 
     type IntersectionOf<T extends unknown[]> =
     UnboxedIntersectionOf<{ [key in keyof T]: [T[key]]; }> extends { 0: infer U; } ? U : never;
@@ -58,16 +50,7 @@ declare namespace Polytype
         ClusteredPrototype<T>;
     }
     &
-    (
-        T extends { 10: unknown; }
-        ?
-        Enrich<SuperConstructorSelector<UnionOf<T>>, IntersectionOf<T>>
-        :
-        EnrichTimes<
-        SuperConstructorSelector<UnionOf<T>>,
-        T[0], T[1], T[2], T[3], T[4], T[5], T[6], T[7], T[8], T[9]
-        >
-    );
+    EnrichMore<SuperConstructorSelector<UnionOf<T>>, T>;
 
     type ClusteredPrototype<T extends SuperConstructor[]> =
     SuperPrototypeSelector<UnionOf<T>> &
