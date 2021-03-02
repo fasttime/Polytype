@@ -600,5 +600,6 @@ describe
     {
         describe('TypeScript 4.0', () => defineTests('typescript_4.0'));
         describe('TypeScript 4.1', () => defineTests('typescript_4.1'));
+        describe('TypeScript 4.2', () => defineTests('typescript_4.2'));
     },
 );

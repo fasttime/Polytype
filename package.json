@@ -52,7 +52,8 @@
     "rollup-plugin-terser": "latest",
     "typescript": "latest",
     "typescript_4.0": "npm:typescript@4.0",
-    "typescript_4.1": "npm:typescript@4.1"
+    "typescript_4.1": "npm:typescript@4.1",
+    "typescript_4.2": "npm:typescript@4.2"
   },
   "engines": {
     "node": ">=14.0.0"
