@@ -24,8 +24,8 @@ declare namespace Polytype
 
     type ProtoType<T> = T extends { prototype: infer U; } ? U : never;
 
-    type ReadonlyConstructorParameters<T extends new (...args: unknown[]) => unknown> =
-    Readonly<ConstructorParameters<T>>;
+    type ReadonlySuperConstructorParameters<T extends SuperConstructor> =
+    Readonly<ConstructorParameters<(new (...args: unknown[]) => unknown) & T>>;
 
     type UnboxedIntersectionOf<T extends unknown[]> =
     UnionOf<T> extends infer U ?
@@ -53,20 +53,15 @@ declare namespace Polytype
     EnrichMore<SuperConstructorSelector<UnionOf<T>>, T>;
 
     type ClusteredPrototype<T extends SuperConstructor[]> =
-    SuperPrototypeSelector<UnionOf<T>> &
-    IntersectionOf<{ [key in keyof T]: InstanceType<AsSuperConstructor<T[key]>>; }>;
+    SuperPrototypeSelector<UnionOf<T>> & IntersectionOf<{ [key in keyof T]: ProtoType<T[key]>; }>;
 
     type MapTupleTypesToOptionalReadonlyConstructorParameters<T extends SuperConstructor[]> =
-    { [key in keyof T]?: ReadonlyConstructorParameters<AsSuperConstructor<T[key]>>; };
+    { [key in keyof T]?: ReadonlySuperConstructorParameters<AsSuperConstructor<T[key]>>; };
 
     type MapTupleTypesToReadonlySuperConstructorInvokeInfo<T extends SuperConstructor[]> =
     { [key in keyof T]: Readonly<SuperConstructorInvokeInfo<AsSuperConstructor<T[key]>>>; };
 
-    interface SuperConstructor
-    {
-        readonly prototype: object | null;
-        new (...args: any): unknown;
-    }
+    type SuperConstructor = Function & { readonly prototype: object | null; };
 
     class SuperConstructorSelector<T extends SuperConstructor>
     {
@@ -91,7 +86,7 @@ declare namespace Polytype
          *
          * The referenced base class.
          */
-        protected class<U extends T>(type: U): InstanceType<U>;
+        protected class<U extends T>(type: U): ProtoType<U>;
     }
 }
 
@@ -105,7 +100,7 @@ export interface SuperConstructorInvokeInfo<T extends Polytype.SuperConstructor>
      * An array specifying the arguments with which the base class constructor should be called.
      * If undefined, the base class constructor will be called without any arguments.
      */
-    arguments?: Polytype.ReadonlyConstructorParameters<T>;
+    arguments?: Polytype.ReadonlySuperConstructorParameters<T>;
 }
 
 {{#* inline "classes"}}

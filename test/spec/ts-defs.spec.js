@@ -46,9 +46,6 @@ function defineTests(typescriptPkgName)
             `
     class A
     {
-        constructor(a: object)
-        { }
-
         a(): void
         { }
 
@@ -64,9 +61,6 @@ function defineTests(typescriptPkgName)
 
     class B
     {
-        constructor(b: object)
-        { }
-
         b(): void
         { }
 
@@ -79,45 +73,6 @@ function defineTests(typescriptPkgName)
         protected static _sb(): void
         { }
     }
-
-    void
-    class extends classes(A, B)
-    {
-        constructor()
-        {
-            super();
-        }
-    };
-
-    void
-    class extends classes(A, B)
-    {
-        constructor()
-        {
-            const args1 = [{ }] as const;
-            super(args1);
-        }
-    };
-
-    void
-    class extends classes(A, B)
-    {
-        constructor()
-        {
-            const args1 = [{ }] as const;
-            super(undefined, args1);
-        }
-    };
-
-    void
-    class extends classes(A, B)
-    {
-        constructor()
-        {
-            const args1 = { super: A, arguments: [{ }] } as const;
-            super(args1);
-        }
-    };
 
     class C extends classes(A, B)
     {
@@ -157,6 +112,46 @@ function defineTests(typescriptPkgName)
             super.class(B)._sb();
         }
     }
+            `,
+        },
+        {
+            title: 'Abstract class inheritance',
+            code:
+            `
+    abstract class A
+    {
+        abstract foo(): number;
+    }
+
+    abstract class B
+    {
+        foo(): string
+        {
+            return 'foo';
+        }
+        abstract bar(arg: number): void;
+    }
+
+    abstract class C extends B
+    {
+        abstract get baz(): boolean;
+    }
+
+    class D extends classes(A, C)
+    {
+        bar(): void
+        { }
+
+        baz = true;
+    }
+
+    // @ts-expect-error
+    class E extends A
+    { }
+
+    const a: A = new D();
+    const b: B = new D();
+    const c: C = new D();
             `,
         },
         {
@@ -200,17 +195,17 @@ function defineTests(typescriptPkgName)
             title: 'Assignability of constructors and prototypes',
             code:
             `
-    class T1    { m1 = 1 as const; }
-    class T2    { m2 = 2 as const; }
-    class T3    { m3 = 3 as const; }
-    class T4    { m4 = 4 as const; }
-    class T5    { m5 = 5 as const; }
-    class T6    { m6 = 6 as const; }
-    class T7    { m7 = 7 as const; }
-    class T8    { m8 = 8 as const; }
-    class T9    { m9 = 9 as const; }
-    class T10   { m10 = 10 as const; }
-    class T11   { m11 = 11 as const; }
+    class T1            { m1 = 1 as const; }
+    abstract class T2   { m2 = 2 as const; }
+    class T3            { m3 = 3 as const; }
+    class T4            { m4 = 4 as const; }
+    class T5            { m5 = 5 as const; }
+    class T6            { m6 = 6 as const; }
+    class T7            { m7 = 7 as const; }
+    class T8            { m8 = 8 as const; }
+    class T9            { m9 = 9 as const; }
+    class T10           { m10 = 10 as const; }
+    class T11           { m11 = 11 as const; }
     class U extends classes(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) { }
 
     void (U.prototype as T1);
@@ -238,7 +233,44 @@ function defineTests(typescriptPkgName)
             `,
         },
         {
-            title: 'super constructor argument referencing indirect superclass',
+            title: 'Superconstructor arguments',
+            code:
+            `
+    class A
+    {
+        constructor(n: number, s?: string)
+        { }
+    }
+
+    abstract class B
+    {
+        constructor(o: object)
+        { }
+    }
+
+    void
+    class extends classes(A, B)
+    {
+        constructor()
+        {
+            super();
+            super([1]);
+            super([1, 'A'], [{ }]);
+            const ASCII = { super: A, arguments: [1, 'A'] } as const;
+            const BSCII = { super: B, arguments: [{ }] } as const;
+            super(BSCII, ASCII);
+            // @ts-expect-error
+            super([1, 'A'], BSCII);
+            // @ts-expect-error
+            super(['A']);
+            // @ts-expect-error
+            super({ super: A, arguments: ['A'] });
+        }
+    }
+            `,
+        },
+        {
+            title: 'Superconstructor argument referencing indirect superclass',
             code:
             `
     class A
@@ -334,14 +366,16 @@ function defineTests(typescriptPkgName)
             code: 'classes(undefined);',
             expectedMessage:
             'Argument of type \'undefined\' is not assignable to parameter of type ' +
-            '\'SuperConstructor\'.',
+            '\'SuperConstructor\'.\n' +
+            '  Type \'undefined\' is not assignable to type \'Function\'.',
         },
         {
             title: 'classes with a null argument',
             code: 'classes(null);',
             expectedMessage:
             'Argument of type \'null\' is not assignable to parameter of type ' +
-            '\'SuperConstructor\'.',
+            '\'SuperConstructor\'.\n' +
+            '  Type \'null\' is not assignable to type \'Function\'.',
         },
         {
             title: 'Assignment to property \'prototype\' of a clustered constuctor',
