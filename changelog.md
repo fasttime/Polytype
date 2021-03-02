@@ -1,3 +1,10 @@
+<a name="0.12.0"></a>
+## [0.12.0](https://github.com/fasttime/Polytype/releases/tag/0.12.0) (2021-03-02)
+
+* Adapted type definitions to allow extending abstract classes.
+* Improved typing of static members in classes derived from more than ten base types.
+* Dropped support for TypeScript &lt; 4.0.
+
 <a name="0.11.0"></a>
 ## [0.11.0](https://github.com/fasttime/Polytype/releases/tag/0.11.0) (2020-09-23)
 
