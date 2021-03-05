@@ -1,0 +1,18 @@
+/*!TESTDATA
+{
+    title: 'Merging of nonstatic members',
+}
+*/
+
+class A { m1 = 'a'; m2 = 1; }
+class B { m1 = 1;   m2 = 2; }
+class C extends classes(A, B) { }
+
+const c = new C();
+
+const test1: never = c.m1; // c.m1 should be a never
+
+// @ts-expect-error
+const test2a: typeof c.m2 = undefined as unknown; // c.m2 should not be any or unknown
+const test2b: number = c.m2;
+const test2c: typeof c.m2 = test2b; // c.m2 should be a number

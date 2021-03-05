@@ -1,0 +1,26 @@
+/*!TESTDATA
+{
+    title: 'super.class in nonstatic context with indirect superclass',
+    expectedMessage:
+    'Argument of type \'typeof A\' is not assignable to parameter of type \'typeof B\'.\n' +
+    '  Property \'b\' is missing in type \'A\' but required in type \'B\'.',
+}
+*/
+
+class A
+{ }
+
+class B extends A
+{
+    b(): void
+    { }
+}
+
+void
+class extends classes(B)
+{
+    c()
+    {
+        super.class(A);
+    }
+};

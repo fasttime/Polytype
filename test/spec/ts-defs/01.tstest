@@ -1,0 +1,8 @@
+/*!TESTDATA
+{
+    title: 'SuperConstructorInvokeInfo (module version)',
+    polytypeMode: 'module',
+}
+*/
+
+import { SuperConstructorInvokeInfo } from '.';

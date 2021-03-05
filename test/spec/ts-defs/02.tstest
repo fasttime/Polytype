@@ -1,0 +1,8 @@
+/*!TESTDATA
+{
+    title: 'SuperConstructorInvokeInfo (global version)',
+    polytypeMode: 'global',
+}
+*/
+
+import { SuperConstructorInvokeInfo } from './global';

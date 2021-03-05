@@ -1,0 +1,21 @@
+/*!TESTDATA
+{
+    title: 'Union superclass',
+    expectedMessage:
+    'Base constructor return type \'ClusteredPrototype<[typeof A | typeof B]>\' is not an object ' +
+    'type or intersection of object types with statically known members.',
+}
+*/
+
+class A
+{ }
+
+class B
+{ }
+
+void
+(
+    (C: typeof A | typeof B) =>
+    class extends classes(C)
+    { }
+);

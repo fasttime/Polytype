@@ -1,0 +1,40 @@
+/*!TESTDATA
+{
+    title: 'Abstract class inheritance',
+}
+*/
+
+abstract class A
+{
+    abstract foo(): number;
+}
+
+abstract class B
+{
+    foo(): string
+    {
+        return 'foo';
+    }
+    abstract bar(arg: number): void;
+}
+
+abstract class C extends B
+{
+    abstract get baz(): boolean;
+}
+
+class D extends classes(A, C)
+{
+    bar(): void
+    { }
+
+    baz = true;
+}
+
+// @ts-expect-error
+class E extends A
+{ }
+
+const a: A = new D();
+const b: B = new D();
+const c: C = new D();

@@ -1,0 +1,26 @@
+/*!TESTDATA
+{
+    title: 'super.class in static context with indirect superclass',
+    expectedMessage:
+    'Argument of type \'typeof A\' is not assignable to parameter of type \'typeof B\'.\n' +
+    '  Property \'b\' is missing in type \'typeof A\' but required in type \'typeof B\'.',
+}
+*/
+
+class A
+{ }
+
+class B extends A
+{
+    static b(): void
+    { }
+}
+
+void
+class extends classes(B)
+{
+    static c()
+    {
+        super.class(A);
+    }
+};

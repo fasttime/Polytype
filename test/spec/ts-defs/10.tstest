@@ -1,0 +1,37 @@
+/*!TESTDATA
+{
+    title: 'Superconstructor arguments',
+}
+*/
+
+class A
+{
+    constructor(n: number, s?: string)
+    { }
+}
+
+abstract class B
+{
+    constructor(o: object)
+    { }
+}
+
+void
+class extends classes(A, B)
+{
+    constructor()
+    {
+        super();
+        super([1]);
+        super([1, 'A'], [{ }]);
+        const ASCII = { super: A, arguments: [1, 'A'] } as const;
+        const BSCII = { super: B, arguments: [{ }] } as const;
+        super(BSCII, ASCII);
+        // @ts-expect-error
+        super([1, 'A'], BSCII);
+        // @ts-expect-error
+        super(['A']);
+        // @ts-expect-error
+        super({ super: A, arguments: ['A'] });
+    }
+}

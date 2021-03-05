@@ -1,0 +1,8 @@
+/*!TESTDATA
+{
+    title: 'Object.getPrototypeListOf',
+    polytypeMode: 'global',
+}
+*/
+
+void Object.getPrototypeListOf;

@@ -41,8 +41,6 @@ const glob          = require('glob');
 const Mocha         = require('mocha');
 const { promisify } = require('util');
 
-const TEST_PATTERN = 'spec/**/*.spec.js';
-
 {
     const debug = testExecArgv(INSPECT_BRK_REG_EXP);
     if (debug)
@@ -53,9 +51,11 @@ const TEST_PATTERN = 'spec/**/*.spec.js';
 {
     const mocha = new Mocha({ checkLeaks: true });
     mocha.addFile(require.resolve('./init-spec.js'));
-    const filenames = await promisify(glob)(TEST_PATTERN, { absolute: true, cwd: __dirname });
+    const filenames =
+    await promisify(glob)('spec/**/*.spec.{js,mjs}', { absolute: true, cwd: __dirname });
     for (const filename of filenames)
         mocha.addFile(filename);
+    await mocha.loadFilesAsync();
     mocha.run
     (
         failures =>

@@ -1,0 +1,13 @@
+/*!TESTDATA
+{
+    title: 'Superclass selector in nonstatic context out of class body',
+    expectedMessage:
+    'Property \'class\' is protected and only accessible within class ' +
+    '\'SuperPrototypeSelector<T>\' and its subclasses.',
+}
+*/
+
+class Test extends classes(Object)
+{ }
+
+(new Test).class(Object).valueOf();

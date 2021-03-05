@@ -1,0 +1,15 @@
+/*!TESTDATA
+{
+    title: 'Type of property \'prototype\' of a clustered constuctor',
+    expectedMessage:
+    'Property \'prototype\' is missing in type \'{}\' but required in type \'Test\'.',
+}
+*/
+
+interface Test
+{
+    new(): Test;
+    readonly prototype: { };
+}
+
+const prototype: Test = classes(<Test>{ }).prototype;

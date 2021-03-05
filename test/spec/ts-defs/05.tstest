@@ -1,0 +1,74 @@
+/*!TESTDATA
+{
+    title: 'Ordinary multiple inheritance',
+}
+*/
+
+class A
+{
+    a(): void
+    { }
+
+    protected _a(): void
+    { }
+
+    static sa(): void
+    { }
+
+    protected static _sa(): void
+    { }
+}
+
+class B
+{
+    b(): void
+    { }
+
+    protected _b(): void
+    { }
+
+    static sb(): void
+    { }
+
+    protected static _sb(): void
+    { }
+}
+
+class C extends classes(A, B)
+{
+    c()
+    {
+        this.a();
+        this.b();
+        super.a();
+        super.b();
+        super.class(A).a();
+        super.class(B).b();
+    }
+
+    protected _c()
+    {
+        this._a();
+        this._b();
+        super._a();
+        super._b();
+    }
+
+    static sc()
+    {
+        C.sa();
+        C.sb();
+        this.sa();
+        this.sb();
+        super.sa();
+        super.sb();
+        super.class(A).sa();
+        super.class(B).sb();
+    }
+
+    protected static _sc()
+    {
+        super.class(A)._sa();
+        super.class(B)._sb();
+    }
+}

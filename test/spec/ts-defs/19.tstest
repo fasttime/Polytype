@@ -1,0 +1,23 @@
+/*!TESTDATA
+{
+    title: 'Hidden static overload',
+    expectedMessage: 'Expected 1 arguments, but got 0.',
+}
+*/
+
+class A
+{
+    static x(x: any): void
+    { }
+}
+
+class B
+{
+    static x(): void
+    { }
+}
+
+class C extends classes(A, B)
+{ }
+
+C.x();

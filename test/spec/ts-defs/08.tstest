@@ -1,0 +1,19 @@
+/*!TESTDATA
+{
+    title: 'Merging of static members',
+}
+*/
+
+class A { static sm1 = 'a'; static sm2 = 1; }
+class B { static sm1 = 1;   static sm2 = 2; }
+class C extends classes(A, B) { }
+
+// @ts-expect-error
+const test1a: typeof C.sm1 = undefined as unknown; // C.sm1 should not be any or unknown
+const test1b: string = C.sm1;
+const test1c: typeof C.sm1 = test1b; // C.sm1 should be a string
+
+// @ts-expect-error
+const test2a: typeof C.sm2 = undefined as unknown; // C.sm2 should not be any or unknown
+const test2b: number = C.sm2;
+const test2c: typeof C.sm2 = test2b; // C.sm2 should be a number
