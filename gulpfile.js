@@ -107,7 +107,6 @@ task
             {
                 src: ['src/**/*.{js,mjs}', 'test/**/*.mjs'],
                 parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
-                rules: { 'prefer-named-capture-group': 'off' },
             },
             {
                 src: 'lib/**/*.d.ts',

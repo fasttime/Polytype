@@ -58,14 +58,14 @@
 
     function createDeceptiveObject(prototypes = [42])
     {
-        const prototypesLookupSymbol = Symbol.for('Polytype prototypes lookup');
+        const prototypesLookupSymbol = Symbol.for('Polytype prototypes inquiry');
         const obj =
         {
             __proto__:
             {
                 get [prototypesLookupSymbol]()
                 {
-                    this.prototypes = prototypes;
+                    this.result = prototypes;
                     return undefined;
                 },
             },

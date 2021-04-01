@@ -330,7 +330,7 @@ describe
                 {
                     const obj = createDeceptiveObject();
                     assert.throwsTypeError
-                    (() => Object.isPrototypeOf(obj), 'Corrupt prototype list');
+                    (() => Object.isPrototypeOf(obj), 'Corrupt inquiry result');
                 }
                 {
                     const obj = createDeceptiveObject(null);

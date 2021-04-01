@@ -358,10 +358,10 @@ describe
                         const { C, callData } = setupTestData(classes);
                         new C([42], ['foo', 'bar']);
                         assert.deepEqual(callData.A.args, [42]);
-                        assert.strictEqual(callData.A.newTarget, C);
+                        assert.strictEqual(Object.getPrototypeOf(callData.A.newTarget), C);
                         assert.instanceOf(callData.A.this, C);
                         assert.deepEqual(callData.B.args, ['foo', 'bar']);
-                        assert.strictEqual(callData.B.newTarget, C);
+                        assert.strictEqual(Object.getPrototypeOf(callData.B.newTarget), C);
                         assert.instanceOf(callData.B.this, C);
                     },
                 );
@@ -374,10 +374,10 @@ describe
                         const { A, B, C, callData } = setupTestData(classes);
                         new C({ super: B, arguments: [1, 2, 3] }, { super: A });
                         assert.deepEqual(callData.A.args, []);
-                        assert.strictEqual(callData.A.newTarget, C);
+                        assert.strictEqual(Object.getPrototypeOf(callData.A.newTarget), C);
                         assert.instanceOf(callData.A.this, C);
                         assert.deepEqual(callData.B.args, [1, 2, 3]);
-                        assert.strictEqual(callData.B.newTarget, C);
+                        assert.strictEqual(Object.getPrototypeOf(callData.B.newTarget), C);
                         assert.instanceOf(callData.B.this, C);
                     },
                 );

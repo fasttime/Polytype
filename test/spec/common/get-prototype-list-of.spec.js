@@ -222,7 +222,7 @@ describe
                 {
                     const obj = createDeceptiveObject();
                     assert.throwsTypeError
-                    (() => Object.getPrototypeListOf(obj), 'Corrupt prototype list');
+                    (() => Object.getPrototypeListOf(obj), 'Corrupt inquiry result');
                 }
                 {
                     const obj = createDeceptiveObject(null);

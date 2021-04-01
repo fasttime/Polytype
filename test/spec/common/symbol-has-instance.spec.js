@@ -287,7 +287,7 @@ describe
                 {
                     const obj = createDeceptiveObject();
                     assert.throwsTypeError
-                    (() => hasInstance.call(fn, obj), 'Corrupt prototype list');
+                    (() => hasInstance.call(fn, obj), 'Corrupt inquiry result');
                 }
                 {
                     const obj = createDeceptiveObject(null);

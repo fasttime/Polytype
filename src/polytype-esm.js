@@ -61,13 +61,15 @@ const EMPTY_ARRAY = [];
 
 const EMPTY_OBJECT = _Object.freeze({ __proto__: null });
 
+const INQUIRY_RESULT_KEY = 'result';
+
+const INQUIRY_TARGET_KEY = 'target';
+
 const OBJECT_OR_NULL_OR_UNDEFINED_TYPES = ['function', 'object', 'undefined'];
 
-const PROTOTYPES_ITERABLE_KEY = 'prototypes';
+const PROTOTYPES_INQUIRY_KEY = Symbol.for('Polytype prototypes inquiry');
 
-const PROTOTYPES_LOOKUP_KEY = Symbol.for('Polytype prototypes lookup');
-
-const PROTOTYPES_TARGET_KEY = 'target';
+const THIS_SUPPLIER_INQUIRY_KEY = Symbol.for('Polytype this supplier inquiry');
 
 let _Function_prototype_call = _Function_prototype.call;
 let bindCall = callable => _Function_prototype_call.bind(callable);
@@ -168,13 +170,21 @@ typeSet =>
         const descriptorMapObjList = [];
         {
             const typeToSuperArgsMap = createTypeToSuperArgsMap(typeSet, args);
-            const newTarget = new.target;
-            for (const type of typeSet)
+            const thisReference = createReference();
+            const superNewTarget = createSuperNewTarget(thisReference.get, new.target);
+            try
             {
-                const superArgs = typeToSuperArgsMap.get(type) ?? EMPTY_ARRAY;
-                const newObj = _Reflect_construct(type, superArgs, newTarget);
-                const descriptorMapObj = _Object_getOwnPropertyDescriptors(newObj);
-                descriptorMapObjList.push(descriptorMapObj);
+                for (const type of typeSet)
+                {
+                    const superArgs = typeToSuperArgsMap.get(type) ?? EMPTY_ARRAY;
+                    const newObj = _Reflect_construct(type, superArgs, superNewTarget);
+                    const descriptorMapObj = _Object_getOwnPropertyDescriptors(newObj);
+                    descriptorMapObjList.push(descriptorMapObj);
+                }
+            }
+            finally
+            {
+                thisReference.set(this);
             }
         }
         for (const descriptorMapObj of descriptorMapObjList)
@@ -189,7 +199,56 @@ typeSet =>
 const createGetConstructorName =
 typeSet => () => `(${[...typeSet].map(({ name }) => _String(name))})`;
 
+const createLateBindHandler =
+thisSupplier =>
+{
+    const handler =
+    {
+        apply(target, thisArg, args)
+        {
+            const newThisArg = thisSupplier() ?? thisArg;
+            const returnValue = _Reflect_apply(target, newThisArg, args);
+            return returnValue;
+        },
+    };
+    return handler;
+};
+
 const createListFromArrayLike = _Function_prototype.apply.bind((...args) => args, null);
+
+function createReference()
+{
+    let value;
+    const get = () => value;
+    const set =
+    newValue =>
+    {
+        value = newValue;
+    };
+    const reference = { get, set };
+    return reference;
+}
+
+const createSubstitutePrototypeProxy =
+(thisSupplier, prototype) =>
+{
+    const target = _Object_create(prototype);
+    const handler =
+    {
+        get(target, prop, receiver)
+        {
+            if (!thisSupplier())
+            {
+                if (prop === THIS_SUPPLIER_INQUIRY_KEY && isInquiryReceiverFor(receiver, proxy))
+                    receiver[INQUIRY_RESULT_KEY] = thisSupplier;
+            }
+            const value = _Reflect_get(target, prop, receiver);
+            return value;
+        },
+    };
+    const proxy = new _Proxy(target, handler);
+    return proxy;
+};
 
 const createSuper =
 (obj, superTarget) =>
@@ -227,6 +286,20 @@ const createSuperMethodHandler =
     };
     return handler;
 };
+
+function createSuperNewTarget(thisSupplier, newTarget)
+{
+    function substituteConstructor()
+    { }
+
+    delete substituteConstructor.length;
+    delete substituteConstructor.name;
+    substituteConstructor.prototype =
+    createSubstitutePrototypeProxy(thisSupplier, newTarget.prototype);
+    _Object_setPrototypeOf(substituteConstructor, newTarget);
+    const superNewTarget = new _Proxy(substituteConstructor, CONSTRUCTOR_HANDLER_PROTOTYPE);
+    return superNewTarget;
+}
 
 const createSuperPrototypeSelector =
 prototypeSet =>
@@ -329,15 +402,8 @@ const createUnionProxy =
         __proto__: handlerPrototype,
         get(target, prop, receiver)
         {
-            if
-            (
-                prop === PROTOTYPES_LOOKUP_KEY &&
-                isObject(receiver) &&
-                _Object_getPrototypeOf(receiver) === null &&
-                receiver !== proxy &&
-                receiver[PROTOTYPES_TARGET_KEY] === proxy
-            )
-                receiver[PROTOTYPES_ITERABLE_KEY] = prototypeSet.values();
+            if (prop === PROTOTYPES_INQUIRY_KEY && isInquiryReceiverFor(receiver, proxy))
+                receiver[INQUIRY_RESULT_KEY] = prototypeSet.values();
             const obj = objs.find(propFilter(prop));
             if (obj !== undefined)
             {
@@ -382,22 +448,29 @@ _Object_defineProperty(obj, prop, describeDataProperty(value, true, enumerable))
 const describeDataProperty =
 (value, mutable, enumerable) => ({ value, writable: mutable, enumerable, configurable: mutable });
 
-const doPrototypesLookup =
+const doPrototypesInquiry =
 obj =>
 {
-    const receiver = { __proto__: null, [PROTOTYPES_TARGET_KEY]: obj };
-    _Reflect_get(obj, PROTOTYPES_LOOKUP_KEY, receiver);
-    const prototypeIterable = receiver[PROTOTYPES_ITERABLE_KEY];
+    const prototypeIterable = inquire(obj, PROTOTYPES_INQUIRY_KEY);
     if (prototypeIterable !== undefined)
     {
         const prototypes = [...prototypeIterable];
         for (const prototype of prototypes)
         {
             if (!isObject(prototype))
-                throw _TypeError('Corrupt prototype list');
+                handleCorruptInquiryResult();
         }
         return prototypes;
     }
+};
+
+const doThisSupplierInquiry =
+obj =>
+{
+    const thisSupplier = inquire(obj, THIS_SUPPLIER_INQUIRY_KEY);
+    if (thisSupplier !== undefined && !isCallable(thisSupplier))
+        handleCorruptInquiryResult();
+    return thisSupplier;
 };
 
 const { getPrototypeListOf } =
@@ -410,7 +483,7 @@ const { getPrototypeListOf } =
             const prototype = _Object_getPrototypeOf(obj);
             if (prototype !== null)
             {
-                prototypes = doPrototypesLookup(prototype);
+                prototypes = doPrototypesInquiry(prototype);
                 if (!prototypes)
                     prototypes = [prototype];
             }
@@ -424,13 +497,19 @@ const { getPrototypeListOf } =
 const getPrototypesOf =
 obj =>
 {
-    let prototypes = doPrototypesLookup(obj);
+    let prototypes = doPrototypesInquiry(obj);
     if (!prototypes)
     {
         const prototype = _Object_getPrototypeOf(obj);
         prototypes = prototype !== null ? [prototype] : EMPTY_ARRAY;
     }
     return prototypes;
+};
+
+const handleCorruptInquiryResult =
+() =>
+{
+    throw _TypeError('Corrupt inquiry result');
 };
 
 const { [_Symbol_hasInstance]: hasInstance } =
@@ -458,6 +537,15 @@ const { [_Symbol_hasInstance]: hasInstance } =
 };
 
 let hasInstancePending = false;
+
+const inquire =
+(obj, key) =>
+{
+    const receiver = { __proto__: null, [INQUIRY_TARGET_KEY]: obj };
+    _Reflect_get(obj, key, receiver);
+    const value = receiver[INQUIRY_RESULT_KEY];
+    return value;
+};
 
 function installAncestorProperties(...objSets)
 {
@@ -570,16 +658,17 @@ obj =>
     return false;
 };
 
-function isInPrototypeTree(target, obj)
-{
-    const prototypes = getPrototypesOf(obj);
-    for (const prototype of prototypes)
-    {
-        if (prototype === target || isInPrototypeTree(target, prototype))
-            return true;
-    }
-    return false;
-}
+const isInPrototypeTree =
+(target, obj) =>
+getPrototypesOf(obj)
+.some(prototype => prototype === target || isInPrototypeTree(target, prototype));
+
+const isInquiryReceiverFor =
+(receiver, proxy) =>
+isObject(receiver) &&
+_Object_getPrototypeOf(receiver) === null &&
+receiver !== proxy &&
+receiver[INQUIRY_TARGET_KEY] === proxy;
 
 const isNonConstructorNativeFunction =
 (obj, name) =>
@@ -639,5 +728,30 @@ type =>
 };
 
 const propFilter = prop => obj => prop in obj;
+
+_Function_prototype.bind =
+new _Proxy
+(
+    _Function_prototype.bind,
+    {
+        apply(target, thisArg, args)
+        {
+            let fn;
+            const [bindThis] = args;
+            const thisSupplier =
+            isObject(bindThis) && doThisSupplierInquiry(_Object_getPrototypeOf(bindThis));
+            if (thisSupplier)
+            {
+                const handler = createLateBindHandler(thisSupplier);
+                fn = new _Proxy(thisArg, handler);
+                delete args[0];
+            }
+            else
+                fn = thisArg;
+            const boundFn = _Function_prototype_bind_call(fn, ...args);
+            return boundFn;
+        },
+    },
+);
 
 export { classes, defineGlobally, getPrototypeListOf };
