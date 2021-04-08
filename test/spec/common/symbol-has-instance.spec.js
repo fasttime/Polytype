@@ -70,6 +70,12 @@ describe
 
         it
         (
+            'has expected prototype',
+            () => assert.strictEqual(Object.getPrototypeOf(hasInstance), Function.prototype),
+        );
+
+        it
+        (
             'cannot be called with new',
             // eslint-disable-next-line new-cap
             () => assert.throwsTypeError(() => new hasInstance(), /\bis not a constructor\b/),

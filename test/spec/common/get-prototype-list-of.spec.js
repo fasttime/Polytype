@@ -62,6 +62,14 @@ describe
 
         it
         (
+            'has expected prototype',
+            () =>
+            assert.strictEqual
+            (Object.getPrototypeOf(Object.getPrototypeListOf), Function.prototype),
+        );
+
+        it
+        (
             'cannot be called with new',
             () =>
             assert.throwsTypeError

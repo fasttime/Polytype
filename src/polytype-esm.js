@@ -67,9 +67,9 @@ const INQUIRY_TARGET_KEY = 'target';
 
 const OBJECT_OR_NULL_OR_UNDEFINED_TYPES = ['function', 'object', 'undefined'];
 
-const PROTOTYPES_INQUIRY_KEY = Symbol.for('Polytype prototypes inquiry');
+const PROTOTYPES_INQUIRY_KEY = Symbol.for('Polytype inquiry: prototypes');
 
-const THIS_SUPPLIER_INQUIRY_KEY = Symbol.for('Polytype this supplier inquiry');
+const THIS_SUPPLIER_INQUIRY_KEY = Symbol.for('Polytype inquiry: this supplier');
 
 let _Function_prototype_call = _Function_prototype.call;
 let bindCall = callable => _Function_prototype_call.bind(callable);
@@ -168,25 +168,19 @@ typeSet =>
     function (...args)
     {
         const descriptorMapObjList = [];
+        const thisReference = createReference();
         {
             const typeToSuperArgsMap = createTypeToSuperArgsMap(typeSet, args);
-            const thisReference = createReference();
             const superNewTarget = createSuperNewTarget(thisReference.get, new.target);
-            try
+            for (const type of typeSet)
             {
-                for (const type of typeSet)
-                {
-                    const superArgs = typeToSuperArgsMap.get(type) ?? EMPTY_ARRAY;
-                    const newObj = _Reflect_construct(type, superArgs, superNewTarget);
-                    const descriptorMapObj = _Object_getOwnPropertyDescriptors(newObj);
-                    descriptorMapObjList.push(descriptorMapObj);
-                }
-            }
-            finally
-            {
-                thisReference.set(this);
+                const superArgs = typeToSuperArgsMap.get(type) ?? EMPTY_ARRAY;
+                const newObj = _Reflect_construct(type, superArgs, superNewTarget);
+                const descriptorMapObj = _Object_getOwnPropertyDescriptors(newObj);
+                descriptorMapObjList.push(descriptorMapObj);
             }
         }
+        thisReference.set(this);
         for (const descriptorMapObj of descriptorMapObjList)
             _Object_defineProperties(this, descriptorMapObj);
         for (let descriptorMapObj; descriptorMapObj = descriptorMapObjList.pop();)
@@ -200,14 +194,14 @@ const createGetConstructorName =
 typeSet => () => `(${[...typeSet].map(({ name }) => _String(name))})`;
 
 const createLateBindHandler =
-thisSupplier =>
+(thisArg, thisSupplier) =>
 {
     const handler =
     {
-        apply(target, thisArg, args)
+        apply(target, dummyThisArg, args)
         {
-            const newThisArg = thisSupplier() ?? thisArg;
-            const returnValue = _Reflect_apply(target, newThisArg, args);
+            thisArg = thisSupplier() ?? thisArg;
+            const returnValue = _Reflect_apply(target, thisArg, args);
             return returnValue;
         },
     };
@@ -736,19 +730,19 @@ new _Proxy
     {
         apply(target, thisArg, args)
         {
-            let fn;
-            const [bindThis] = args;
-            const thisSupplier =
-            isObject(bindThis) && doThisSupplierInquiry(_Object_getPrototypeOf(bindThis));
-            if (thisSupplier)
+            if (isCallable(thisArg))
             {
-                const handler = createLateBindHandler(thisSupplier);
-                fn = new _Proxy(thisArg, handler);
-                delete args[0];
+                const [bindThis] = args;
+                const thisSupplier =
+                isObject(bindThis) && doThisSupplierInquiry(_Object_getPrototypeOf(bindThis));
+                if (thisSupplier)
+                {
+                    const handler = createLateBindHandler(bindThis, thisSupplier);
+                    thisArg = new _Proxy(thisArg, handler);
+                    delete args[0];
+                }
             }
-            else
-                fn = thisArg;
-            const boundFn = _Function_prototype_bind_call(fn, ...args);
+            const boundFn = _Function_prototype_bind_call(thisArg, ...args);
             return boundFn;
         },
     },

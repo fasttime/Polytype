@@ -56,16 +56,22 @@
         );
     }
 
-    function createDeceptiveObject(prototypes = [42])
+    function createDeceptiveObject(result = [42])
     {
-        const prototypesLookupSymbol = Symbol.for('Polytype prototypes inquiry');
+        const prototypesInquirySymbol = Symbol.for('Polytype inquiry: prototypes');
+        const thisSupplierInquirySymbol = Symbol.for('Polytype inquiry: this supplier');
         const obj =
         {
             __proto__:
             {
-                get [prototypesLookupSymbol]()
+                get [prototypesInquirySymbol]()
                 {
-                    this.result = prototypes;
+                    this.result = result;
+                    return undefined;
+                },
+                get [thisSupplierInquirySymbol]()
+                {
+                    this.result = result;
                     return undefined;
                 },
             },
@@ -110,7 +116,7 @@
 
     function exactRegExp(...strs)
     {
-        const patterns = strs.map(str => `${str.replace(/[.()[]/g, '\\$&')}`);
+        const patterns = strs.map(str => `${str.replace(/[.()[|]/g, '\\$&')}`);
         const pattern = patterns.length > 1 ? `(?:${patterns.join('|')})` : patterns[0];
         const regExp = RegExp(`^${pattern}$`);
         return regExp;
