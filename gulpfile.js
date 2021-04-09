@@ -105,7 +105,7 @@ task
         lint
         (
             {
-                src: ['src/**/*.{js,mjs}', 'test/**/*.mjs'],
+                src: ['src/**/*.{js,mjs}', 'test/**/*.mjs', '!test/spec/ts-defs.spec.mjs'],
                 parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
             },
             {
