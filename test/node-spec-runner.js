@@ -4,55 +4,63 @@
 
 'use strict';
 
-const INSPECT_BRK_REG_EXP = /^--inspect-brk(?![^=])/;
-
-function testExecArgv(regExp)
 {
-    const returnValue = execArgv.some(arg => regExp.test(arg));
-    return returnValue;
-}
+    function addMissingFlag(flag)
+    {
+        const regExp = RegExp(`${flag}(?![^=])`);
+        const flagFound = execArgv.some(arg => regExp.test(arg));
+        if (!flagFound)
+            childExecArgv.push(flag);
+    }
 
-const { execArgv } = process;
+    const { execArgv } = process;
+    const childExecArgv = [...execArgv];
+    addMissingFlag('--experimental-vm-modules');
+    addMissingFlag('--harmony-top-level-await');
+    if (childExecArgv.length > execArgv.length)
+    {
+        const { fork } = require('child_process');
 
-if (!testExecArgv(/^--experimental-vm-modules(?![^=])/))
-{
-    const { fork } = require('child_process');
-
-    const [, modulePath, ...args] = process.argv;
-    const childExecArgv = execArgv.filter(execArg => !INSPECT_BRK_REG_EXP.test(execArg));
-    if (childExecArgv.length < execArgv.length)
-        childExecArgv.unshift('inspect');
-    childExecArgv.push('--experimental-vm-modules', '--no-warnings');
-    const childProcess = fork(modulePath, args, { execArgv: childExecArgv });
-    childProcess.on
-    (
-        'exit',
-        (code, signal) =>
-        {
-            process.exitCode = code != null ? code : 128 + signal;
-        },
-    );
-    return;
-}
-
-require('./spec-helper');
-
-const glob          = require('glob');
-const Mocha         = require('mocha');
-const { promisify } = require('util');
-
-{
-    const debug = testExecArgv(INSPECT_BRK_REG_EXP);
-    if (debug)
-        Mocha.Runnable.prototype.timeout = (...args) => args.length ? undefined : 0;
+        const [, modulePath, ...args] = process.argv;
+        addMissingFlag('--no-warnings');
+        const childProcess = fork(modulePath, args, { execArgv: childExecArgv });
+        childProcess.on
+        (
+            'exit',
+            (code, signal) =>
+            {
+                process.exitCode = code != null ? code : 128 + signal;
+            },
+        );
+        return;
+    }
 }
 
 (async () =>
 {
+    require('./spec-helper');
+    const Mocha = require('mocha');
+
+    {
+        const { url } = require('inspector');
+
+        const inspectorUrl = url();
+        if (inspectorUrl)
+            Mocha.Runnable.prototype.timeout = (...args) => args.length ? undefined : 0;
+    }
     const mocha = new Mocha({ checkLeaks: true });
     mocha.addFile(require.resolve('./init-spec.js'));
+    const asyncGlob =
+    (() =>
+    {
+        const glob          = require('glob');
+        const { promisify } = require('util');
+
+        const asyncGlob = promisify(glob);
+        return asyncGlob;
+    })();
     const filenames =
-    await promisify(glob)('spec/**/*.spec.{js,mjs}', { absolute: true, cwd: __dirname });
+    await asyncGlob('spec/**/*.spec.{js,mjs}', { absolute: true, cwd: __dirname });
     for (const filename of filenames)
         mocha.addFile(filename);
     await mocha.loadFilesAsync();
