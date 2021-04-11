@@ -9,22 +9,23 @@
     {
         const globalThisDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'globalThis');
 
+        let bindDescriptor;
         let classesDescriptor;
-        let getPrototypeListOfDescriptor;
         let fnHasInstanceDescriptor;
-        let objHasInstanceDescriptor;
+        let getPrototypeListOfDescriptor;
         let isPrototypeOfDescriptor;
+        let objHasInstanceDescriptor;
 
         before
         (
             () =>
             {
-                classesDescriptor =
-                Object.getOwnPropertyDescriptor(globalThis, 'classes');
-                getPrototypeListOfDescriptor =
-                Object.getOwnPropertyDescriptor(Object, 'getPrototypeListOf');
+                classesDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'classes');
                 fnHasInstanceDescriptor =
                 Object.getOwnPropertyDescriptor(Function, Symbol.hasInstance);
+                bindDescriptor = Object.getOwnPropertyDescriptor(Function.prototype, 'bind');
+                getPrototypeListOfDescriptor =
+                Object.getOwnPropertyDescriptor(Object, 'getPrototypeListOf');
                 objHasInstanceDescriptor =
                 Object.getOwnPropertyDescriptor(Object, Symbol.hasInstance);
                 isPrototypeOfDescriptor =
@@ -36,20 +37,13 @@
         (
             () =>
             {
-                if (globalThisDescriptor)
-                    Object.defineProperty(globalThis, 'globalThis', globalThisDescriptor);
-                else
-                    delete globalThis.globalThis;
+                setPropertyDescriptor(globalThis, 'globalThis', globalThisDescriptor);
                 Object.defineProperty(globalThis, 'classes', classesDescriptor);
-                Object.defineProperty(Function, Symbol.hasInstance, fnHasInstanceDescriptor);
-                Object.defineProperties
-                (
-                    Object,
-                    {
-                        getPrototypeListOf: getPrototypeListOfDescriptor,
-                        [Symbol.hasInstance]: objHasInstanceDescriptor,
-                    },
-                );
+                setPropertyDescriptor(Function, Symbol.hasInstance, fnHasInstanceDescriptor);
+                // eslint-disable-next-line no-extend-native
+                Object.defineProperty(Function.prototype, 'bind', bindDescriptor);
+                setPropertyDescriptor(Object, 'getPrototypeListOf', getPrototypeListOfDescriptor);
+                setPropertyDescriptor(Object, Symbol.hasInstance, objHasInstanceDescriptor);
                 // eslint-disable-next-line no-extend-native
                 Object.defineProperty(Object.prototype, 'isPrototypeOf', isPrototypeOfDescriptor);
             },
@@ -207,6 +201,14 @@
 
         const result = { A, B, C, E, callData };
         return result;
+    }
+
+    function setPropertyDescriptor(obj, key, descriptor)
+    {
+        if (descriptor)
+            Object.defineProperty(obj, key, descriptor);
+        else
+            delete obj[key];
     }
 
     const { Assertion, assert } = typeof chai !== 'undefined' ? chai : require('chai');

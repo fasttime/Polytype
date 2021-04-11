@@ -14,6 +14,8 @@ describe
             return thisAndArguments;
         }
 
+        before(() => classes(Object));
+
         describe
         (
             'with a regular this value',
@@ -327,55 +329,37 @@ describe
                     'retargets this value',
                     () =>
                     {
-                        it
-                        (
-                            'in the same realm',
-                            () =>
+                        function test(classes)
+                        {
+                            let getBoundThisAndArguments;
+
+                            class A
                             {
-                                let getBoundThisAndArguments;
-
-                                class A
+                                constructor()
                                 {
-                                    constructor()
-                                    {
-                                        getBoundThisAndArguments =
-                                        getThisAndArguments.bind(this, 'foo', 'bar');
-                                    }
+                                    getBoundThisAndArguments =
+                                    getThisAndArguments.bind(this, 'foo', 'bar');
                                 }
+                            }
 
-                                class B extends classes(A)
-                                { }
+                            class B extends classes(A)
+                            { }
 
-                                const thisValue = new B();
-                                const actual = getBoundThisAndArguments();
-                                const expected = { this: thisValue, arguments: ['foo', 'bar'] };
-                                assert.deepStrictEqual(actual, expected);
-                            },
-                        );
+                            const thisValue = new B();
+                            const actual = getBoundThisAndArguments();
+                            const expected = { this: thisValue, arguments: ['foo', 'bar'] };
+                            assert.deepStrictEqual(actual, expected);
+                        }
+
+                        it('in the same realm', () => test(classes));
 
                         it
                         (
                             'in another realm',
                             async () =>
                             {
-                                const { String: Stringʼ } = await newRealm(true);
-
-                                class A
-                                {
-                                    constructor()
-                                    {
-                                        this.appendBar = Stringʼ.prototype.concat.bind(this, 'bar');
-                                    }
-                                }
-
-                                class B extends classes(A)
-                                { }
-
-                                const b = new B();
-                                b.toString = () => 'foo';
-                                const actual = b.appendBar();
-                                const expected = 'foobar';
-                                assert.strictEqual(actual, expected);
+                                const { classes: classesʼ } = await newRealm(true);
+                                test(classesʼ);
                             },
                         );
                     },

@@ -1,22 +1,50 @@
 /* eslint-env mocha */
-/* global assert, createDeceptiveObject */
+/* global assert, classes, createDeceptiveObject, newRealm */
 
 'use strict';
 
 describe
 (
-    'bind',
+    'Function.prototype.bind',
     () =>
     {
+        before(() => classes(Object));
+
         it
         (
-            'has expected attributes',
-            () =>
-            assert.include
-            (
-                Object.getOwnPropertyDescriptor(Function.prototype, 'bind'),
-                { configurable: true, enumerable: false, writable: true },
-            ),
+            'is defined on Function.prototype',
+            async () =>
+            {
+                const { Function: Functionʼ } = await newRealm();
+                Object.defineProperty
+                (
+                    Functionʼ.prototype,
+                    'bind',
+                    {
+                        configurable: true,
+                        enumerable: true,
+                        value: Functionʼ.prototype.bind,
+                        writable: false,
+                    },
+                );
+                const A = Function();
+                const Aʼ = Functionʼ();
+                const emptyObj = { __proto__: null };
+                const B = Function();
+                Object.setPrototypeOf(B.prototype, emptyObj);
+                classes(A, Aʼ, B);
+                assert.include
+                (
+                    Object.getOwnPropertyDescriptor(Function.prototype, 'bind'),
+                    { configurable: true, enumerable: false, writable: true },
+                );
+                assert.include
+                (
+                    Object.getOwnPropertyDescriptor(Functionʼ.prototype, 'bind'),
+                    { configurable: true, enumerable: true, writable: false },
+                );
+                assert.notOwnProperty(emptyObj, 'bind');
+            },
         );
 
         it
@@ -61,7 +89,7 @@ describe
             () =>
             {
                 const str = Function.prototype.toString.call(Function.prototype.bind);
-                assert.match(str, /^function \w*\(\) {\s+\[native code]\s+}$/);
+                assert.match(str, /^function (?!bind\b)\w*\(\) {\s+\[native code]\s+}$/);
             },
         );
 

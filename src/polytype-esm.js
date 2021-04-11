@@ -46,6 +46,27 @@ const _String               = String;
 const _Symbol_hasInstance   = Symbol.hasInstance;
 const _TypeError            = TypeError;
 
+const BIND_HANDLER =
+{
+    apply(target, thisArg, args)
+    {
+        if (isCallable(thisArg))
+        {
+            const [bindThis] = args;
+            const thisSupplier =
+            isObject(bindThis) && doThisSupplierInquiry(_Object_getPrototypeOf(bindThis));
+            if (thisSupplier)
+            {
+                const handler = createLateBindHandler(bindThis, thisSupplier);
+                thisArg = new _Proxy(thisArg, handler);
+                delete args[0];
+            }
+        }
+        const boundFn = _Function_prototype_bind_call(thisArg, ...args);
+        return boundFn;
+    },
+};
+
 const COMMON_HANDLER_PROTOTYPE = { setPrototypeOf: () => false };
 
 const CONSTRUCTOR_HANDLER_PROTOTYPE =
@@ -64,6 +85,20 @@ const EMPTY_OBJECT = _Object.freeze({ __proto__: null });
 const INQUIRY_RESULT_KEY = 'result';
 
 const INQUIRY_TARGET_KEY = 'target';
+
+const IS_PROTOTYPE_OF_HANDLER =
+{
+    apply(dummyTarget, thisArg, [obj])
+    {
+        if (isObject(obj))
+        {
+            const target = _Object_prototype_valueOf_call(thisArg);
+            if (isInPrototypeTree(target, obj))
+                return true;
+        }
+        return false;
+    },
+};
 
 const OBJECT_OR_NULL_OR_UNDEFINED_TYPES = ['function', 'object', 'undefined'];
 
@@ -555,22 +590,13 @@ function installAncestorProperties(...objSets)
                 {
                     const { constructor } = obj;
                     if (isConstructor(constructor))
-                        installHasInstance(constructor, installedSet);
+                        installHasInstanceAndBind(constructor, installedSet);
                 }
                 {
                     const prototype = _Object_getPrototypeOf(obj);
                     if (prototype === null)
                     {
-                        const descriptor = _Object_getOwnPropertyDescriptor(obj, 'isPrototypeOf');
-                        if
-                        (
-                            descriptor &&
-                            isNonConstructorNativeFunction(descriptor.value, 'isPrototypeOf')
-                        )
-                        {
-                            descriptor.value = isPrototypeOf;
-                            _Object_defineProperty(obj, 'isPrototypeOf', descriptor);
-                        }
+                        installStub(obj, 'isPrototypeOf', IS_PROTOTYPE_OF_HANDLER);
                         break;
                     }
                     obj = prototype;
@@ -580,7 +606,7 @@ function installAncestorProperties(...objSets)
     }
 }
 
-const installHasInstance =
+const installHasInstanceAndBind =
 (obj, installedSet) =>
 {
     if (!installedSet.has(obj))
@@ -590,14 +616,28 @@ const installHasInstance =
         let installed = false;
         for (const prototype of prototypes)
         {
-            if (!isFunctionPrototype(prototype))
+            if (isFunctionPrototype(prototype))
+                installStub(prototype, 'bind', BIND_HANDLER);
+            else
             {
-                installHasInstance(prototype, installedSet);
+                installHasInstanceAndBind(prototype, installedSet);
                 installed = true;
             }
         }
         if (!installed)
             defineHasInstanceProperty(obj);
+    }
+};
+
+const installStub =
+(obj, prop, handler) =>
+{
+    const descriptor = _Object_getOwnPropertyDescriptor(obj, prop);
+    const value = descriptor?.value;
+    if (value && isNonConstructorNativeFunction(value, prop))
+    {
+        descriptor.value = new _Proxy(value, handler);
+        _Object_defineProperty(obj, prop, descriptor);
     }
 };
 
@@ -677,7 +717,7 @@ const isNonConstructorNativeFunction =
         return false;
     }
     const groups = /^function (.*)\(\) {\s+\[native code]\s}$/.exec(str);
-    const returnValue = groups && groups[1] === name && !isConstructor(obj);
+    const returnValue = groups != null && groups[1] === name && !isConstructor(obj);
     return returnValue;
 };
 
@@ -688,20 +728,6 @@ const isNonNullishPrimitive = obj => !OBJECT_OR_NULL_OR_UNDEFINED_TYPES.includes
 const isNonUndefinedPrimitive = obj => obj === null || isNonNullishPrimitive(obj);
 
 const isObject = obj => obj !== null && !isNonNullPrimitive(obj);
-
-const { isPrototypeOf } =
-{
-    isPrototypeOf(obj)
-    {
-        if (isObject(obj))
-        {
-            const target = _Object_prototype_valueOf_call(this);
-            if (isInPrototypeTree(target, obj))
-                return true;
-        }
-        return false;
-    },
-};
 
 const nameOfType =
 type =>
@@ -722,30 +748,5 @@ type =>
 };
 
 const propFilter = prop => obj => prop in obj;
-
-_Function_prototype.bind =
-new _Proxy
-(
-    _Function_prototype.bind,
-    {
-        apply(target, thisArg, args)
-        {
-            if (isCallable(thisArg))
-            {
-                const [bindThis] = args;
-                const thisSupplier =
-                isObject(bindThis) && doThisSupplierInquiry(_Object_getPrototypeOf(bindThis));
-                if (thisSupplier)
-                {
-                    const handler = createLateBindHandler(bindThis, thisSupplier);
-                    thisArg = new _Proxy(thisArg, handler);
-                    delete args[0];
-                }
-            }
-            const boundFn = _Function_prototype_bind_call(thisArg, ...args);
-            return boundFn;
-        },
-    },
-);
 
 export { classes, defineGlobally, getPrototypeListOf };
