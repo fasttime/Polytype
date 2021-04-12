@@ -25,6 +25,7 @@ const
     create:                     _Object_create,
     defineProperties:           _Object_defineProperties,
     defineProperty:             _Object_defineProperty,
+    freeze:                     _Object_freeze,
     getOwnPropertyDescriptor:   _Object_getOwnPropertyDescriptor,
     getOwnPropertyDescriptors:  _Object_getOwnPropertyDescriptors,
     getPrototypeOf:             _Object_getPrototypeOf,
@@ -80,7 +81,7 @@ const CONSTRUCTOR_HANDLER_PROTOTYPE =
 
 const EMPTY_ARRAY = [];
 
-const EMPTY_OBJECT = _Object.freeze({ __proto__: null });
+const EMPTY_OBJECT = _Object_freeze({ __proto__: null });
 
 const INQUIRY_RESULT_KEY = 'result';
 
@@ -318,15 +319,16 @@ const createSuperMethodHandler =
 
 function createSuperNewTarget(thisSupplier, newTarget)
 {
-    function substituteConstructor()
-    { }
+    function superNewTarget()
+    {
+        throw _TypeError('Operation not supported');
+    }
 
-    delete substituteConstructor.length;
-    delete substituteConstructor.name;
-    substituteConstructor.prototype =
-    createSubstitutePrototypeProxy(thisSupplier, newTarget.prototype);
-    _Object_setPrototypeOf(substituteConstructor, newTarget);
-    const superNewTarget = new _Proxy(substituteConstructor, CONSTRUCTOR_HANDLER_PROTOTYPE);
+    delete superNewTarget.length;
+    delete superNewTarget.name;
+    superNewTarget.prototype = createSubstitutePrototypeProxy(thisSupplier, newTarget.prototype);
+    _Object_setPrototypeOf(superNewTarget, newTarget);
+    _Object_freeze(superNewTarget);
     return superNewTarget;
 }
 

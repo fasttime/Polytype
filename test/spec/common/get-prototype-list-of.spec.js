@@ -35,29 +35,26 @@ describe
         (
             'has expected own properties',
             () =>
-            {
-                assert.hasOwnPropertyDescriptors
-                (
-                    Object.getPrototypeListOf,
+            assert.hasOwnPropertyDescriptors
+            (
+                Object.getPrototypeListOf,
+                {
+                    length:
                     {
-                        length:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: 1,
-                            writable: false,
-                        },
-                        name:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: 'getPrototypeListOf',
-                            writable: false,
-                        },
+                        configurable: true,
+                        enumerable: false,
+                        value: 1,
+                        writable: false,
                     },
-                );
-                assert.isEmpty(Object.getOwnPropertySymbols(Object.getPrototypeListOf));
-            },
+                    name:
+                    {
+                        configurable: true,
+                        enumerable: false,
+                        value: 'getPrototypeListOf',
+                        writable: false,
+                    },
+                },
+            ),
         );
 
         it

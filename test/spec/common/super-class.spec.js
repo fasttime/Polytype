@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createNullPrototypeFunction, setupTestData */
+/* global assert, classes, createNullPrototypeFunction */
 
 'use strict';
 
@@ -39,7 +39,6 @@ describe
                                 },
                             },
                         );
-                        assert.isEmpty(Object.getOwnPropertySymbols(classValue));
                     },
                 );
 
@@ -105,26 +104,60 @@ describe
                     'throws a TypeError with an invalid argument',
                     () =>
                     {
-                        const { E } = setupTestData(classes);
-                        const e = new E();
+                        class Foo extends classes(Object)
+                        {
+                            callSuper()
+                            {
+                                super.class({ });
+                            }
+                        }
+
+                        const foo = new Foo();
                         assert.throwsTypeError
-                        (() => e.callSuper({ }), 'Argument is not a function');
+                        (() => foo.callSuper({ }), 'Argument is not a function');
                     },
                 );
 
                 it
                 (
-                    'throws a TypeError with an invalid superclass',
+                    'throws a TypeError with an indirect superclass',
                     () =>
                     {
-                        const { A, E } = setupTestData(classes);
-                        const e = new E();
-                        assert.throwsTypeError
-                        (
-                            () => e.callSuper(A),
-                            'Property \'prototype\' of argument does not match any direct ' +
-                            'superclass',
-                        );
+                        class A
+                        { }
+
+                        class B extends classes(A)
+                        { }
+
+                        class C extends classes(B)
+                        {
+                            callSuper()
+                            {
+                                super.class(A);
+                            }
+                        }
+
+                        class D extends A
+                        { }
+
+                        class E extends classes(D)
+                        {
+                            callSuper()
+                            {
+                                super.class(A);
+                            }
+                        }
+
+                        const expectedMessage =
+                        'Property \'prototype\' of argument does not match any direct superclass';
+                        {
+                            const c = new C();
+                            assert.throwsTypeError(() => c.callSuper(), expectedMessage);
+                        }
+                        {
+                            const e = new E();
+                            assert.throwsTypeError(() => e.callSuper(), expectedMessage);
+                        }
                     },
                 );
 
@@ -188,7 +221,6 @@ describe
                                 },
                             },
                         );
-                        assert.isEmpty(Object.getOwnPropertySymbols(classValue));
                     },
                 );
 
@@ -252,20 +284,52 @@ describe
                     'throws a TypeError with an invalid argument',
                     () =>
                     {
-                        const { E } = setupTestData(classes);
+                        class Foo extends classes(Object)
+                        {
+                            static callSuper()
+                            {
+                                super.class({ });
+                            }
+                        }
+
                         assert.throwsTypeError
-                        (() => E.callStaticSuper({ }), 'Argument is not a function');
+                        (() => Foo.callSuper({ }), 'Argument is not a function');
                     },
                 );
 
                 it
                 (
-                    'throws a TypeError with an invalid superclass',
+                    'throws a TypeError with an indirect superclass',
                     () =>
                     {
-                        const { A, E } = setupTestData(classes);
-                        assert.throwsTypeError
-                        (() => E.callStaticSuper(A), 'Argument is not a direct superclass');
+                        class A
+                        { }
+
+                        class B extends classes(A)
+                        { }
+
+                        class C extends classes(B)
+                        {
+                            static callSuper()
+                            {
+                                super.class(A);
+                            }
+                        }
+
+                        class D extends A
+                        { }
+
+                        class E extends classes(D)
+                        {
+                            static callSuper()
+                            {
+                                super.class(A);
+                            }
+                        }
+
+                        const expectedMessage = 'Argument is not a direct superclass';
+                        assert.throwsTypeError(() => C.callSuper(), expectedMessage);
+                        assert.throwsTypeError(() => E.callSuper(), expectedMessage);
                     },
                 );
             },

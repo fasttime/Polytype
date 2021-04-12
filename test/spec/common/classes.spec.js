@@ -28,29 +28,26 @@ describe
         (
             'has expected own properties',
             () =>
-            {
-                assert.hasOwnPropertyDescriptors
-                (
-                    classes,
+            assert.hasOwnPropertyDescriptors
+            (
+                classes,
+                {
+                    length:
                     {
-                        length:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: 0,
-                            writable: false,
-                        },
-                        name:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: 'classes',
-                            writable: false,
-                        },
+                        configurable: true,
+                        enumerable: false,
+                        value: 0,
+                        writable: false,
                     },
-                );
-                assert.isEmpty(Object.getOwnPropertySymbols(classes));
-            },
+                    name:
+                    {
+                        configurable: true,
+                        enumerable: false,
+                        value: 'classes',
+                        writable: false,
+                    },
+                },
+            ),
         );
 
         it

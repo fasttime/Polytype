@@ -43,29 +43,26 @@ describe
         (
             'has expected own properties',
             () =>
-            {
-                assert.hasOwnPropertyDescriptors
-                (
-                    hasInstance,
+            assert.hasOwnPropertyDescriptors
+            (
+                hasInstance,
+                {
+                    length:
                     {
-                        length:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: 1,
-                            writable: false,
-                        },
-                        name:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: '[Symbol.hasInstance]',
-                            writable: false,
-                        },
+                        configurable: true,
+                        enumerable: false,
+                        value: 1,
+                        writable: false,
                     },
-                );
-                assert.isEmpty(Object.getOwnPropertySymbols(hasInstance));
-            },
+                    name:
+                    {
+                        configurable: true,
+                        enumerable: false,
+                        value: '[Symbol.hasInstance]',
+                        writable: false,
+                    },
+                },
+            ),
         );
 
         it
@@ -112,27 +109,25 @@ describe
                 class extends classesʼ(G)
                 { };
                 const _ADFH = classes(A, D, F, H);
-                const hasInstanceDescriptorMapObj =
+                const hasInstanceDescriptor =
                 {
-                    [Symbol.hasInstance]:
-                    {
-                        enumerable: false,
-                        configurable: true,
-                        value: hasInstance,
-                        writable: true,
-                    },
+                    enumerable: false,
+                    configurable: true,
+                    value: hasInstance,
+                    writable: true,
                 };
                 assert.notOwnProperty(A, Symbol.hasInstance);
-                assert.hasOwnPropertyDescriptors(B, hasInstanceDescriptorMapObj);
+                assert.hasOwnPropertyDescriptor(B, Symbol.hasInstance, hasInstanceDescriptor);
                 assert.notOwnProperty(C, Symbol.hasInstance);
                 assert.notOwnProperty(D, Symbol.hasInstance);
-                assert.hasOwnPropertyDescriptors(E, hasInstanceDescriptorMapObj);
+                assert.hasOwnPropertyDescriptor(E, Symbol.hasInstance, hasInstanceDescriptor);
                 assert.notOwnProperty(F, Symbol.hasInstance);
-                assert.hasOwnPropertyDescriptors(G, hasInstanceDescriptorMapObj);
+                assert.hasOwnPropertyDescriptor(G, Symbol.hasInstance, hasInstanceDescriptor);
                 assert.notOwnProperty(H, Symbol.hasInstance);
                 assert.notOwnProperty(_ADFH, Symbol.hasInstance);
-                assert.hasOwnPropertyDescriptors(Objectʼ, hasInstanceDescriptorMapObj);
-                assert.hasOwnPropertyDescriptors(Functionʼ, hasInstanceDescriptorMapObj);
+                assert.hasOwnPropertyDescriptor(Objectʼ, Symbol.hasInstance, hasInstanceDescriptor);
+                assert.hasOwnPropertyDescriptor
+                (Functionʼ, Symbol.hasInstance, hasInstanceDescriptor);
             },
         );
 

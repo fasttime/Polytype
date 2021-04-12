@@ -9,7 +9,6 @@ document,
 loadPolytype,
 maybeDescribe,
 newRealm,
-setupTestData,
 */
 
 'use strict';
@@ -19,6 +18,61 @@ describe
     'Polytype',
     () =>
     {
+        function setupTestData(classes)
+        {
+            const callData = { };
+
+            class A
+            {
+                constructor()
+                {
+                    callData.A =
+                    {
+                        args: [...arguments], // eslint-disable-line prefer-rest-params
+                        newTarget: new.target,
+                        this: this,
+                    };
+                }
+                aMethod()
+                { }
+                set aSetOnly(arg) // eslint-disable-line accessor-pairs
+                { }
+                static aStatic()
+                { }
+                static set aStaticSetOnly(arg) // eslint-disable-line accessor-pairs
+                { }
+            }
+
+            class B
+            {
+                constructor()
+                {
+                    callData.B =
+                    {
+                        args: [...arguments], // eslint-disable-line prefer-rest-params
+                        newTarget: new.target,
+                        this: this,
+                    };
+                }
+                bMethod()
+                { }
+                static bStatic()
+                { }
+            }
+
+            class C extends classes(A, B)
+            { }
+
+            class D
+            { }
+
+            class E extends classes(C, D)
+            { }
+
+            const result = { A, B, C, E, callData };
+            return result;
+        }
+
         describe
         (
             'is loaded only once',

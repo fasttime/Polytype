@@ -51,29 +51,26 @@ describe
         (
             'has expected own properties',
             () =>
-            {
-                assert.hasOwnPropertyDescriptors
-                (
-                    Function.prototype.bind,
+            assert.hasOwnPropertyDescriptors
+            (
+                Function.prototype.bind,
+                {
+                    length:
                     {
-                        length:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: 1,
-                            writable: false,
-                        },
-                        name:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: 'bind',
-                            writable: false,
-                        },
+                        configurable: true,
+                        enumerable: false,
+                        value: 1,
+                        writable: false,
                     },
-                );
-                assert.isEmpty(Object.getOwnPropertySymbols(Function.prototype.bind));
-            },
+                    name:
+                    {
+                        configurable: true,
+                        enumerable: false,
+                        value: 'bind',
+                        writable: false,
+                    },
+                },
+            ),
         );
 
         it

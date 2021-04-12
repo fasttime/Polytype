@@ -139,70 +139,6 @@
 
     const maybeIt = (condition, ...args) => (condition ? it : it.skip)(...args);
 
-    function setupTestData(classes)
-    {
-        const callData = { };
-
-        class A
-        {
-            constructor()
-            {
-                callData.A =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    newTarget: new.target,
-                    this: this,
-                };
-            }
-            aMethod()
-            { }
-            set aSetOnly(arg) // eslint-disable-line accessor-pairs
-            { }
-            static aStatic()
-            { }
-            static set aStaticSetOnly(arg) // eslint-disable-line accessor-pairs
-            { }
-        }
-
-        class B
-        {
-            constructor()
-            {
-                callData.B =
-                {
-                    args: [...arguments], // eslint-disable-line prefer-rest-params
-                    newTarget: new.target,
-                    this: this,
-                };
-            }
-            bMethod()
-            { }
-            static bStatic()
-            { }
-        }
-
-        class C extends classes(A, B)
-        { }
-
-        class D
-        { }
-
-        class E extends classes(C, D)
-        {
-            callSuper(type)
-            {
-                super.class(type);
-            }
-            static callStaticSuper(type)
-            {
-                super.class(type);
-            }
-        }
-
-        const result = { A, B, C, E, callData };
-        return result;
-    }
-
     function setPropertyDescriptor(obj, key, descriptor)
     {
         if (descriptor)
@@ -212,14 +148,22 @@
     }
 
     const { Assertion, assert } = typeof chai !== 'undefined' ? chai : require('chai');
-    assert.hasOwnPropertyDescriptors =
-    (obj, expDescs, msg) =>
+    assert.hasOwnPropertyDescriptor =
+    (obj, key, expectedDescriptor, msg) =>
     {
-        const keys = Reflect.ownKeys(expDescs);
-        for (const key of keys)
+        new Assertion(obj, msg, assert.hasOwnPropertyDescriptor, true)
+        .ownPropertyDescriptor(key, expectedDescriptor);
+    };
+    assert.hasOwnPropertyDescriptors =
+    (obj, expectedDescriptors, msg) =>
+    {
+        const actualKeys = Reflect.ownKeys(obj);
+        const expectedKeys = Reflect.ownKeys(expectedDescriptors);
+        assert.sameOrderedMembers(actualKeys, expectedKeys);
+        for (const key of expectedKeys)
         {
             new Assertion(obj, msg, assert.hasOwnPropertyDescriptors, true)
-            .ownPropertyDescriptor(key, expDescs[key]);
+            .ownPropertyDescriptor(key, expectedDescriptors[key]);
         }
     };
     assert.throwsTypeError =
@@ -473,7 +417,6 @@
             maybeIt,
             newRealm,
             polytypeMode,
-            setupTestData,
         },
     );
 }

@@ -50,7 +50,6 @@ describe
                                 },
                             },
                         );
-                        assert.isEmpty(Object.getOwnPropertySymbols(Function.prototype.bind));
                     },
                 );
 
@@ -109,8 +108,8 @@ describe
                         const thisValue = 42;
                         const getBoundThisAndArguments = getThisAndArguments.bind(thisValue, 1);
                         const actual = getBoundThisAndArguments(2, 3);
-                        const expected = { this: thisValue, arguments: [1, 2, 3] };
-                        assert.deepStrictEqual(actual, expected);
+                        assert.strictEqual(actual.this, thisValue);
+                        assert.deepStrictEqual(actual.arguments, [1, 2, 3]);
                     },
                 );
             },
@@ -164,7 +163,6 @@ describe
                                 },
                             },
                         );
-                        assert.isEmpty(Object.getOwnPropertySymbols(Function.prototype.bind));
                     },
                 );
 
@@ -347,8 +345,8 @@ describe
 
                             const thisValue = new B();
                             const actual = getBoundThisAndArguments();
-                            const expected = { this: thisValue, arguments: ['foo', 'bar'] };
-                            assert.deepStrictEqual(actual, expected);
+                            assert.strictEqual(actual.this, thisValue);
+                            assert.deepStrictEqual(actual.arguments, ['foo', 'bar']);
                         }
 
                         it('in the same realm', () => test(classes));
@@ -395,8 +393,8 @@ describe
                         { }
 
                         new C();
-                        const expected = { this: thisValue, arguments: [42] };
-                        assert.deepStrictEqual(actual, expected);
+                        assert.strictEqual(actual.this, thisValue);
+                        assert.deepStrictEqual(actual.arguments, [42]);
                     },
                 );
 
@@ -435,8 +433,8 @@ describe
                         catch
                         { }
                         const actual = getBoundThisAndArguments();
-                        const expected = { this: thisValue, arguments: [] };
-                        assert.deepStrictEqual(actual, expected);
+                        assert.strictEqual(actual.this, thisValue);
+                        assert.deepStrictEqual(actual.arguments, []);
                     },
                 );
             },

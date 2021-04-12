@@ -51,29 +51,26 @@ describe
         (
             'has expected own properties',
             () =>
-            {
-                assert.hasOwnPropertyDescriptors
-                (
-                    Object.prototype.isPrototypeOf,
+            assert.hasOwnPropertyDescriptors
+            (
+                Object.prototype.isPrototypeOf,
+                {
+                    length:
                     {
-                        length:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: 1,
-                            writable: false,
-                        },
-                        name:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: 'isPrototypeOf',
-                            writable: false,
-                        },
+                        configurable: true,
+                        enumerable: false,
+                        value: 1,
+                        writable: false,
                     },
-                );
-                assert.isEmpty(Object.getOwnPropertySymbols(Object.prototype.isPrototypeOf));
-            },
+                    name:
+                    {
+                        configurable: true,
+                        enumerable: false,
+                        value: 'isPrototypeOf',
+                        writable: false,
+                    },
+                },
+            ),
         );
 
         it

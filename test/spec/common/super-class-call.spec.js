@@ -13,6 +13,25 @@ describe
             'in nonstatic context',
             () =>
             {
+                it
+                (
+                    'is not extensible',
+                    () =>
+                    {
+                        class A extends classes(Object)
+                        {
+                            getSuper()
+                            {
+                                const returnValue = super.class(Object);
+                                return returnValue;
+                            }
+                        }
+
+                        const superObj = new A().getSuper();
+                        assert.isNotExtensible(superObj);
+                    },
+                );
+
                 describe
                 (
                     'invokes a superclass method',
@@ -483,6 +502,25 @@ describe
             'in static context',
             () =>
             {
+                it
+                (
+                    'is not extensible',
+                    () =>
+                    {
+                        class A extends classes(Object)
+                        {
+                            static getSuper()
+                            {
+                                const returnValue = super.class(Object);
+                                return returnValue;
+                            }
+                        }
+
+                        const superObj = A.getSuper();
+                        assert.isNotExtensible(superObj);
+                    },
+                );
+
                 describe
                 (
                     'invokes a superclass method',

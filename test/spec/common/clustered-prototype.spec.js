@@ -26,13 +26,6 @@ describe
                 (
                     prototype,
                     {
-                        class:
-                        {
-                            configurable: false,
-                            enumerable: false,
-                            value: prototype.class,
-                            writable: false,
-                        },
                         constructor:
                         {
                             configurable: true,
@@ -40,9 +33,15 @@ describe
                             value: constructor,
                             writable: true,
                         },
+                        class:
+                        {
+                            configurable: false,
+                            enumerable: false,
+                            value: prototype.class,
+                            writable: false,
+                        },
                     },
                 );
-                assert.isEmpty(Object.getOwnPropertySymbols(prototype));
             },
         );
     },
