@@ -26,19 +26,19 @@ describe
                 (
                     prototype,
                     {
-                        constructor:
-                        {
-                            configurable: true,
-                            enumerable: false,
-                            value: constructor,
-                            writable: true,
-                        },
                         class:
                         {
                             configurable: false,
                             enumerable: false,
                             value: prototype.class,
                             writable: false,
+                        },
+                        constructor:
+                        {
+                            configurable: true,
+                            enumerable: false,
+                            value: constructor,
+                            writable: true,
                         },
                     },
                 );

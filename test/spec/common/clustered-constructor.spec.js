@@ -25,6 +25,13 @@ describe
                 (
                     constructor,
                     {
+                        class:
+                        {
+                            configurable: false,
+                            enumerable: false,
+                            value: constructor.class,
+                            writable: false,
+                        },
                         length:
                         {
                             configurable: true,
@@ -44,13 +51,6 @@ describe
                             configurable: false,
                             enumerable: false,
                             value: { },
-                            writable: false,
-                        },
-                        class:
-                        {
-                            configurable: false,
-                            enumerable: false,
-                            value: constructor.class,
                             writable: false,
                         },
                     },

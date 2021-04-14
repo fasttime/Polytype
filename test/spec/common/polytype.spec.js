@@ -146,15 +146,11 @@ describe
                         A.prototype.a = 13;
                         const c = new C();
                         c.a = 42;
-                        assert.deepEqual
+                        assert.hasOwnPropertyDescriptor
                         (
-                            Object.getOwnPropertyDescriptor(c, 'a'),
-                            {
-                                configurable: true,
-                                enumerable: true,
-                                value: 42,
-                                writable: true,
-                            },
+                            c,
+                            'a',
+                            { configurable: true, enumerable: true, value: 42, writable: true },
                         );
                     },
                 );
@@ -192,15 +188,11 @@ describe
                 const { C } = setupTestData(classes);
                 const c = new C();
                 c.cNewProp = 42;
-                assert.deepEqual
+                assert.hasOwnPropertyDescriptor
                 (
-                    Object.getOwnPropertyDescriptor(c, 'cNewProp'),
-                    {
-                        configurable: true,
-                        enumerable: true,
-                        value: 42,
-                        writable: true,
-                    },
+                    c,
+                    'cNewProp',
+                    { configurable: true, enumerable: true, value: 42, writable: true },
                 );
             },
         );
@@ -263,15 +255,11 @@ describe
                         const { A, C } = setupTestData(classes);
                         A.aProp = 'A';
                         C.aProp = 'C';
-                        assert.deepEqual
+                        assert.hasOwnPropertyDescriptor
                         (
-                            Object.getOwnPropertyDescriptor(C, 'aProp'),
-                            {
-                                configurable: true,
-                                enumerable: true,
-                                value: 'C',
-                                writable: true,
-                            },
+                            C,
+                            'aProp',
+                            { configurable: true, enumerable: true, value: 'C', writable: true },
                         );
                     },
                 );
@@ -307,15 +295,11 @@ describe
             {
                 const { C } = setupTestData(classes);
                 C.cNewProp = 42;
-                assert.deepEqual
+                assert.hasOwnPropertyDescriptor
                 (
-                    Object.getOwnPropertyDescriptor(C, 'cNewProp'),
-                    {
-                        configurable: true,
-                        enumerable: true,
-                        value: 42,
-                        writable: true,
-                    },
+                    C,
+                    'cNewProp',
+                    { configurable: true, enumerable: true, value: 42, writable: true },
                 );
             },
         );

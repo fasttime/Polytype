@@ -159,7 +159,7 @@
     {
         const actualKeys = Reflect.ownKeys(obj);
         const expectedKeys = Reflect.ownKeys(expectedDescriptors);
-        assert.sameOrderedMembers(actualKeys, expectedKeys);
+        assert.sameMembers(actualKeys, expectedKeys);
         for (const key of expectedKeys)
         {
             new Assertion(obj, msg, assert.hasOwnPropertyDescriptors, true)

@@ -33,15 +33,27 @@ describe
                 const B = Function();
                 Object.setPrototypeOf(B.prototype, emptyObj);
                 classes(A, Aʼ, B);
-                assert.include
+                assert.hasOwnPropertyDescriptor
                 (
-                    Object.getOwnPropertyDescriptor(Function.prototype, 'bind'),
-                    { configurable: true, enumerable: false, writable: true },
+                    Function.prototype,
+                    'bind',
+                    {
+                        configurable: true,
+                        enumerable: false,
+                        value: Function.prototype.bind,
+                        writable: true,
+                    },
                 );
-                assert.include
+                assert.hasOwnPropertyDescriptor
                 (
-                    Object.getOwnPropertyDescriptor(Functionʼ.prototype, 'bind'),
-                    { configurable: true, enumerable: true, writable: false },
+                    Functionʼ.prototype,
+                    'bind',
+                    {
+                        configurable: true,
+                        enumerable: true,
+                        value: Functionʼ.prototype.bind,
+                        writable: false,
+                    },
                 );
                 assert.notOwnProperty(emptyObj, 'bind');
             },
