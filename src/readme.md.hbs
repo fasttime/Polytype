@@ -433,6 +433,85 @@ in the example folder.
 Neither JavaScript nor TypeScript offer native support for multiple inheritance of any kind.
 Polytype strives to make up for this deficiency, but some important limitations remain.
 
+### `this` in base constructors
+
+In single inheritance, the value of `this` inside a constructor and in the constructors of all
+ancestor classes is the same object that the `new` operator returns.
+Not so in Polytype multiple inheritance, where the value of `this` inside base constructors is a
+special object called a _substitute_.
+Substitutes are necessary to make base constructors run independently from each other, each one with
+its own fresh instance.
+Only after all base constructors of a derived class have run, the properties of the substitues are
+merged into one object.
+
+```js
+let aThis, bThis, cThis;
+
+class A
+{
+    constructor()
+    {
+        aThis = this;
+    }
+}
+
+class B
+{
+    constructor()
+    {
+        bThis = this;
+    }
+}
+
+class C extends classes(A, B)
+{
+    constructor()
+    {
+        super();
+        cThis = this;
+    }
+}
+
+const obj = new C();
+console.log(aThis === obj);     // Prints false.
+console.log(bThis === obj);     // Prints false.
+console.log(aThis === bThis);   // Prints false.
+console.log(cThis === obj);     // Prints true.
+```
+
+After the base constructors have run, the substitutes become detached, meaning that they no longer
+reflect changes to the real instance and vice versa.
+This may cause problems with classes that store or bind the value of `this` in the constructor to
+use it later.
+
+For example, the following code that attaches a click handler to an HTML button will not work as one
+might expect, because `this` in the event handler refers to a substitute that is unaware of the
+`name` property later assigned to the instance of the derived class.
+
+```js
+class A
+{
+  constructor()
+  {
+    button.onclick = () => alert(this.name);
+  }
+}
+
+class B
+{ }
+
+class C extends classes(A, B)
+{ }
+
+const c = new C();
+c.name = 'Test';
+button.click(); // Alerts "undefined" rather than "Test".
+```
+
+While Polytype takes some actions to mitigate the effect of detached substitutes, like retargeting
+bound methods if necessary, classes that access the value of `this` in the constructor in order to
+use it later are generally not safe to subclass.
+
 ### `for...in` iterations
 
 When only single inheritance is used, a `for...in` iteration over a class constructor enumerates not
@@ -519,8 +598,7 @@ For these cases, Polytype provides the syntax `super.class(DirectBaseClass)[prop
 the direct base class containing the member to be accessed.
 This works all the time in JavaScript and works in TypeScript for any public or static member, but
 results in a compiler error when applied to a
-[protected](https://www.typescriptlang.org/docs/handbook/classes.html#understanding-protected)
-instance member.
+[protected](https://www.typescriptlang.org/docs/handbook/2/classes.html#protected) instance member.
 
 ```ts
 class RecordLeft
@@ -574,7 +652,7 @@ Polytype was successfully tested in the following browsers/JavaScript engines.
 <br>
  ![Edge](https://api.iconify.design/mdi:microsoft-edge.svg) Edge 80+
 <br>
- ![Firefox](https://api.iconify.design/mdi:firefox.svg) Firefox 72+
+ ![Firefox](https://api.iconify.design/mdi:firefox.svg) Firefox 74+
 <br>
  ![Opera](https://api.iconify.design/mdi:opera.svg) Opera 67+
 <br>
@@ -587,8 +665,9 @@ ECMAScript 2020 or higher syntax.
 
 [npm badge]: https://badge.fury.io/js/polytype.svg
 [npm url]: https://www.npmjs.com/package/polytype
-[Public instance fields]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Public_class_fields#Public_instance_fields
+[Public instance fields]:
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Public_class_fields#Public_instance_fields
 [Why Use for...in?]:
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#Why_Use_for...in
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#why_use_for...in
 [Enumerability and ownership of properties]:
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties
