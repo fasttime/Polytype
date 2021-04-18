@@ -96,7 +96,7 @@ import "polytype/global"; // ECMAScript module syntax
 
 In an HTML‐based application, the script build of Polytype can be simply embedded.
 Just download
-[polytype.min.js](https://cdn.jsdelivr.net/npm/polytype@0.12.0/lib/polytype.min.js) and include
+[polytype.min.js](https://cdn.jsdelivr.net/npm/polytype@0.13.2/lib/polytype.min.js) and include
 it in your HTML file.
 
 ```html
@@ -107,7 +107,7 @@ Alternatively, you can hotlink the script from the latest release package using 
 choice.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/polytype@0.12.0/lib/polytype.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/polytype@0.13.2/lib/polytype.min.js"></script>
 ```
 
 If your browser application already uses ECMAScript modules, you can also import the module build
@@ -115,7 +115,7 @@ If your browser application already uses ECMAScript modules, you can also import
 This has the advantage to avoid possible naming conflicts on global objects.
 
 ```js
-import { classes } from "https://cdn.jsdelivr.net/npm/polytype@0.12.0/lib/polytype.min.mjs";
+import { classes } from "https://cdn.jsdelivr.net/npm/polytype@0.13.2/lib/polytype.min.mjs";
 ```
 
 ## Usage
@@ -447,7 +447,7 @@ multiple inheritance without installing any additional packages.
 If you are using an IDE that supports TypeScript code completion like Visual Studio Code, you will
 get multiple inheritance sensitive suggestions as you type.
 A TypeScript version of the `ColoredCircle` sample code above can be found in
-[ColoredCircle.ts](https://github.com/fasttime/Polytype/blob/0.12.0/example/ColoredCircle.ts)
+[ColoredCircle.ts](https://github.com/fasttime/Polytype/blob/0.13.2/example/ColoredCircle.ts)
 in the example folder.
 
 ## Caveats

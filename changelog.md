@@ -1,3 +1,12 @@
+<a name="0.13.2"></a>
+## [0.13.2](https://github.com/fasttime/Polytype/releases/tag/0.13.2) (2021-04-18)
+
+* Late binding base constructor substitutes.
+* Dropped support for Firefox &lt; 74.
+* Improved documentation:
+  * Explaining value of `this` in base constructors.
+  * Updated links.
+
 <a name="0.12.0"></a>
 ## [0.12.0](https://github.com/fasttime/Polytype/releases/tag/0.12.0) (2021-03-02)
 
