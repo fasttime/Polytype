@@ -1,7 +1,7 @@
 /* eslint-env mocha, node */
 /* global maybeIt, polytypeMode */
 
-import { deepStrictEqual }          from 'assert';
+import { ok, strictEqual }          from 'assert';
 import { promises as fsPromises }   from 'fs';
 import glob                         from 'glob';
 import { createRequire }            from 'module';
@@ -27,6 +27,7 @@ export default async function ()
             describe('TypeScript 4.0', () => defineTests('typescript_4.0'));
             describe('TypeScript 4.1', () => defineTests('typescript_4.1'));
             describe('TypeScript 4.2', () => defineTests('typescript_4.2'));
+            describe('TypeScript 4.3', () => defineTests('typescript_4.3'));
         },
     );
 }
@@ -142,13 +143,25 @@ function defineTests(typescriptPkgName)
         testCase =>
         {
             const { expectedMessage, polytypeMode: currentPolytypeMode } = testCase;
-            const expectedMessages = expectedMessage === undefined ? [] : [expectedMessage];
 
             maybeIt
             (
                 currentPolytypeMode === undefined || currentPolytypeMode === polytypeMode,
                 testCase.title,
-                () => deepStrictEqual(testCase.actualMessages, expectedMessages),
+                () =>
+                {
+                    if (expectedMessage === undefined)
+                        strictEqual(testCase.actualMessages.length, 0);
+                    else
+                    {
+                        strictEqual(testCase.actualMessages.length, 1);
+                        const [actualMessage] = testCase.actualMessages;
+                        if (expectedMessage instanceof RegExp)
+                            ok(expectedMessage.test(actualMessage));
+                        else
+                            strictEqual(actualMessage, expectedMessage);
+                    }
+                },
             );
         },
     );

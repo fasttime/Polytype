@@ -2,7 +2,7 @@
 {
     title: 'classes global is read-only',
     polytypeMode: 'global',
-    expectedMessage: 'Cannot assign to \'classes\' because it is not a variable.',
+    expectedMessage: /^Cannot assign to 'classes' because it is (?:not a variable|an import)\.$/,
 }
 */
 
