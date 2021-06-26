@@ -97,11 +97,37 @@ task
 task
 (
     'lint',
-    () =>
+    async () =>
     {
-        const lint = require('@fasttime/gulp-lint');
+        const { lint } = require('@fasttime/lint');
 
-        const stream =
+        const COMMON_EXAMPLE_RULES =
+        {
+            'comma-dangle':
+            [
+                'error',
+                {
+                    'arrays':       'always-multiline',
+                    'objects':      'always-multiline',
+                    'imports':      'always-multiline',
+                    'exports':      'always-multiline',
+                    'functions':    'only-multiline',
+                },
+            ],
+            'no-unused-vars':
+            [
+                'error',
+                {
+                    args: 'none',
+                    caughtErrors: 'all',
+                    ignoreRestSiblings: true,
+                    vars: 'local',
+                    varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$',
+                },
+            ],
+        };
+
+        await
         lint
         (
             {
@@ -118,41 +144,29 @@ task
                 parserOptions: { ecmaVersion: 2020 },
             },
             {
-                src: 'example/**/*.{js,ts}',
+                src: 'example/**/*.js',
                 envs: 'node',
-                globals: ['classes'],
+                parserOptions: { ecmaVersion: 2020 },
+                rules:
+                {
+                    ...COMMON_EXAMPLE_RULES,
+                    'brace-style':  'off',
+                    'quotes':       ['error', 'double'],
+                },
+            },
+            {
+                src: 'example/**/*.ts',
+                envs: 'node',
                 parserOptions:
                 { ecmaVersion: 2020, project: 'tsconfig.json', sourceType: 'module' },
                 rules:
                 {
-                    'brace-style':  'off',
-                    'comma-dangle':
-                    [
-                        'error',
-                        {
-                            'arrays':       'always-multiline',
-                            'objects':      'always-multiline',
-                            'imports':      'always-multiline',
-                            'exports':      'always-multiline',
-                            'functions':    'only-multiline',
-                        },
-                    ],
-                    'no-unused-vars':
-                    [
-                        'error',
-                        {
-                            args: 'none',
-                            caughtErrors: 'all',
-                            ignoreRestSiblings: true,
-                            vars: 'local',
-                            varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$',
-                        },
-                    ],
-                    'quotes':       ['error', 'double'],
+                    ...COMMON_EXAMPLE_RULES,
+                    '@typescript-eslint/brace-style':   'off',
+                    '@typescript-eslint/quotes':        ['error', 'double'],
                 },
             },
         );
-        return stream;
     },
 );
 

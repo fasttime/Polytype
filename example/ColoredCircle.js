@@ -1,3 +1,5 @@
+"use strict";
+
 const { classes, getPrototypeListOf } = require("..");
 
 class Circle

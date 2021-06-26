@@ -36,7 +36,7 @@
     "test-serve": "test/serve.js"
   },
   "devDependencies": {
-    "@fasttime/gulp-lint": "latest",
+    "@fasttime/lint": "latest",
     "c8": "latest",
     "chai": "latest",
     "chalk": "latest",
