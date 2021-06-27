@@ -4,11 +4,11 @@ class Circle
 {
     public centerX?: number;
     public centerY?: number;
-    public constructor(centerX?: number, centerY?: number, public radius?: number)
+    public constructor(centerX?: number, centerY?: number, public radius = 1)
     {
         this.moveTo(centerX, centerY);
     }
-    public get diameter(): number { return this.radius! * 2; }
+    public get diameter(): number { return this.radius * 2; }
     public set diameter(diameter: number) { this.radius = diameter / 2; }
     public moveTo(centerX?: number, centerY?: number): void
     {
@@ -87,7 +87,7 @@ extends classes(Circle, ColoredObject)
         super(); // Base constructors invoked without parameters
         this.centerX    = 0;
         this.centerY    = 0;
-        this.radius     = 1;
+        // The radius has been already set to 1 by the Circle constructor.
         this.color      = "white";
     }
 }
@@ -95,10 +95,10 @@ extends classes(Circle, ColoredObject)
 const c = new ColoredCircle();
 
 c.moveTo(42, 31);
-c.radius = 1;
+c.radius = 2;
 c.color = "red";
 console.log(c.centerX, c.centerY);  // 42, 31
-console.log(c.diameter);            // 2
+console.log(c.diameter);            // 4
 c.paint();                          // "painting in red"
 
 console.log(c instanceof Circle);           // true

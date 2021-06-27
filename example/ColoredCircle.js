@@ -4,7 +4,7 @@ const { classes, getPrototypeListOf } = require("..");
 
 class Circle
 {
-    constructor(centerX, centerY, radius)
+    constructor(centerX, centerY, radius = 1)
     {
         this.moveTo(centerX, centerY);
         this.radius = radius;
@@ -85,7 +85,7 @@ extends classes(Circle, ColoredObject)
         super(); // Base constructors invoked without parameters
         this.centerX    = 0;
         this.centerY    = 0;
-        this.radius     = 1;
+        // The radius has been already set to 1 by the Circle constructor.
         this.color      = "white";
     }
 }
@@ -93,10 +93,10 @@ extends classes(Circle, ColoredObject)
 const c = new ColoredCircle();
 
 c.moveTo(42, 31);
-c.radius = 1;
+c.radius = 2;
 c.color = "red";
 console.log(c.centerX, c.centerY);  // 42, 31
-console.log(c.diameter);            // 2
+console.log(c.diameter);            // 4
 c.paint();                          // "painting in red"
 
 console.log(c instanceof Circle);           // true
