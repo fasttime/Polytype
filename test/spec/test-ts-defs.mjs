@@ -24,8 +24,6 @@ export default async function ()
         'TypeScript definitions',
         () =>
         {
-            describe('TypeScript 4.0', () => defineTests('typescript_4.0'));
-            describe('TypeScript 4.1', () => defineTests('typescript_4.1'));
             describe('TypeScript 4.2', () => defineTests('typescript_4.2'));
             describe('TypeScript 4.3', () => defineTests('typescript_4.3'));
         },
@@ -151,10 +149,14 @@ function defineTests(typescriptPkgName)
                 () =>
                 {
                     if (expectedMessage === undefined)
-                        strictEqual(testCase.actualMessages.length, 0);
+                    {
+                        strictEqual
+                        (testCase.actualMessages.length, 0, 'expected no compiler errors');
+                    }
                     else
                     {
-                        strictEqual(testCase.actualMessages.length, 1);
+                        strictEqual
+                        (testCase.actualMessages.length, 1, 'expected exactly 1 compiler error');
                         const [actualMessage] = testCase.actualMessages;
                         if (expectedMessage instanceof RegExp)
                             ok(expectedMessage.test(actualMessage));

@@ -4,7 +4,7 @@
     expectedMessage:
     'Argument of type \'undefined\' is not assignable to parameter of type ' +
     '\'SuperConstructor\'.\n' +
-    '  Type \'undefined\' is not assignable to type \'Function\'.',
+    '  Type \'undefined\' is not assignable to type \'abstract new (...args: any) => unknown\'.',
 }
 */
 

@@ -61,7 +61,8 @@ declare namespace Polytype
     type MapTupleTypesToReadonlySuperConstructorInvokeInfo<T extends SuperConstructor[]> =
     { [key in keyof T]: Readonly<SuperConstructorInvokeInfo<AsSuperConstructor<T[key]>>>; };
 
-    type SuperConstructor = Function & { readonly prototype: object | null; };
+    type SuperConstructor =
+    (abstract new (...args: any) => unknown) & { readonly prototype: object | null; };
 
     class SuperConstructorSelector<T extends SuperConstructor>
     {

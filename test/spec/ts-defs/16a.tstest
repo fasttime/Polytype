@@ -1,0 +1,11 @@
+/*!TESTDATA
+{
+    title: 'classes with a non-constructor function argument',
+    expectedMessage:
+    'Argument of type \'() => {}\' is not assignable to parameter of type \'SuperConstructor\'.\n' +
+    '  Type \'() => {}\' is not assignable to type \'abstract new (...args: any) => unknown\'.\n' +
+    '    Type \'() => {}\' provides no match for the signature \'new (...args: any): unknown\'.',
+}
+*/
+
+classes(() => ({ }));

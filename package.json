@@ -51,8 +51,6 @@
     "rollup-plugin-cleanup": "latest",
     "rollup-plugin-terser": "latest",
     "typescript": "latest",
-    "typescript_4.0": "npm:typescript@4.0",
-    "typescript_4.1": "npm:typescript@4.1",
     "typescript_4.2": "npm:typescript@4.2",
     "typescript_4.3": "npm:typescript@4.3"
   },
