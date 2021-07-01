@@ -148,15 +148,29 @@ function defineTests(typescriptPkgName)
                 testCase.title,
                 () =>
                 {
+                    const { actualMessages } = testCase;
+                    const actualErrorCount = testCase.actualMessages.length;
+                    const actualMessagesString =
+                    actualMessages.map(message => `\n${message}`).join('');
                     if (expectedMessage === undefined)
                     {
                         strictEqual
-                        (testCase.actualMessages.length, 0, 'expected no compiler errors');
+                        (
+                            actualErrorCount,
+                            0,
+                            `expected no compiler errors, but got ${actualErrorCount}:` +
+                            `${actualMessagesString}`,
+                        );
                     }
                     else
                     {
                         strictEqual
-                        (testCase.actualMessages.length, 1, 'expected exactly 1 compiler error');
+                        (
+                            actualErrorCount,
+                            1,
+                            `expected exactly 1 compiler error, but got ${actualErrorCount}:` +
+                            `${actualMessagesString}`,
+                        );
                         const [actualMessage] = testCase.actualMessages;
                         if (expectedMessage instanceof RegExp)
                             ok(expectedMessage.test(actualMessage));

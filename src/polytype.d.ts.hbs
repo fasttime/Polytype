@@ -37,7 +37,7 @@ declare namespace Polytype
 
     // Implementation related //////////////////////////////////////////////////////////////////////
 
-    type AsSuperConstructor<T> = T extends SuperConstructor ? T : never;
+    type AsSuperConstructor<T> = Extract<T, SuperConstructor>;
 
     type ClusteredConstructor<T extends SuperConstructor[]> =
     {
@@ -61,8 +61,7 @@ declare namespace Polytype
     type MapTupleTypesToReadonlySuperConstructorInvokeInfo<T extends SuperConstructor[]> =
     { [key in keyof T]: Readonly<SuperConstructorInvokeInfo<AsSuperConstructor<T[key]>>>; };
 
-    type SuperConstructor =
-    (abstract new (...args: any) => unknown) & { readonly prototype: object | null; };
+    type SuperConstructor = abstract new (...args: any) => object;
 
     class SuperConstructorSelector<T extends SuperConstructor>
     {

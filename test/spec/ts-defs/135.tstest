@@ -1,0 +1,11 @@
+/*!TESTDATA
+{
+    title: 'classes with constructors of object types',
+}
+*/
+
+declare const A: new () => Boolean;
+declare const B: new () => number[];
+declare const C: new () => new () => void;
+declare const D: new () => never;
+classes(A, B, C, D);
