@@ -36,6 +36,8 @@
     "test-serve": "test/serve.js"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "latest",
+    "@babel/plugin-syntax-top-level-await": "latest",
     "@fasttime/lint": "latest",
     "c8": "latest",
     "chai": "latest",
