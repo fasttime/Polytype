@@ -116,25 +116,17 @@ describe
 
         it
         (
-            'does not invoke field initializers',
+            'does not invoke nonstatic field initializers',
             () =>
             {
-                const Foo =
-                eval
-                (
-                    `
-                    (
-                        class
-                        {
-                            foo = (superInvoked = true);
-
-                            constructor()
-                            { }
-                        }
-                    )`,
-                );
-                // eslint-disable-next-line prefer-const
                 let superInvoked = false;
+
+                class Foo
+                {
+                    foo = (superInvoked = true);
+                    #bar = (superInvoked = true);
+                }
+
                 classes(Foo);
                 assert.isFalse(superInvoked);
             },

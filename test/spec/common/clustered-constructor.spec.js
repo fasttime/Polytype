@@ -136,30 +136,26 @@ describe
 
         it
         (
-            'invokes inherited field initializers in order',
+            'invokes inherited nonstatic field initializers in order',
             () =>
             {
                 const values = [];
 
-                eval
-                (
-                    `
-                    class A
-                    {
-                        a = values.push('A');
-                    }
+                class A
+                {
+                    a = values.push('A');
+                }
 
-                    class B
-                    {
-                        b = values.push('B');
-                    }
+                class B
+                {
+                    b = values.push('B');
+                }
 
-                    class C extends classes(A, B)
-                    { }
+                class C extends classes(A, B)
+                { }
 
-                    new C();
-                    `,
-                );
+                new C();
+
                 assert.deepEqual(values, ['A', 'B']);
             },
         );
@@ -176,19 +172,11 @@ describe
                     this.baz = 'A';
                 }
 
-                const B =
-                eval
-                (
-                    `
-                    class B
-                    {
-                        baz = 'B';
-                        [Symbol.species] = B;
-                    }
-
-                    B;
-                    `,
-                );
+                class B
+                {
+                    baz = 'B';
+                    [Symbol.species] = B;
+                }
 
                 function C()
                 {

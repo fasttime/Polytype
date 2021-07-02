@@ -127,7 +127,7 @@ task
             ],
         };
 
-        const COMMON_PARSER_OPTIONS =
+        const COMMON_JS_PARSER_OPTIONS =
         {
             babelOptions: { plugins: ['@babel/plugin-syntax-top-level-await'] },
             ecmaVersion: 2021,
@@ -140,7 +140,7 @@ task
             {
                 src: ['src/**/*.{js,mjs}', 'test/**/*.mjs'],
                 parser: '@babel/eslint-parser',
-                parserOptions: COMMON_PARSER_OPTIONS,
+                parserOptions: COMMON_JS_PARSER_OPTIONS,
             },
             {
                 src: 'lib/**/*.d.ts',
@@ -150,13 +150,13 @@ task
             {
                 src: ['*.js', 'test/**/*.js'],
                 parser: '@babel/eslint-parser',
-                parserOptions: { ...COMMON_PARSER_OPTIONS, sourceType: 'script' },
+                parserOptions: { ...COMMON_JS_PARSER_OPTIONS, sourceType: 'script' },
             },
             {
                 src: 'example/**/*.js',
                 envs: 'node',
                 parser: '@babel/eslint-parser',
-                parserOptions: { ...COMMON_PARSER_OPTIONS, sourceType: 'script' },
+                parserOptions: { ...COMMON_JS_PARSER_OPTIONS, sourceType: 'script' },
                 rules:
                 {
                     ...COMMON_EXAMPLE_RULES,
