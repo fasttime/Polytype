@@ -1,3 +1,11 @@
+<a name="0.14.0"></a>
+## [0.14.0](https://github.com/fasttime/Polytype/releases/tag/0.14.0) (2021-07-04)
+
+* Stricter type definitions: only types with an object constructor signature are now allowed as base
+classes.
+* Dropped support for TypeScript &lt; 4.2.
+* Clarified parts of the code examples and the documentation.
+
 <a name="0.13.2"></a>
 ## [0.13.2](https://github.com/fasttime/Polytype/releases/tag/0.13.2) (2021-04-18)
 
