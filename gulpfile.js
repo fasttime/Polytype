@@ -47,7 +47,7 @@ async function bundle(inputPath, format, outputPath, outputPathMin)
 
 function readFileAsString(inputPath)
 {
-    const { promises: { readFile } } = require('fs');
+    const { readFile } = require('fs/promises');
 
     const promise = readFile(inputPath, 'utf8');
     return promise;
@@ -58,7 +58,7 @@ task
     'clean',
     async () =>
     {
-        const { promises: { rm } } = require('fs');
+        const { rm } = require('fs/promises');
 
         const paths = ['coverage', 'lib', 'readme.md', 'test/spec-runner.html'];
         const options = { force: true, recursive: true };
@@ -71,9 +71,9 @@ task
     'make-ts-defs',
     async () =>
     {
-        const { version }                           = require('./package.json');
-        const { promises: { mkdir, writeFile } }    = require('fs');
-        const Handlebars                            = require('handlebars');
+        const { version }           = require('./package.json');
+        const { mkdir, writeFile }  = require('fs/promises');
+        const Handlebars            = require('handlebars');
 
         async function writeOutput(outputPath, asModule)
         {
@@ -219,9 +219,9 @@ task
     'make-spec-runner',
     async () =>
     {
-        const { promises: { readdir, writeFile } }  = require('fs');
-        const Handlebars                            = require('handlebars');
-        const { extname }                           = require('path');
+        const { readdir, writeFile }    = require('fs/promises');
+        const Handlebars                = require('handlebars');
+        const { extname }               = require('path');
 
         async function getSpecs()
         {
@@ -249,10 +249,10 @@ task
     'make-toc',
     async () =>
     {
-        const { version }                           = require('./package.json');
-        const { promises: { chmod, writeFile } }    = require('fs');
-        const Handlebars                            = require('handlebars');
-        const toc                                   = require('markdown-toc');
+        const { version }           = require('./package.json');
+        const { chmod, writeFile }  = require('fs/promises');
+        const Handlebars            = require('handlebars');
+        const toc                   = require('markdown-toc');
 
         const promises =
         [

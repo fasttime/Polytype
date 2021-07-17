@@ -181,7 +181,7 @@
     let polytypeMode;
     if (typeof module !== 'undefined')
     {
-        const { promises: { readFile } }                        = require('fs');
+        const { readFile }                                      = require('fs/promises');
         const { resolve }                                       = require('path');
         const { SourceTextModule, createContext, runInContext } = require('vm');
 

@@ -1,13 +1,13 @@
 /* eslint-env mocha, node */
 /* global maybeIt, polytypeMode */
 
-import { ok, strictEqual }          from 'assert';
-import { promises as fsPromises }   from 'fs';
-import glob                         from 'glob';
-import { createRequire }            from 'module';
-import { dirname, join }            from 'path';
-import { fileURLToPath }            from 'url';
-import { promisify }                from 'util';
+import assert               from 'assert';
+import { readFile }         from 'fs/promises';
+import glob                 from 'glob';
+import { createRequire }    from 'module';
+import { dirname, join }    from 'path';
+import { fileURLToPath }    from 'url';
+import { promisify }        from 'util';
 
 function defineTests(typescriptPkgName)
 {
@@ -133,7 +133,7 @@ function defineTests(typescriptPkgName)
                     actualMessages.map(message => `\n${message}`).join('');
                     if (expectedMessage === undefined)
                     {
-                        strictEqual
+                        assert.strictEqual
                         (
                             actualErrorCount,
                             0,
@@ -143,7 +143,7 @@ function defineTests(typescriptPkgName)
                     }
                     else
                     {
-                        strictEqual
+                        assert.strictEqual
                         (
                             actualErrorCount,
                             1,
@@ -152,9 +152,9 @@ function defineTests(typescriptPkgName)
                         );
                         const [actualMessage] = testCase.actualMessages;
                         if (expectedMessage instanceof RegExp)
-                            ok(expectedMessage.test(actualMessage));
+                            assert.ok(expectedMessage.test(actualMessage));
                         else
-                            strictEqual(actualMessage, expectedMessage);
+                            assert.strictEqual(actualMessage, expectedMessage);
                     }
                 },
             );
@@ -169,7 +169,6 @@ await (async () =>
 {
     async function loadTestCase(path)
     {
-        const { readFile } = fsPromises;
         const code = await readFile(path, 'utf-8');
         const match = code.match(/^\s*\/\*!TESTDATA\b(?<testData>.*?)\*\//ms);
         const functionBody = `return(${match.groups.testData})`;
