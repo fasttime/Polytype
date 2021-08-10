@@ -12,11 +12,12 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
-        node-version: 16.x
-    - run: npm install
-    - run: gulp make-ts-defs
-    - run: gulp lint
-    - run: gulp bundle:cjs bundle:esm bundle:global
+        node-version: '16'
+    - run: |
+        npm install
+        gulp make-ts-defs
+        gulp lint
+        gulp bundle:cjs bundle:esm bundle:global
     - uses: actions/upload-artifact@v2
       with:
         name: lib
@@ -32,7 +33,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: ['14', '16']
 
     steps:
     - uses: actions/checkout@v2
@@ -44,8 +45,9 @@ jobs:
       with:
         name: lib
         path: lib
-    - run: npm test -- .cjs
-    - run: npm test -- .mjs
-    - run: npm test -- .min.mjs
-    - run: npm test -- .js
-    - run: npm test -- .min.js
+    - run: |
+        npm test -- .cjs
+        npm test -- .mjs
+        npm test -- .min.mjs
+        npm test -- .js
+        npm test -- .min.js
