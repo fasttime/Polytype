@@ -101,8 +101,16 @@ task
     {
         const { lint } = require('@fasttime/lint');
 
-        const COMMON_EXAMPLE_RULES =
+        const COMMON_JS_PARSER_OPTIONS =
         {
+            babelOptions: { plugins: ['@babel/plugin-syntax-top-level-await'] },
+            ecmaVersion: 2021,
+            requireConfigFile: false,
+        };
+
+        const EXAMPLE_RULES =
+        {
+            'brace-style':  'off',
             'comma-dangle':
             [
                 'error',
@@ -125,13 +133,7 @@ task
                     varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$',
                 },
             ],
-        };
-
-        const COMMON_JS_PARSER_OPTIONS =
-        {
-            babelOptions: { plugins: ['@babel/plugin-syntax-top-level-await'] },
-            ecmaVersion: 2021,
-            requireConfigFile: false,
+            'quotes':       ['error', 'double'],
         };
 
         await
@@ -157,23 +159,14 @@ task
                 envs: 'node',
                 parser: '@babel/eslint-parser',
                 parserOptions: { ...COMMON_JS_PARSER_OPTIONS, sourceType: 'script' },
-                rules:
-                {
-                    ...COMMON_EXAMPLE_RULES,
-                    'brace-style':  'off',
-                    'quotes':       ['error', 'double'],
-                },
+                rules: EXAMPLE_RULES,
             },
             {
                 src: 'example/**/*.ts',
                 envs: 'node',
                 parserOptions: { ecmaVersion: 2021, project: 'tsconfig.json' },
-                rules:
-                {
-                    ...COMMON_EXAMPLE_RULES,
-                    '@typescript-eslint/brace-style':   'off',
-                    '@typescript-eslint/quotes':        ['error', 'double'],
-                },
+                plugins: ['@typescript-eslint'],
+                rules: EXAMPLE_RULES,
             },
         );
     },
