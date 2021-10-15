@@ -101,13 +101,6 @@ task
     {
         const { lint } = require('@fasttime/lint');
 
-        const COMMON_JS_PARSER_OPTIONS =
-        {
-            babelOptions: { plugins: ['@babel/plugin-syntax-top-level-await'] },
-            ecmaVersion: 2021,
-            requireConfigFile: false,
-        };
-
         const EXAMPLE_RULES =
         {
             'brace-style':  'off',
@@ -141,30 +134,27 @@ task
         (
             {
                 src: ['src/**/*.{js,mjs}', 'test/**/*.mjs'],
-                parser: '@babel/eslint-parser',
-                parserOptions: COMMON_JS_PARSER_OPTIONS,
+                parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
             },
             {
                 src: 'lib/**/*.d.ts',
-                parserOptions: { ecmaVersion: 2021, project: 'tsconfig.json' },
+                parserOptions: { ecmaVersion: 2022, project: 'tsconfig.json' },
                 rules: { 'max-len': 'off' },
             },
             {
                 src: ['*.js', 'test/**/*.js'],
-                parser: '@babel/eslint-parser',
-                parserOptions: { ...COMMON_JS_PARSER_OPTIONS, sourceType: 'script' },
+                parserOptions: { ecmaVersion: 2022 },
             },
             {
                 src: 'example/**/*.js',
                 envs: 'node',
-                parser: '@babel/eslint-parser',
-                parserOptions: { ...COMMON_JS_PARSER_OPTIONS, sourceType: 'script' },
+                parserOptions: { ecmaVersion: 2022 },
                 rules: EXAMPLE_RULES,
             },
             {
                 src: 'example/**/*.ts',
                 envs: 'node',
-                parserOptions: { ecmaVersion: 2021, project: 'tsconfig.json' },
+                parserOptions: { ecmaVersion: 2022, project: 'tsconfig.json' },
                 plugins: ['@typescript-eslint'],
                 rules: EXAMPLE_RULES,
             },

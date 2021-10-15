@@ -123,8 +123,8 @@ describe
 
                 class Foo
                 {
-                    foo = (superInvoked = true);
-                    #bar = (superInvoked = true);
+                    foo = superInvoked = true;
+                    #bar = superInvoked = true;
                 }
 
                 classes(Foo);
