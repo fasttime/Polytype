@@ -12,7 +12,7 @@ describe
         console.Console &&
         console._stdout &&
         console.timeLog &&
-        // Returns an object that fulfills all of the following requirements in Node.js 12:
+        // Returns an object that fulfills all of the following requirements in Node.js 14:
         // * It is a non-constructor function.
         // * It has the same string representation as Function.prototype.
         // * It has no own properties.
@@ -124,6 +124,7 @@ describe
                 class Foo
                 {
                     foo = superInvoked = true;
+                    // eslint-disable-next-line no-unused-private-class-members
                     #bar = superInvoked = true;
                 }
 
