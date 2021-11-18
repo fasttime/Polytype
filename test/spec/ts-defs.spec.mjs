@@ -202,5 +202,6 @@ describe
         describe('TypeScript 4.2', () => defineTests('typescript_4.2'));
         describe('TypeScript 4.3', () => defineTests('typescript_4.3'));
         describe('TypeScript 4.4', () => defineTests('typescript_4.4'));
+        describe('TypeScript 4.5', () => defineTests('typescript_4.5'));
     },
 );
