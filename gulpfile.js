@@ -126,7 +126,7 @@ task
                     varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$',
                 },
             ],
-            'quotes':       ['error', 'double'],
+            'quotes': ['error', 'double'],
         };
 
         await

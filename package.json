@@ -54,7 +54,8 @@
     "typescript_4.2": "npm:typescript@4.2",
     "typescript_4.3": "npm:typescript@4.3",
     "typescript_4.4": "npm:typescript@4.4",
-    "typescript_4.5": "npm:typescript@4.5"
+    "typescript_4.5": "npm:typescript@4.5",
+    "typescript_4.6": "npm:typescript@4.6"
   },
   "engines": {
     "node": ">=14.0.0"
