@@ -16,6 +16,12 @@ abstract class B
     { }
 }
 
+class C
+{
+    constructor(x?: unknown)
+    { }
+}
+
 void
 class extends classes(A, B)
 {
@@ -27,6 +33,9 @@ class extends classes(A, B)
         const ASCII = { super: A, arguments: [1, 'A'] } as const;
         const BSCII = { super: B, arguments: [{ }] } as const;
         super(BSCII, ASCII);
+        super(BSCII);
+        super({ super: C });
+        super({ super: C, arguments: undefined });
         // @ts-expect-error
         super([1, 'A'], BSCII);
         // @ts-expect-error

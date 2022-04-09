@@ -410,11 +410,27 @@ describe
                     () =>
                     {
                         const { A, B, C, callData } = setupTestData(classes);
-                        new C({ super: B, arguments: [1, 2, 3] }, { super: A });
-                        assert.deepEqual(callData.A.args, []);
+                        new C({ super: B, arguments: [1, 2, 3] }, { super: A, arguments: ['foo'] });
+                        assert.deepEqual(callData.A.args, ['foo']);
                         assert.strictEqual(Object.getPrototypeOf(callData.A.newTarget), C);
                         assert.instanceOf(callData.A.this, C);
                         assert.deepEqual(callData.B.args, [1, 2, 3]);
+                        assert.strictEqual(Object.getPrototypeOf(callData.B.newTarget), C);
+                        assert.instanceOf(callData.B.this, C);
+                    },
+                );
+
+                it
+                (
+                    'allows undefined in super-referencing arguments',
+                    () =>
+                    {
+                        const { A, B, C, callData } = setupTestData(classes);
+                        new C({ super: A, arguments: undefined }, { super: B });
+                        assert.deepEqual(callData.A.args, []);
+                        assert.strictEqual(Object.getPrototypeOf(callData.A.newTarget), C);
+                        assert.instanceOf(callData.A.this, C);
+                        assert.deepEqual(callData.B.args, []);
                         assert.strictEqual(Object.getPrototypeOf(callData.B.newTarget), C);
                         assert.instanceOf(callData.B.this, C);
                     },
@@ -470,6 +486,8 @@ describe
                                 const { A, C } = setupTestData(classes);
                                 assert.throwsTypeError
                                 (() => new C([], { super: A }), 'Mixed argument styles');
+                                assert.throwsTypeError
+                                (() => new C(undefined, { super: A }), 'Mixed argument styles');
                             },
                         );
 

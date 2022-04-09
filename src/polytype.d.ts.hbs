@@ -100,7 +100,7 @@ export interface SuperConstructorInvokeInfo<T extends Polytype.SuperConstructor>
      * An array specifying the arguments with which the base class constructor should be called.
      * If undefined, the base class constructor will be called without any arguments.
      */
-    arguments?: Polytype.ReadonlySuperConstructorParameters<T>;
+    arguments?: Polytype.ReadonlySuperConstructorParameters<T> | undefined;
 }
 
 {{#* inline "classes"}}
