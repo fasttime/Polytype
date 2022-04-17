@@ -1,3 +1,8 @@
+<a name="0.14.1"></a>
+## [0.14.1](https://github.com/fasttime/Polytype/releases/tag/0.14.1) (2022-04-17)
+
+* Update type definitions for usage with TypeScript option `exactOptionalPropertyTypes` enabled.
+
 <a name="0.14.0"></a>
 ## [0.14.0](https://github.com/fasttime/Polytype/releases/tag/0.14.0) (2021-07-04)
 
