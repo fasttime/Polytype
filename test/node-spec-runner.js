@@ -16,7 +16,8 @@
     const { execArgv } = process;
     const childExecArgv = [...execArgv];
     addMissingFlag('--experimental-vm-modules');
-    addMissingFlag('--harmony-top-level-await');
+    if (process.config.variables.node_module_version < 88)
+        addMissingFlag('--harmony-top-level-await');
     if (childExecArgv.length > execArgv.length)
     {
         const { fork } = require('child_process');
