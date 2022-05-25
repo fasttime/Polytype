@@ -1,6 +1,6 @@
 "use strict";
 
-const { classes, getPrototypeListOf } = require("..");
+const { classes, getPrototypeListOf } = require("polytype");
 
 class Circle
 {

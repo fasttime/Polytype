@@ -1,4 +1,4 @@
-import { classes, getPrototypeListOf } from "..";
+import { classes, getPrototypeListOf } from "polytype";
 
 class Circle
 {

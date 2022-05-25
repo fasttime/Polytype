@@ -46,20 +46,16 @@ function defineTests(typescriptPkgName)
         } =
         await import(typescriptPkgName);
         const { options } = convertCompilerOptionsFromJson(compilerOptions);
-        let pkgPath;
         let footer;
         switch (polytypeMode)
         {
         case 'global':
-            pkgPath = '.';
-            footer = 'import { classes } from \'.\';\n';
+            footer = 'import { classes } from \'polytype\';\n';
             break;
         case 'module':
-            pkgPath = './global';
-            footer = 'export { };\n';
+            footer = 'import \'polytype/global\';\n';
             break;
         }
-        options.types = [pkgPath];
         const fileNames = [];
         testCases.forEach
         (
@@ -199,11 +195,6 @@ describe
     'TypeScript definitions',
     () =>
     {
-        describe('TypeScript 4.2', () => defineTests('typescript_4.2'));
-        describe('TypeScript 4.3', () => defineTests('typescript_4.3'));
-        describe('TypeScript 4.4', () => defineTests('typescript_4.4'));
-        describe('TypeScript 4.5', () => defineTests('typescript_4.5'));
-        describe('TypeScript 4.6', () => defineTests('typescript_4.6'));
         describe('TypeScript 4.7', () => defineTests('typescript_4.7'));
         describe('TypeScript 4.8', () => defineTests('typescript_4.8'));
     },

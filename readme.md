@@ -686,7 +686,7 @@ Polytype was successfully tested in the following browsers/JavaScript engines.
 <br>
  ![Node.js](https://api.iconify.design/mdi:nodejs.svg) Node.js 14+
 
-The minimum supported TypeScript version is 4.2.
+The minimum supported TypeScript version is 4.7.
 
 Bundlers and other tools that process uncompressed Polytype source files are required to parse
 ECMAScript 2020 or higher syntax.

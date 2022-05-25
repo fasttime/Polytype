@@ -20,7 +20,6 @@
   ],
   "main": "lib/polytype.cjs",
   "module": "lib/polytype.mjs",
-  "types": "lib/polytype-module.d.ts",
   "directories": {
     "lib": "lib",
     "example": "example",
@@ -51,15 +50,38 @@
     "rollup-plugin-cleanup": "latest",
     "rollup-plugin-terser": "latest",
     "typescript": "latest",
-    "typescript_4.2": "npm:typescript@4.2",
-    "typescript_4.3": "npm:typescript@4.3",
-    "typescript_4.4": "npm:typescript@4.4",
-    "typescript_4.5": "npm:typescript@4.5",
-    "typescript_4.6": "npm:typescript@4.6",
     "typescript_4.7": "npm:typescript@4.7",
     "typescript_4.8": "npm:typescript@4.8"
   },
   "engines": {
     "node": ">=14.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/polytype-module.d.ts",
+      "import": "./lib/polytype.mjs",
+      "require": "./lib/polytype.cjs"
+    },
+    "./global": {
+      "types": "./lib/polytype-global.d.ts",
+      "default": "./lib/polytype.js"
+    },
+    "./lib/polytype.cjs": {
+      "types": "./lib/polytype-module.d.ts",
+      "default": "./lib/polytype.cjs"
+    },
+    "./lib/polytype.min.cjs": {
+      "types": "./lib/polytype-module.d.ts",
+      "default": "./lib/polytype.min.cjs"
+    },
+    "./lib/polytype.min.mjs": {
+      "types": "./lib/polytype-module.d.ts",
+      "default": "./lib/polytype.min.mjs"
+    },
+    "./lib/polytype.mjs": {
+      "types": "./lib/polytype-module.d.ts",
+      "default": "./lib/polytype.mjs"
+    },
+    "./package.json": "./package.json"
   }
 }
