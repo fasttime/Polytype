@@ -32,6 +32,7 @@ As of today, Polytype runs in **current versions of all major browsers** and in
 - [TypeScript support](#typescript-support)
 - [Caveats](#caveats)
   * [`this` in base constructors](#this-in-base-constructors)
+  * [Base classes with private instance members](#base-classes-with-private-instance-members)
   * [`for...in` iterations](#forin-iterations)
   * [Member resolution order](#member-resolution-order)
   * [Ambiguous protected instance members](#ambiguous-protected-instance-members)
@@ -532,6 +533,12 @@ button.click(); // Alerts "undefined" rather than "Test".
 While Polytype takes some actions to mitigate the effect of detached substitutes, like retargeting
 bound methods if necessary, classes that access the value of `this` in the constructor in order to
 use it later are generally not safe to subclass.
+
+### Base classes with private instance members
+
+Polytype classes do not inherit private members declared in their base classes.
+For this reason, extending base classes with private instance members will not work well and likely
+result in `TypeError`s at runtime.
 
 ### `for...in` iterations
 

@@ -511,6 +511,12 @@ While Polytype takes some actions to mitigate the effect of detached substitutes
 bound methods if necessary, classes that access the value of `this` in the constructor in order to
 use it later are generally not safe to subclass.
 
+### Base classes with private instance members
+
+Polytype classes do not inherit private members declared in their base classes.
+For this reason, extending base classes with private instance members will not work well and likely
+result in `TypeError`s at runtime.
+
 ### `for...in` iterations
 
 When only single inheritance is used, a `for...in` iteration over a class constructor enumerates not
