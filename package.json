@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@fasttime/lint": "latest",
-    "c8": "latest",
+    "c8js": "latest",
     "chai": "latest",
     "chalk": "latest",
     "glob": "latest",

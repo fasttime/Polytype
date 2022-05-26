@@ -7,7 +7,8 @@ const { createRequire } = require('module');
 const IGNORED_LINE =
 '        throw Error(\'Polytype cannot be transpiled to ES5 or earlier code.\');\n';
 
-const c8Require = createRequire(require.resolve('c8'));
+const c8jsRequire = createRequire(require.resolve('c8js'));
+const c8Require = createRequire(c8jsRequire.resolve('c8'));
 const { prototype: covSourcePrototype } = c8Require('v8-to-istanbul/lib/source');
 const { _parseIgnore } = covSourcePrototype;
 covSourcePrototype._parseIgnore =

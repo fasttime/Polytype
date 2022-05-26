@@ -179,21 +179,15 @@ task
 task
 (
     'test',
-    callback =>
+    async () =>
     {
-        const { fork } = require('child_process');
-
-        const { resolve } = require;
-        const c8Path = resolve('c8/bin/c8');
-        const modulePath = resolve('./test/node-spec-runner');
-        const childProcess =
-        fork
+        const [{ default: c8js }] =
+        await Promise.all([import('c8js'), import('./test/patch-cov-source.js')]);
+        await c8js
         (
-            c8Path,
-            ['--reporter=html', '--reporter=text-summary', modulePath],
-            { execArgv: ['--require=./test/patch-cov-source'] },
+            'test/node-spec-runner.js',
+            { reporter: ['html', 'text-summary'], useC8Config: false },
         );
-        childProcess.on('exit', code => callback(code && 'Test failed'));
     },
 );
 
