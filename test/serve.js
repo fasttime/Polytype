@@ -4,7 +4,7 @@
 
 'use strict';
 
-const chalk                         = require('chalk');
+const ansiColors                    = require('ansi-colors');
 const { createReadStream }          = require('fs');
 const { createServer }              = require('http');
 const { networkInterfaces }         = require('os');
@@ -66,9 +66,9 @@ createServer
     const ip = getIP();
     if (ip)
     {
+        const { blue, bold } = ansiColors;
         const baseUrl = `http://${ip}:${port}`;
-        console.log
-        (`\n${chalk.bold('Spec Runner URL')}\n${chalk.blue(`${baseUrl}/test/spec-runner.html`)}\n`);
+        console.log(`\n${bold('Spec Runner URL')}\n${blue(`${baseUrl}/test/spec-runner.html`)}\n`);
     }
 }
 
@@ -83,7 +83,9 @@ function getIP()
             if (!assignedNetworkAddress.internal)
             {
                 let { address } = assignedNetworkAddress;
-                if (assignedNetworkAddress.family !== 'IPv4')
+                const { family } = assignedNetworkAddress;
+                // For IPv4, family is 'IPv4' in Node.js < 18.
+                if (family !== 4 && family !== 'IPv4')
                     address = `[${address}]`;
                 if (!ip || ip.length > address.length)
                     ip = address;

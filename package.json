@@ -37,9 +37,9 @@
   },
   "devDependencies": {
     "@fasttime/lint": "latest",
+    "ansi-colors": "latest",
     "c8js": "latest",
     "chai": "latest",
-    "chalk": "latest",
     "glob": "latest",
     "gulp": "latest",
     "handlebars": "latest",
