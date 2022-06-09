@@ -2,8 +2,8 @@ import { classes, getPrototypeListOf } from "..";
 
 class Circle
 {
-    public centerX?: number;
-    public centerY?: number;
+    public centerX: number | undefined;
+    public centerY: number | undefined;
     public constructor(centerX?: number, centerY?: number, public radius = 1)
     {
         this.moveTo(centerX, centerY);
