@@ -84,8 +84,8 @@ function getIP()
             {
                 let { address } = assignedNetworkAddress;
                 const { family } = assignedNetworkAddress;
-                // For IPv4, family is 'IPv4' in Node.js < 18.
-                if (family !== 4 && family !== 'IPv4')
+                // For IPv4, family is 4 in Node.js 18.0-18.3.
+                if (family !== 'IPv4' && family !== 4)
                     address = `[${address}]`;
                 if (!ip || ip.length > address.length)
                     ip = address;
