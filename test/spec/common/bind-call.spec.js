@@ -207,7 +207,7 @@ describe
                             { },
                             function ()
                             { },
-                            async function * bar() // eslint-disable-line func-names, require-await
+                            async function * bar() // eslint-disable-line func-names
                             { },
                             () => 42,
                             async () => 42, // eslint-disable-line require-await

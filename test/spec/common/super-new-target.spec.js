@@ -81,7 +81,6 @@ describe
             () =>
             {
                 assert.throwsTypeError(_superNewTarget, 'Operation not supported');
-                // eslint-disable-next-line new-cap
                 assert.throwsTypeError(() => new _superNewTarget(), 'Operation not supported');
             },
         );

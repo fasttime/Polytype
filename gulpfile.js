@@ -101,7 +101,7 @@ task
     {
         const { lint } = require('@fasttime/lint');
 
-        const EXAMPLE_RULES =
+        const JS_EXAMPLE_RULES =
         {
             'brace-style':  'off',
             'comma-dangle':
@@ -128,35 +128,41 @@ task
             ],
             'quotes': ['error', 'double'],
         };
+        const TS_EXAMPLE_RULES =
+        Object.fromEntries
+        (
+            Object.entries(JS_EXAMPLE_RULES)
+            .map(([key, value]) => [`@typescript-eslint/${key}`, value]),
+        );
 
         await
         lint
         (
             {
                 src: ['src/**/*.{js,mjs}', 'test/**/*.mjs'],
-                parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+                jsVersion: 2022,
+                parserOptions: { sourceType: 'module' },
             },
             {
                 src: 'lib/**/*.d.ts',
-                parserOptions: { ecmaVersion: 2022, project: 'tsconfig.json' },
+                parserOptions: { project: 'tsconfig.json' },
                 rules: { 'max-len': 'off' },
             },
             {
                 src: ['*.js', 'test/**/*.js'],
-                parserOptions: { ecmaVersion: 2022 },
+                jsVersion: 2022,
             },
             {
                 src: 'example/**/*.js',
+                jsVersion: 2022,
                 envs: 'node',
-                parserOptions: { ecmaVersion: 2022 },
-                rules: EXAMPLE_RULES,
+                rules: JS_EXAMPLE_RULES,
             },
             {
                 src: 'example/**/*.ts',
                 envs: 'node',
-                parserOptions: { ecmaVersion: 2022, project: 'tsconfig.json' },
-                plugins: ['@typescript-eslint'],
-                rules: EXAMPLE_RULES,
+                parserOptions: { project: 'tsconfig.json' },
+                rules: TS_EXAMPLE_RULES,
             },
         );
     },
