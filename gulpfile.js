@@ -144,13 +144,13 @@ task
                 parserOptions: { sourceType: 'module' },
             },
             {
+                src: ['*.js', 'test/**/*.js'],
+                jsVersion: 2022,
+            },
+            {
                 src: 'lib/**/*.d.ts',
                 parserOptions: { project: 'tsconfig.json' },
                 rules: { 'max-len': 'off' },
-            },
-            {
-                src: ['*.js', 'test/**/*.js'],
-                jsVersion: 2022,
             },
             {
                 src: 'example/**/*.js',

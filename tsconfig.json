@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "strict": true,
     "target": "ES2020"
