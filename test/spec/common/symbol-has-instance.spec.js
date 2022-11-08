@@ -49,17 +49,17 @@ describe
                 {
                     length:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: 1,
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          1,
+                        writable:       false,
                     },
                     name:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: '[Symbol.hasInstance]',
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          '[Symbol.hasInstance]',
+                        writable:       false,
                     },
                 },
             ),
@@ -111,10 +111,10 @@ describe
                 const _ADFH = classes(A, D, F, H);
                 const hasInstanceDescriptor =
                 {
-                    enumerable: false,
-                    configurable: true,
-                    value: hasInstance,
-                    writable: true,
+                    enumerable:     false,
+                    configurable:   true,
+                    value:          hasInstance,
+                    writable:       true,
                 };
                 assert.notOwnProperty(A, Symbol.hasInstance);
                 assert.hasOwnPropertyDescriptor(B, Symbol.hasInstance, hasInstanceDescriptor);

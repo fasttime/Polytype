@@ -34,17 +34,17 @@ describe
                 {
                     length:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: 0,
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          0,
+                        writable:       false,
                     },
                     name:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: 'classes',
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          'classes',
+                        writable:       false,
                     },
                 },
             ),

@@ -52,10 +52,10 @@ describe
                 {
                     prototype:
                     {
-                        configurable: false,
-                        enumerable: false,
-                        value: _superNewTarget.prototype,
-                        writable: false,
+                        configurable:   false,
+                        enumerable:     false,
+                        value:          _superNewTarget.prototype,
+                        writable:       false,
                     },
                 },
             ),

@@ -36,17 +36,17 @@ describe
                             {
                                 length:
                                 {
-                                    configurable: true,
-                                    enumerable: false,
-                                    value: 3,
-                                    writable: false,
+                                    configurable:   true,
+                                    enumerable:     false,
+                                    value:          3,
+                                    writable:       false,
                                 },
                                 name:
                                 {
-                                    configurable: true,
-                                    enumerable: false,
-                                    value: 'bound πολύς',
-                                    writable: false,
+                                    configurable:   true,
+                                    enumerable:     false,
+                                    value:          'bound πολύς',
+                                    writable:       false,
                                 },
                             },
                         );
@@ -149,17 +149,17 @@ describe
                             {
                                 length:
                                 {
-                                    configurable: true,
-                                    enumerable: false,
-                                    value: 4,
-                                    writable: false,
+                                    configurable:   true,
+                                    enumerable:     false,
+                                    value:          4,
+                                    writable:       false,
                                 },
                                 name:
                                 {
-                                    configurable: true,
-                                    enumerable: false,
-                                    value: 'bound foo',
-                                    writable: false,
+                                    configurable:   true,
+                                    enumerable:     false,
+                                    value:          'bound foo',
+                                    writable:       false,
                                 },
                             },
                         );

@@ -28,9 +28,9 @@ describe
                 {
                     callData.A =
                     {
-                        args: [...arguments], // eslint-disable-line prefer-rest-params
-                        newTarget: new.target,
-                        this: this,
+                        args:       [...arguments], // eslint-disable-line prefer-rest-params
+                        newTarget:  new.target,
+                        this:       this,
                     };
                 }
                 aMethod()
@@ -49,9 +49,9 @@ describe
                 {
                     callData.B =
                     {
-                        args: [...arguments], // eslint-disable-line prefer-rest-params
-                        newTarget: new.target,
-                        this: this,
+                        args:       [...arguments], // eslint-disable-line prefer-rest-params
+                        newTarget:  new.target,
+                        this:       this,
                     };
                 }
                 bMethod()
@@ -347,9 +347,10 @@ describe
                             document.all,
                             'foo',
                             {
-                                configurable: true,
-                                get: () => undefined,
-                                set: value =>
+                                configurable:   true,
+                                get:            () => undefined,
+                                set:
+                                value =>
                                 {
                                     foo = value;
                                 },

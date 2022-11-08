@@ -25,17 +25,17 @@ describe
                             {
                                 length:
                                 {
-                                    configurable: true,
-                                    enumerable: false,
-                                    value: 1,
-                                    writable: false,
+                                    configurable:   true,
+                                    enumerable:     false,
+                                    value:          1,
+                                    writable:       false,
                                 },
                                 name:
                                 {
-                                    configurable: true,
-                                    enumerable: false,
-                                    value: 'class',
-                                    writable: false,
+                                    configurable:   true,
+                                    enumerable:     false,
+                                    value:          'class',
+                                    writable:       false,
                                 },
                             },
                         );
@@ -207,17 +207,17 @@ describe
                             {
                                 length:
                                 {
-                                    configurable: true,
-                                    enumerable: false,
-                                    value: 1,
-                                    writable: false,
+                                    configurable:   true,
+                                    enumerable:     false,
+                                    value:          1,
+                                    writable:       false,
                                 },
                                 name:
                                 {
-                                    configurable: true,
-                                    enumerable: false,
-                                    value: 'class',
-                                    writable: false,
+                                    configurable:   true,
+                                    enumerable:     false,
+                                    value:          'class',
+                                    writable:       false,
                                 },
                             },
                         );

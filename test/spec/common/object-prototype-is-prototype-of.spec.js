@@ -21,10 +21,10 @@ describe
                     Objectʼ.prototype,
                     'isPrototypeOf',
                     {
-                        configurable: true,
-                        enumerable: true,
-                        value: Objectʼ.prototype.isPrototypeOf,
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     true,
+                        value:          Objectʼ.prototype.isPrototypeOf,
+                        writable:       false,
                     },
                 );
                 const A = Function();
@@ -38,10 +38,10 @@ describe
                     Object.prototype,
                     'isPrototypeOf',
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: Object.prototype.isPrototypeOf,
-                        writable: true,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          Object.prototype.isPrototypeOf,
+                        writable:       true,
                     },
                 );
                 assert.hasOwnPropertyDescriptor
@@ -49,10 +49,10 @@ describe
                     Objectʼ.prototype,
                     'isPrototypeOf',
                     {
-                        configurable: true,
-                        enumerable: true,
-                        value: Objectʼ.prototype.isPrototypeOf,
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     true,
+                        value:          Objectʼ.prototype.isPrototypeOf,
+                        writable:       false,
                     },
                 );
                 assert.notOwnProperty(emptyObj, 'isPrototypeOf');
@@ -69,17 +69,17 @@ describe
                 {
                     length:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: 1,
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          1,
+                        writable:       false,
                     },
                     name:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: 'isPrototypeOf',
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          'isPrototypeOf',
+                        writable:       false,
                     },
                 },
             ),

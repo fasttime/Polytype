@@ -27,31 +27,31 @@ describe
                     {
                         class:
                         {
-                            configurable: false,
-                            enumerable: false,
-                            value: constructor.class,
-                            writable: false,
+                            configurable:   false,
+                            enumerable:     false,
+                            value:          constructor.class,
+                            writable:       false,
                         },
                         length:
                         {
-                            configurable: true,
-                            enumerable: false,
-                            value: 0,
-                            writable: false,
+                            configurable:   true,
+                            enumerable:     false,
+                            value:          0,
+                            writable:       false,
                         },
                         name:
                         {
-                            configurable: true,
-                            enumerable: false,
+                            configurable:   true,
+                            enumerable:     false,
                             get,
-                            set: undefined,
+                            set:            undefined,
                         },
                         prototype:
                         {
-                            configurable: false,
-                            enumerable: false,
-                            value: { },
-                            writable: false,
+                            configurable:   false,
+                            enumerable:     false,
+                            value:          { },
+                            writable:       false,
                         },
                     },
                 );

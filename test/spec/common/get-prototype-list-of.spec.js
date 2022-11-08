@@ -41,17 +41,17 @@ describe
                 {
                     length:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: 1,
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          1,
+                        writable:       false,
                     },
                     name:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: 'getPrototypeListOf',
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          'getPrototypeListOf',
+                        writable:       false,
                     },
                 },
             ),

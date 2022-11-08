@@ -14,9 +14,9 @@ async function bundle(inputPath, format, outputPath, outputPathMin)
     {
         const outputOptions =
         {
-            banner: `// Polytype ${version} – ${homepage}\n`,
+            banner:     `// Polytype ${version} – ${homepage}\n`,
             compact,
-            esModule: false,
+            esModule:   false,
             file,
             format,
             plugins,
@@ -36,8 +36,8 @@ async function bundle(inputPath, format, outputPath, outputPathMin)
 
         const minifyOpts =
         {
-            compress: { hoist_funs: true, passes: 2 },
-            output: { comments: (node, comment) => comment.pos === 0 },
+            compress:   { hoist_funs: true, passes: 2 },
+            output:     { comments: (node, comment) => comment.pos === 0 },
         };
         const terserPlugin = terser(minifyOpts);
         addOutput(outputPathMin, true, [terserPlugin]);
@@ -119,11 +119,11 @@ task
             [
                 'error',
                 {
-                    args: 'none',
-                    caughtErrors: 'all',
+                    args:               'none',
+                    caughtErrors:       'all',
                     ignoreRestSiblings: true,
-                    vars: 'local',
-                    varsIgnorePattern: '^(?:Green|WhiteUnit)Circle$',
+                    vars:               'local',
+                    varsIgnorePattern:  '^(?:Green|WhiteUnit)Circle$',
                 },
             ],
             'quotes': ['error', 'double'],
@@ -139,30 +139,31 @@ task
         lint
         (
             {
-                src: ['src/**/*.{js,mjs}', 'test/**/*.mjs'],
-                jsVersion: 2022,
-                parserOptions: { sourceType: 'module' },
+                src:            ['src/**/*.{js,mjs}', 'test/**/*.mjs'],
+                jsVersion:      2022,
+                parserOptions:  { sourceType: 'module' },
+                rules:          { 'logical-assignment-operators': 'off' },
             },
             {
-                src: ['*.js', 'test/**/*.js'],
-                jsVersion: 2022,
+                src:        ['*.js', 'test/**/*.js'],
+                jsVersion:  2022,
             },
             {
-                src: 'lib/**/*.d.ts',
-                parserOptions: { project: 'tsconfig.json' },
-                rules: { 'max-len': 'off' },
+                src:            'lib/**/*.d.ts',
+                parserOptions:  { project: 'tsconfig.json' },
+                rules:          { 'max-len': 'off' },
             },
             {
-                src: 'example/**/*.js',
-                jsVersion: 2022,
-                envs: 'node',
-                rules: JS_EXAMPLE_RULES,
+                src:        'example/**/*.js',
+                jsVersion:  2022,
+                envs:       'node',
+                rules:      JS_EXAMPLE_RULES,
             },
             {
-                src: 'example/**/*.ts',
-                envs: 'node',
-                parserOptions: { project: 'tsconfig.json' },
-                rules: TS_EXAMPLE_RULES,
+                src:            'example/**/*.ts',
+                envs:           'node',
+                parserOptions:  { project: 'tsconfig.json' },
+                rules:          TS_EXAMPLE_RULES,
             },
         );
     },

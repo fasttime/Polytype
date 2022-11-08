@@ -21,10 +21,10 @@ describe
                     Functionʼ.prototype,
                     'bind',
                     {
-                        configurable: true,
-                        enumerable: true,
-                        value: Functionʼ.prototype.bind,
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     true,
+                        value:          Functionʼ.prototype.bind,
+                        writable:       false,
                     },
                 );
                 const A = Function();
@@ -38,10 +38,10 @@ describe
                     Function.prototype,
                     'bind',
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: Function.prototype.bind,
-                        writable: true,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          Function.prototype.bind,
+                        writable:       true,
                     },
                 );
                 assert.hasOwnPropertyDescriptor
@@ -49,10 +49,10 @@ describe
                     Functionʼ.prototype,
                     'bind',
                     {
-                        configurable: true,
-                        enumerable: true,
-                        value: Functionʼ.prototype.bind,
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     true,
+                        value:          Functionʼ.prototype.bind,
+                        writable:       false,
                     },
                 );
                 assert.notOwnProperty(emptyObj, 'bind');
@@ -69,17 +69,17 @@ describe
                 {
                     length:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: 1,
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          1,
+                        writable:       false,
                     },
                     name:
                     {
-                        configurable: true,
-                        enumerable: false,
-                        value: 'bind',
-                        writable: false,
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          'bind',
+                        writable:       false,
                     },
                 },
             ),

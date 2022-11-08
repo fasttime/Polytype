@@ -181,17 +181,17 @@ function createConstructorProxy(typeSet, prototypeSet)
     (
         null,
         {
-            constructor: describeDataProperty(constructorProxy, true),
-            class: describeDataProperty(superPrototypeSelector),
+            constructor:    describeDataProperty(constructorProxy, true),
+            class:          describeDataProperty(superPrototypeSelector),
         },
     );
     const prototypeProxy =
     createUnionProxy(prototypeTarget, prototypeSet, COMMON_HANDLER_PROTOTYPE);
     const constructorProperties =
     {
-        class: describeDataProperty(superTypeSelector),
-        name: { get: getConstructorName },
-        prototype: describeDataProperty(prototypeProxy),
+        class:      describeDataProperty(superTypeSelector),
+        name:       { get: getConstructorName },
+        prototype:  describeDataProperty(prototypeProxy),
     };
     _Object_defineProperties(constructorTarget, constructorProperties);
     return constructorProxy;
