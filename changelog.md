@@ -1,3 +1,11 @@
+<a name="0.15.0"></a>
+## [0.15.0](https://github.com/fasttime/Polytype/releases/tag/0.15.0) (2022-11-17)
+
+* Using Node.js module resolution throughout the code.
+* Dropped support for TypeScript &lt; 4.7.
+* Extended the documentation with a notice about private instance members in base classes.
+* Fixed the TypeScript code example.
+
 <a name="0.14.1"></a>
 ## [0.14.1](https://github.com/fasttime/Polytype/releases/tag/0.14.1) (2022-04-17)
 
