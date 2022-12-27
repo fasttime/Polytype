@@ -219,17 +219,20 @@ describe
                             {
                                 foo()
                                 { },
-                            }.foo,
+                            }
+                            .foo,
                             class
                             {
                                 bar()
                                 { }
-                            }.prototype.bar,
+                            }
+                            .prototype.bar,
                             class
                             {
                                 static baz()
                                 { }
-                            }.baz,
+                            }
+                            .baz,
                             Object,
                             Function.prototype,
                         ];

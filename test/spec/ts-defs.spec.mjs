@@ -161,7 +161,8 @@ function defineTests(typescriptPkgName)
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const testCases =
-await (async () =>
+await
+(async () =>
 {
     async function loadTestCase(path)
     {

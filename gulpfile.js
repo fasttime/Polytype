@@ -126,7 +126,7 @@ task
                     varsIgnorePattern:  '^(?:Green|WhiteUnit)Circle$',
                 },
             ],
-            'quotes': ['error', 'double'],
+            'quotes':       ['error', 'double'],
         };
         const TS_EXAMPLE_RULES =
         Object.fromEntries

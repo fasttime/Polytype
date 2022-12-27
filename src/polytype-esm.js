@@ -430,7 +430,7 @@ const createUnionProxy =
     const objs = [target, ...prototypeSet];
     const handler =
     {
-        __proto__: handlerPrototype,
+        __proto__:  handlerPrototype,
         get(target, prop, receiver)
         {
             if (prop === PROTOTYPES_INQUIRY_KEY && isInquiryReceiverFor(receiver, proxy))
@@ -442,7 +442,7 @@ const createUnionProxy =
                 return value;
             }
         },
-        has: (target, prop) => objs.some(propFilter(prop)),
+        has:        (target, prop) => objs.some(propFilter(prop)),
         set(target, prop, value, receiver)
         {
             const obj = objs.find(propFilter(prop));
