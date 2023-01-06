@@ -1,0 +1,32 @@
+/*!TESTDATA
+{
+    title: 'super.class in nonstatic context with a parameterized superclass',
+    expectedMessage: 'Type \'{}\' is not assignable to type \'bigint\'.',
+}
+*/
+
+class Test<T>
+{
+    public value?: T;
+}
+
+void
+class extends classes(Test<bigint>)
+{
+    test()
+    {
+        super.class(Test<bigint>).value = { };
+    }
+};
+
+void
+class extends classes(Test<string>, Test<number>)
+{
+    test()
+    {
+        super.class(Test<string>).value = 'foo';
+        super.class(Test<number>).value = 42;
+        // @ts-expect-error
+        super.class(Test<boolean>).value = true;
+    }
+};

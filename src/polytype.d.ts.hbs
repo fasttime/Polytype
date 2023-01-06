@@ -53,7 +53,8 @@ declare namespace Polytype
     EnrichMore<SuperConstructorSelector<UnionOf<T>>, T>;
 
     type ClusteredPrototype<T extends SuperConstructor[]> =
-    SuperPrototypeSelector<UnionOf<T>> & IntersectionOf<{ [key in keyof T]: ProtoType<T[key]>; }>;
+    SuperPrototypeSelector<UnionOf<T>> &
+    IntersectionOf<{ [key in keyof T]: InstanceType<T[key]>; }>;
 
     type MapTupleTypesToOptionalReadonlyConstructorParameters<T extends SuperConstructor[]> =
     { [key in keyof T]?: ReadonlySuperConstructorParameters<AsSuperConstructor<T[key]>>; };
@@ -66,8 +67,8 @@ declare namespace Polytype
     class SuperConstructorSelector<T extends SuperConstructor>
     {
         /**
-         * Allows accessing a property or calling a method in a specified base class, eliminating
-         * ambiguity when multiple base classes share a property with the same key.
+         * Allows accessing a static property or calling a static method in a specified base class,
+         * eliminating ambiguity when multiple base classes share a property with the same key.
          *
          * @param type
          *
@@ -79,14 +80,15 @@ declare namespace Polytype
     class SuperPrototypeSelector<T extends SuperConstructor>
     {
         /**
-         * Allows accessing a property or calling a method in a specified base class, eliminating
-         * ambiguity when multiple base classes share a property with the same key.
+         * Allows accessing an instance property or calling an instance method in a specified base
+         * class, eliminating ambiguity when multiple base classes share a property with the same
+         * key.
          *
          * @param type
          *
          * The referenced base class.
          */
-        protected class<U extends T>(type: U): ProtoType<U>;
+        protected class<U extends T>(type: U): InstanceType<U>;
     }
 }
 

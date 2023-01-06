@@ -1,6 +1,6 @@
 /*!TESTDATA
 {
-    title: 'Type of property \'prototype\' of a clustered constuctor',
+    title: 'Property \'prototype\' of a clustered constuctor with an interface as superclass',
     expectedMessage:
     'Property \'prototype\' is missing in type \'{}\' but required in type \'Test\'.',
 }
@@ -12,4 +12,4 @@ interface Test
     readonly prototype: { };
 }
 
-const prototype: Test = classes(<Test>{ }).prototype;
+const prototype: Test = classes({ } as Test).prototype;

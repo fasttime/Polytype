@@ -1,0 +1,19 @@
+/*!TESTDATA
+{
+    title: 'Property \'prototype\' of a clustered constuctor with a parameterized superclass',
+    expectedMessage: 'Type \'number\' is not assignable to type \'string\'.',
+}
+*/
+
+class Test<T>
+{
+    public value?: T;
+}
+
+(new class extends classes(Test<string>) { }).value = 56;
+
+void
+function test(value: { 1: 1; 2: 2; 3: 3; })
+{
+    (new class extends classes(Test<{ 1: 1; 2: 2; }>, Test<{ 2: 2; 3: 3; }>) { }).value = value;
+};
