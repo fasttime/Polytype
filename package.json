@@ -31,8 +31,8 @@
   },
   "scripts": {
     "build": "npm install && gulp",
-    "test": "test/node-spec-runner.js",
-    "test-serve": "test/serve.js"
+    "test": "test/node-spec-runner.mjs",
+    "test-serve": "test/serve.mjs"
   },
   "devDependencies": {
     "@fasttime/lint": "latest",

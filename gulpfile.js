@@ -189,10 +189,10 @@ task
     async () =>
     {
         const [{ default: c8js }] =
-        await Promise.all([import('c8js'), import('./test/patch-cov-source.js')]);
+        await Promise.all([import('c8js'), import('./test/patch-cov-source.mjs')]);
         await c8js
         (
-            'test/node-spec-runner.js',
+            'test/node-spec-runner.mjs',
             { reporter: ['html', 'text-summary'], useC8Config: false },
         );
     },

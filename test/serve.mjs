@@ -2,16 +2,14 @@
 
 /* eslint-env node */
 
-'use strict';
+import ansiColors               from 'ansi-colors';
+import { createReadStream }     from 'fs';
+import { createServer }         from 'http';
+import { networkInterfaces }    from 'os';
+import { extname, join }        from 'path';
+import { fileURLToPath }        from 'url';
 
-const ansiColors                    = require('ansi-colors');
-const { createReadStream }          = require('fs');
-const { createServer }              = require('http');
-const { networkInterfaces }         = require('os');
-const { dirname, extname, join }    = require('path');
-const { fileURLToPath }             = require('url');
-
-const pathDir = dirname(__dirname);
+const pathDir = fileURLToPath(new URL('..', import.meta.url));
 const mimeTypes =
 {
     '.css':     'text/css',

@@ -1,12 +1,11 @@
 /* eslint-env node */
 
-'use strict';
-
-const { createRequire } = require('module');
+import { createRequire } from 'module';
 
 const IGNORED_LINE =
 '        throw Error(\'Polytype cannot be transpiled to ES5 or earlier code.\');\n';
 
+const require = createRequire(import.meta.url);
 const c8jsRequire = createRequire(require.resolve('c8js'));
 const c8Require = createRequire(c8jsRequire.resolve('c8'));
 const { prototype: covSourcePrototype } = c8Require('v8-to-istanbul/lib/source');
