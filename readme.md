@@ -17,6 +17,7 @@ As of today, Polytype runs in **current versions of all major browsers** and in
 - [Features](#features)
 - [Setup Instructions](#setup-instructions)
   * [In Node.js](#in-nodejs)
+    + [TypeScript](#typescript)
   * [In the browser](#in-the-browser)
 - [Usage](#usage)
   * [Inheriting from multiple base classes](#inheriting-from-multiple-base-classes)
@@ -75,12 +76,6 @@ or
 import { classes } from "polytype"; // ECMAScript module syntax
 ```
 
-In TypeScript you can also import certain types where necessary.
-
-```ts
-import { SuperConstructorInvokeInfo } from "polytype";
-```
-
 Alternatively, you can import the script build at the start of your application and access Polytype
 definitions through global objects.
 
@@ -91,6 +86,12 @@ or
 ```js
 import "polytype/global"; // ECMAScript module syntax
 ```
+
+#### TypeScript
+
+To use Polytype in a TypeScript project, be sure to set the
+[`moduleResolution`](https://www.typescriptlang.org/tsconfig#moduleResolution) compiler option
+to `"node"` or `"node16"` in your `tsconfig.json` file.
 
 ### In the browser
 

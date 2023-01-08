@@ -1,3 +1,12 @@
+/**
+ * Polytype JavaScript example code for Node.js.
+ *
+ * Requires Node.js >= 14.
+ *
+ * Run from command line with:
+ *      node example/ColoredCircle.js
+ */
+
 "use strict";
 
 const { classes, getPrototypeListOf } = require("polytype");

@@ -1,3 +1,12 @@
+/**
+ * Polytype TypeScript example code for Node.js.
+ *
+ * Requires Node.js >= 14, TypeScript >= 4.7.
+ *
+ * Run from command line with:
+ *      npx ts-node example/ColoredCircle.js
+ */
+
 import { classes, getPrototypeListOf } from "polytype";
 
 class Circle
