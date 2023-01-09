@@ -1,3 +1,10 @@
+<a name="0.16.0"></a>
+## [0.16.0](https://github.com/fasttime/Polytype/releases/tag/0.16.0) (2023-01-09)
+
+* Fixed support for base classes with parameterized types.
+* Improved setup instructions for TypeScript.
+* Added header comments to code example files.
+
 <a name="0.15.0"></a>
 ## [0.15.0](https://github.com/fasttime/Polytype/releases/tag/0.15.0) (2022-11-17)
 
