@@ -1,3 +1,8 @@
+<a name="0.16.1"></a>
+## [0.16.1](https://github.com/fasttime/Polytype/releases/tag/0.16.1) (2023-01-12)
+
+* Restored compatibility with TypeScript module resolution `"node"`.
+
 <a name="0.16.0"></a>
 ## [0.16.0](https://github.com/fasttime/Polytype/releases/tag/0.16.0) (2023-01-09)
 
