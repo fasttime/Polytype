@@ -33,38 +33,22 @@
         );
         return;
     }
-    const
-    [
-        ,
-        { default: Mocha },
-        { url },
-        { default: glob },
-        { promisify },
-        { fileURLToPath },
-    ] =
-    await
-    Promise.all
-    (
-        [
-            import('./spec-helper.js'),
-            import('mocha'),
-            import('inspector'),
-            import('glob'),
-            import('util'),
-            import('url'),
-        ],
-    );
-
+    const promises =
+    ['./spec-helper.js', 'mocha', 'inspector', 'glob', 'util', 'url']
+    .map(specifier => import(specifier));
+    const [, { default: Mocha }, { url }, { default: glob }, { promisify }, { fileURLToPath }] =
+    await Promise.all(promises);
     {
         const inspectorUrl = url();
         if (inspectorUrl)
             Mocha.Runnable.prototype.timeout = (...args) => args.length ? undefined : 0;
     }
     const mocha = new Mocha({ checkLeaks: true });
-    mocha.addFile(fileURLToPath(new URL('./init-spec.js', import.meta.url)));
+    const currentURL = import.meta.url;
+    mocha.addFile(fileURLToPath(new URL('./init-spec.js', currentURL)));
     {
         const asyncGlob = promisify(glob);
-        const __dirname = fileURLToPath(new URL('.', import.meta.url));
+        const __dirname = fileURLToPath(new URL('.', currentURL));
         const filenames =
         await asyncGlob('spec/**/*.spec.{js,mjs}', { absolute: true, cwd: __dirname });
         for (const filename of filenames)

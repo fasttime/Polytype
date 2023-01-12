@@ -35,10 +35,7 @@ async function bundle(inputPath, format, outputPath, outputPathMin)
         const { terser } = require('rollup-plugin-terser');
 
         const minifyOpts =
-        {
-            compress:   { hoist_funs: true, passes: 2 },
-            output:     { comments: (node, comment) => comment.pos === 0 },
-        };
+        { compress: { passes: 2 }, output: { comments: (node, comment) => comment.pos === 0 } };
         const terserPlugin = terser(minifyOpts);
         addOutput(outputPathMin, true, [terserPlugin]);
     }
@@ -103,7 +100,6 @@ task
 
         const JS_EXAMPLE_RULES =
         {
-            'brace-style':  'off',
             'comma-dangle':
             [
                 'error',
@@ -126,7 +122,7 @@ task
                     varsIgnorePattern:  '^(?:Green|WhiteUnit)Circle$',
                 },
             ],
-            'quotes':       ['error', 'double'],
+            'quotes': ['error', 'double'],
         };
         const TS_EXAMPLE_RULES =
         Object.fromEntries
