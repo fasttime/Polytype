@@ -84,5 +84,6 @@
       "default": "./lib/polytype.mjs"
     },
     "./package.json": "./package.json"
-  }
+  },
+  "types": "lib/polytype-module.d.ts"
 }
