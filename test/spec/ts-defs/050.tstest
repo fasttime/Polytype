@@ -6,55 +6,37 @@
 
 class A
 {
-    a(): void
-    { }
-
-    protected _a(): void
-    { }
-
-    static sa(): void
+    public static sa(): void
     { }
 
     protected static _sa(): void
+    { }
+
+    public a(): void
+    { }
+
+    protected _a(): void
     { }
 }
 
 class B
 {
-    b(): void
-    { }
-
-    protected _b(): void
-    { }
-
-    static sb(): void
+    public static sb(): void
     { }
 
     protected static _sb(): void
+    { }
+
+    public b(): void
+    { }
+
+    protected _b(): void
     { }
 }
 
 class C extends classes(A, B)
 {
-    c()
-    {
-        this.a();
-        this.b();
-        super.a();
-        super.b();
-        super.class(A).a();
-        super.class(B).b();
-    }
-
-    protected _c()
-    {
-        this._a();
-        this._b();
-        super._a();
-        super._b();
-    }
-
-    static sc()
+    public static sc(): void
     {
         C.sa();
         C.sb();
@@ -66,9 +48,27 @@ class C extends classes(A, B)
         super.class(B).sb();
     }
 
-    protected static _sc()
+    protected static _sc(): void
     {
         super.class(A)._sa();
         super.class(B)._sb();
+    }
+
+    public c(): void
+    {
+        this.a();
+        this.b();
+        super.a();
+        super.b();
+        super.class(A).a();
+        super.class(B).b();
+    }
+
+    protected _c(): void
+    {
+        this._a();
+        this._b();
+        super._a();
+        super._b();
     }
 }

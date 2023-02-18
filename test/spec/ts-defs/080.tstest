@@ -4,8 +4,18 @@
 }
 */
 
-class A { static sm1 = 'a'; static sm2 = 1; }
-class B { static sm1 = 1;   static sm2 = 2; }
+class A
+{
+    public static sm1 = 'a';
+    public static sm2 = 1;
+}
+
+class B
+{
+    public static sm1 = 1;
+    public static sm2 = 2;
+}
+
 class C extends classes(A, B) { }
 
 // @ts-expect-error

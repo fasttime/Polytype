@@ -7,13 +7,13 @@
 
 class A
 {
-    static x(x: any): void
+    public static x(x: any): void
     { }
 }
 
 class B
 {
-    static x(): void
+    public static x(): void
     { }
 }
 

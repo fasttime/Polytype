@@ -10,4 +10,4 @@
 class Test extends classes(Object)
 { }
 
-(new Test).class(Object).valueOf();
+new Test().class(Object).valueOf();

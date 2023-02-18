@@ -21,14 +21,14 @@ class A
 
 class B extends A
 {
-    b(): void
+    public b(): void
     { }
 }
 
 void
 class extends classes(B)
 {
-    constructor()
+    public constructor()
     {
         super({ super: A });
     }

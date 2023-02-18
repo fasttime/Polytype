@@ -2,8 +2,8 @@
 {
     title: 'classes global is read-only',
     polytypeMode: 'global',
-    expectedMessage: /^Cannot assign to 'classes' because it is (?:not a variable|an import)\.$/,
+    expectedMessage: 'Cannot assign to \'classes\' because it is a function.',
 }
 */
 
-classes = classes;
+classes = { } as typeof classes;

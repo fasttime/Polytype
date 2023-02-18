@@ -6,20 +6,20 @@
 
 class A
 {
-    constructor(n: number, s?: string)
+    public constructor(n: number, s?: string)
     { }
 }
 
 abstract class B
 {
-    constructor(o: object)
+    public constructor(o: object)
     { }
 }
 
 void
 class extends classes(A, B)
 {
-    constructor(args?: ConstructorParameters<typeof A>)
+    public constructor(args?: ConstructorParameters<typeof A>)
     {
         super();
         super([1]);
@@ -37,4 +37,4 @@ class extends classes(A, B)
         // @ts-expect-error
         super({ super: A, arguments: ['A'] });
     }
-}
+};

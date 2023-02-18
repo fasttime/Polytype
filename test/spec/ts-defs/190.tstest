@@ -8,8 +8,8 @@
 
 interface Test
 {
-    new(): Test;
     readonly prototype: { };
+    new(): Test;
 }
 
-const prototype: Test = classes({ } as Test).prototype;
+const testPrototype: Test = classes({ } as Test).prototype;

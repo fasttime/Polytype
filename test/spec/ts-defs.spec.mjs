@@ -1,13 +1,14 @@
 /* eslint-env mocha, node */
 /* global maybeIt, polytypeMode */
 
-import assert               from 'assert';
-import { readFile }         from 'fs/promises';
-import glob                 from 'glob';
-import { createRequire }    from 'module';
-import { dirname, join }    from 'path';
-import { fileURLToPath }    from 'url';
-import { promisify }        from 'util';
+import assert                                               from 'assert/strict';
+import { getImportStatement, getTestData, processTestCase } from 'eslint-plugin-tstest';
+import { readFile }                                         from 'fs/promises';
+import glob                                                 from 'glob';
+import { createRequire }                                    from 'module';
+import { dirname, join }                                    from 'path';
+import { fileURLToPath }                                    from 'url';
+import { promisify }                                        from 'util';
 
 function defineTests(typescriptPkgName)
 {
@@ -46,16 +47,7 @@ function defineTests(typescriptPkgName)
         } =
         await import(typescriptPkgName);
         const { options } = convertCompilerOptionsFromJson(compilerOptions);
-        let footer;
-        switch (polytypeMode)
-        {
-        case 'global':
-            footer = 'import { classes } from \'polytype\';\n';
-            break;
-        case 'module':
-            footer = 'import \'polytype/global\';\n';
-            break;
-        }
+        const importStatement = getImportStatement(polytypeMode);
         const fileNames = [];
         testCases.forEach
         (
@@ -77,7 +69,7 @@ function defineTests(typescriptPkgName)
                 if (match)
                 {
                     const testCase = testCases[match.groups.baseName];
-                    const sourceText = `${testCase.code}${footer}`;
+                    const sourceText = processTestCase(testCase, importStatement);
                     sourceFile = createSourceFile(fileName, sourceText);
                     sourceFile.testCase = testCase;
                     sourceFiles.push(sourceFile);
@@ -129,7 +121,7 @@ function defineTests(typescriptPkgName)
                     actualMessages.map(message => `\n${message}`).join('');
                     if (expectedMessage === undefined)
                     {
-                        assert.strictEqual
+                        assert.equal
                         (
                             actualErrorCount,
                             0,
@@ -139,7 +131,7 @@ function defineTests(typescriptPkgName)
                     }
                     else
                     {
-                        assert.strictEqual
+                        assert.equal
                         (
                             actualErrorCount,
                             1,
@@ -147,10 +139,7 @@ function defineTests(typescriptPkgName)
                             `${actualMessagesString}`,
                         );
                         const [actualMessage] = testCase.actualMessages;
-                        if (expectedMessage instanceof RegExp)
-                            assert.ok(expectedMessage.test(actualMessage));
-                        else
-                            assert.strictEqual(actualMessage, expectedMessage);
+                        assert.equal(actualMessage, expectedMessage);
                     }
                 },
             );
@@ -167,10 +156,7 @@ await
     async function loadTestCase(path)
     {
         const code = await readFile(path, 'utf-8');
-        const match = code.match(/^\s*\/\*!TESTDATA\b(?<testData>.*?)\*\//ms);
-        const functionBody = `return(${match.groups.testData})`;
-        const testCase = Function(functionBody)();
-        testCase.code = code;
+        const testCase = getTestData(code);
         return testCase;
     }
 

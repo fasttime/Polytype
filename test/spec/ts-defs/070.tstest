@@ -4,8 +4,18 @@
 }
 */
 
-class A { m1 = 'a'; m2 = 1; }
-class B { m1 = 1;   m2 = 2; }
+class A
+{
+    public m1 = 'a';
+    public m2 = 1;
+}
+
+class B
+{
+    public m1 = 1;
+    public m2 = 2;
+}
+
 class C extends classes(A, B) { }
 
 const c = new C();

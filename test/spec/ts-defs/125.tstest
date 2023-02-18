@@ -13,7 +13,7 @@ class Test<T>
 void
 class extends classes(Test<bigint>)
 {
-    test()
+    public test(): void
     {
         super.class(Test<bigint>).value = { };
     }
@@ -22,7 +22,7 @@ class extends classes(Test<bigint>)
 void
 class extends classes(Test<string>, Test<number>)
 {
-    test()
+    public test(): void
     {
         super.class(Test<string>).value = 'foo';
         super.class(Test<number>).value = 42;

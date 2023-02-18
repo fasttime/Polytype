@@ -4,17 +4,28 @@
 }
 */
 
-class T1            { m1 = 1 as const; }
-abstract class T2   { m2 = 2 as const; }
-class T3            { m3 = 3 as const; }
-class T4            { m4 = 4 as const; }
-class T5            { m5 = 5 as const; }
-class T6            { m6 = 6 as const; }
-class T7            { m7 = 7 as const; }
-class T8            { m8 = 8 as const; }
-class T9            { m9 = 9 as const; }
-class T10           { m10 = 10 as const; }
-class T11           { m11 = 11 as const; }
+class T1            { public m1 = 1 as const; }
+
+abstract class T2   { public m2 = 2 as const; }
+
+class T3            { public m3 = 3 as const; }
+
+class T4            { public m4 = 4 as const; }
+
+class T5            { public m5 = 5 as const; }
+
+class T6            { public m6 = 6 as const; }
+
+class T7            { public m7 = 7 as const; }
+
+class T8            { public m8 = 8 as const; }
+
+class T9            { public m9 = 9 as const; }
+
+class T10           { public m10 = 10 as const; }
+
+class T11           { public m11 = 11 as const; }
+
 class U extends classes(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) { }
 
 void (U.prototype as T1);

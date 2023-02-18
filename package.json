@@ -35,12 +35,14 @@
     "test-serve": "test/serve.mjs"
   },
   "devDependencies": {
-    "@fasttime/lint": "latest",
+    "@origin-1/eslint-config": "latest",
     "ansi-colors": "latest",
     "c8js": "latest",
     "chai": "latest",
+    "eslint-plugin-tstest": "file:test/eslint-plugin-tstest",
     "glob": "latest",
     "gulp": "latest",
+    "gulp-eslint-new": "latest",
     "handlebars": "latest",
     "markdown-toc": "latest",
     "mocha": "latest",

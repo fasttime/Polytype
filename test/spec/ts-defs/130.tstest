@@ -12,14 +12,14 @@ class A
 
 class B extends A
 {
-    static b(): void
+    public static b(): void
     { }
 }
 
 void
 class extends classes(B)
 {
-    static c()
+    public static c(): void
     {
         super.class(A);
     }

@@ -6,29 +6,29 @@
 
 abstract class A
 {
-    abstract foo(): number;
+    public abstract foo(): number;
 }
 
 abstract class B
 {
-    foo(): string
+    public foo(): string
     {
         return 'foo';
     }
-    abstract bar(arg: number): void;
+    public abstract bar(arg: number): void;
 }
 
 abstract class C extends B
 {
-    abstract get baz(): boolean;
+    public abstract get baz(): boolean;
 }
 
 class D extends classes(A, C)
 {
-    bar(): void
-    { }
+    public baz = true;
 
-    baz = true;
+    public bar(): void
+    { }
 }
 
 // @ts-expect-error

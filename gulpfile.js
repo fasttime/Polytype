@@ -2,7 +2,7 @@
 
 'use strict';
 
-const { parallel, series, task } = require('gulp');
+const { parallel, series, src, task } = require('gulp');
 
 async function bundle(inputPath, format, outputPath, outputPathMin)
 {
@@ -94,9 +94,10 @@ task
 task
 (
     'lint',
-    async () =>
+    () =>
     {
-        const { lint } = require('@fasttime/lint');
+        const { createConfig }  = require('@origin-1/eslint-config');
+        const gulpESLintNew     = require('gulp-eslint-new');
 
         const JS_EXAMPLE_RULES =
         {
@@ -130,38 +131,77 @@ task
             Object.entries(JS_EXAMPLE_RULES)
             .map(([key, value]) => [`@typescript-eslint/${key}`, value]),
         );
-
-        await
-        lint
+        const overrideConfig =
+        createConfig
         (
             {
-                src:            ['src/**/*.{js,mjs}', 'test/**/*.mjs'],
-                jsVersion:      2022,
+                files:      ['*.js', '*.mjs'],
+                jsVersion:  2022,
+            },
+            {
+                files:          ['*.ts', '*.tstest'],
+                tsVersion:      '4.7.0',
+                parserOptions:  { extraFileExtensions: ['.tstest'], project: 'tsconfig.json' },
+            },
+            {
+                files:          ['*.mjs', 'src/**/*.js'],
                 parserOptions:  { sourceType: 'module' },
                 rules:          { 'logical-assignment-operators': 'off' },
             },
             {
-                src:        ['*.js', 'test/**/*.js'],
-                jsVersion:  2022,
+                files:  'example/**/*.js',
+                env:    { 'node': 'readOnly' },
+                rules:  JS_EXAMPLE_RULES,
             },
             {
-                src:            'lib/**/*.d.ts',
-                parserOptions:  { project: 'tsconfig.json' },
-                rules:          { 'max-len': 'off' },
+                files:  'example/**/*.ts',
+                env:    { 'node': 'readOnly' },
+                rules:  TS_EXAMPLE_RULES,
             },
             {
-                src:        'example/**/*.js',
-                jsVersion:  2022,
-                envs:       'node',
-                rules:      JS_EXAMPLE_RULES,
+                files:  'lib/**/*.d.ts',
+                rules:  { 'max-len': 'off' },
             },
             {
-                src:            'example/**/*.ts',
-                envs:           'node',
-                parserOptions:  { project: 'tsconfig.json' },
-                rules:          TS_EXAMPLE_RULES,
+                files:      '*.tstest',
+                plugins:    ['tstest'],
+                rules:
+                {
+                    '@typescript-eslint/no-extraneous-class':       'off',
+                    '@typescript-eslint/no-misused-new':            'off',
+                    '@typescript-eslint/no-unused-vars':            'off',
+                    '@typescript-eslint/no-useless-constructor':    'off',
+                    'constructor-super':                            'off',
+                    'spaced-comment':                               'off',
+                },
             },
         );
+        const stream =
+        src
+        (
+            [
+                '*.js',
+                'example/**/*.{js,ts}',
+                'lib/**/*.d.ts',
+                'src/**/*.js',
+                'test/**/*.{js,mjs,tstest}',
+            ],
+        )
+        .pipe
+        (
+            gulpESLintNew
+            (
+                {
+                    overrideConfig,
+                    reportUnusedDisableDirectives:  'error',
+                    useEslintrc:                    false,
+                    warnIgnored:                    true,
+                },
+            ),
+        )
+        .pipe(gulpESLintNew.format('compact'))
+        .pipe(gulpESLintNew.failAfterError());
+        return stream;
     },
 );
 

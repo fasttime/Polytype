@@ -12,14 +12,14 @@ class A
 
 class B extends A
 {
-    b(): void
+    public b(): void
     { }
 }
 
 void
 class extends classes(B)
 {
-    c()
+    public c(): void
     {
         super.class(A);
     }
