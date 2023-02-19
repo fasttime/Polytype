@@ -1,7 +1,7 @@
 /*!TESTDATA
 {
-    title: 'super.class in nonstatic context with a parameterized superclass',
-    expectedMessage: 'Type \'{}\' is not assignable to type \'bigint\'.',
+    title:              'super.class in nonstatic context with a parameterized superclass',
+    expectedMessage:    'Type \'{}\' is not assignable to type \'bigint\'.',
 }
 */
 

@@ -1,7 +1,7 @@
 /*!TESTDATA
 {
-    title: 'Assignment to property \'prototype\' of a clustered constuctor',
-    expectedMessage: 'Cannot assign to \'prototype\' because it is a read-only property.',
+    title:              'Assignment to property \'prototype\' of a clustered constuctor',
+    expectedMessage:    'Cannot assign to \'prototype\' because it is a read-only property.',
 }
 */
 

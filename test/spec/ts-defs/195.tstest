@@ -1,6 +1,7 @@
 /*!TESTDATA
 {
-    title: 'Property \'prototype\' of a clustered constuctor with a parameterized superclass',
+    title:
+    'Property \'prototype\' of a clustered constuctor with a parameterized superclass',
     expectedMessage: 'Type \'number\' is not assignable to type \'string\'.',
 }
 */

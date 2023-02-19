@@ -1,7 +1,7 @@
 /*!TESTDATA
 {
-    title: 'SuperConstructorInvokeInfo (module version)',
-    polytypeMode: 'module',
+    title:          'SuperConstructorInvokeInfo (module version)',
+    polytypeMode:   'module',
 }
 */
 

@@ -2,7 +2,7 @@
 /* global maybeIt, polytypeMode */
 
 import assert                                               from 'assert/strict';
-import { getImportStatement, getTestData, processTestCase } from 'eslint-plugin-tstest';
+import { getImportStatement, getTestCase, processTestCase } from 'eslint-plugin-tstest';
 import { readFile }                                         from 'fs/promises';
 import glob                                                 from 'glob';
 import { createRequire }                                    from 'module';
@@ -156,7 +156,7 @@ await
     async function loadTestCase(path)
     {
         const code = await readFile(path, 'utf-8');
-        const testCase = getTestData(code);
+        const testCase = getTestCase(code);
         return testCase;
     }
 

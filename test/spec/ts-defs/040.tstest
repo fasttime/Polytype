@@ -1,7 +1,7 @@
 /*!TESTDATA
 {
-    title: 'Object.getPrototypeListOf',
-    polytypeMode: 'global',
+    title:          'Object.getPrototypeListOf',
+    polytypeMode:   'global',
 }
 */
 
