@@ -1,6 +1,6 @@
 /* eslint no-alert: off */
 /* eslint-env mocha, shared-node-browser */
-/* global __dirname, alert, chai, document, location, process, reimport, require */
+/* global __dirname, alert, chai, document, location, process, require */
 
 'use strict';
 
@@ -139,6 +139,14 @@
 
     const maybeIt = (condition, ...args) => (condition ? it : it.skip)(...args);
 
+    async function reloadPolytypeESM(polytypePath)
+    {
+        const { default: reimport } = await import('./reimport.mjs');
+        const { defineGlobally } = await reimport(polytypePath);
+        defineGlobally();
+        return defineGlobally;
+    }
+
     function setPropertyDescriptor(obj, key, descriptor)
     {
         if (descriptor)
@@ -182,7 +190,6 @@
     if (typeof module !== 'undefined')
     {
         const { readFile }                                      = require('fs/promises');
-        const { resolve }                                       = require('path');
         const { SourceTextModule, createContext, runInContext } = require('vm');
 
         function loadPolytypeBase()
@@ -240,20 +247,7 @@
             }
             break;
         case '.mjs':
-            {
-                const postrequire = require('postrequire');
-
-                const modulePath = resolve(__dirname, polytypePath);
-                loadPolytype =
-                async () =>
-                {
-                    const reimport = postrequire('./reimport');
-
-                    const { defineGlobally } = await reimport(modulePath);
-                    defineGlobally();
-                    return defineGlobally;
-                };
-            }
+            loadPolytype = () => reloadPolytypeESM(polytypePath);
             polytypeMode = 'module';
             runInVM =
             async (code, context) =>
@@ -386,17 +380,7 @@
             loadPolytypeInIFrame = loadScript;
             break;
         case '.mjs':
-            {
-                let counter = 0;
-                loadPolytype =
-                async () =>
-                {
-                    const url = `${polytypePath}?${++counter}`;
-                    const { defineGlobally } = await reimport(url);
-                    defineGlobally();
-                    return defineGlobally;
-                };
-            }
+            loadPolytype = () => reloadPolytypeESM(polytypePath);
             loadPolytypeInIFrame = loadESModule;
             break;
         }
