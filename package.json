@@ -31,8 +31,10 @@
   },
   "scripts": {
     "build": "npm install && gulp",
+    "release": "npm version -f -m 'Version %s' --tag-version-prefix= ",
     "test": "test/node-spec-runner.mjs",
-    "test-serve": "test/serve.mjs"
+    "test-serve": "test/serve.mjs",
+    "version": "gulp make-toc && git add changelog.md readme.md"
   },
   "devDependencies": {
     "@origin-1/eslint-config": "latest",
