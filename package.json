@@ -73,9 +73,13 @@
       "types": "./lib/polytype-module.d.ts",
       "default": "./lib/polytype.cjs"
     },
-    "./lib/polytype.min.cjs": {
-      "types": "./lib/polytype-module.d.ts",
-      "default": "./lib/polytype.min.cjs"
+    "./lib/polytype.js": {
+      "types": "./lib/polytype-global.d.ts",
+      "default": "./lib/polytype.js"
+    },
+    "./lib/polytype.min.js": {
+      "types": "./lib/polytype-global.d.ts",
+      "default": "./lib/polytype.min.js"
     },
     "./lib/polytype.min.mjs": {
       "types": "./lib/polytype-module.d.ts",
