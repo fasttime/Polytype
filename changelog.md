@@ -1,3 +1,9 @@
+<a name="0.16.2"></a>
+## [0.16.2](https://github.com/fasttime/Polytype/releases/tag/0.16.2) (2023-02-21)
+
+* Fixed exports for `"polytype/lib/polytype.js"` and `"polytype/lib/polytype.min.js"` in
+package.json.
+
 <a name="0.16.1"></a>
 ## [0.16.1](https://github.com/fasttime/Polytype/releases/tag/0.16.1) (2023-01-12)
 
