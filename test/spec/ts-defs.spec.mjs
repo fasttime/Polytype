@@ -8,7 +8,6 @@ import glob                                                 from 'glob';
 import { createRequire }                                    from 'module';
 import { dirname, join }                                    from 'path';
 import { fileURLToPath }                                    from 'url';
-import { promisify }                                        from 'util';
 
 function defineTests(typescriptPkgName)
 {
@@ -161,7 +160,7 @@ await
     }
 
     const pattern = join(__dirname, 'ts-defs', '*.tstest');
-    const paths = await promisify(glob)(pattern);
+    const paths = await glob(pattern);
     const promises = paths.map(loadTestCase);
     const testCases = await Promise.all(promises);
     return testCases;
