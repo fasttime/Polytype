@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes */
+/* global assert classes */
 
 'use strict';
 

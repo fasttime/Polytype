@@ -31,6 +31,7 @@
   },
   "scripts": {
     "build": "npm install && gulp",
+    "lint": "gulp lint",
     "release": "npm version -f -m 'Version %s' --tag-version-prefix= ",
     "test": "test/node-spec-runner.mjs",
     "test-serve": "test/serve.mjs",

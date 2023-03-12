@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, newRealm */
+/* global assert classes newRealm */
 
 'use strict';
 

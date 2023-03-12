@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createFunctionWithGetPrototypeCount */
+/* global assert classes createFunctionWithGetPrototypeCount */
 
 'use strict';
 

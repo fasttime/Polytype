@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createDeceptiveObject, newRealm */
+/* global assert classes createDeceptiveObject newRealm */
 
 'use strict';
 
@@ -12,10 +12,11 @@ describe
 
         it
         (
-            'is defined on Function.prototype',
+            'preserves the original enumerable and writable attributes',
             async () =>
             {
                 const { Function: Functionʼ } = await newRealm();
+                const { Function: Functionʼʼ } = await newRealm();
                 Object.defineProperty
                 (
                     Functionʼ.prototype,
@@ -27,23 +28,20 @@ describe
                         writable:       false,
                     },
                 );
-                const A = Function();
-                const Aʼ = Functionʼ();
-                const emptyObj = { __proto__: null };
-                const B = Function();
-                Object.setPrototypeOf(B.prototype, emptyObj);
-                classes(A, Aʼ, B);
-                assert.hasOwnPropertyDescriptor
+                Object.defineProperty
                 (
-                    Function.prototype,
+                    Functionʼʼ.prototype,
                     'bind',
                     {
                         configurable:   true,
                         enumerable:     false,
-                        value:          Function.prototype.bind,
+                        value:          Functionʼʼ.prototype.bind,
                         writable:       true,
                     },
                 );
+                const Aʼ = Functionʼ();
+                const Aʼʼ = Functionʼʼ();
+                classes(Aʼ, Aʼʼ);
                 assert.hasOwnPropertyDescriptor
                 (
                     Functionʼ.prototype,
@@ -55,6 +53,29 @@ describe
                         writable:       false,
                     },
                 );
+                assert.hasOwnPropertyDescriptor
+                (
+                    Functionʼʼ.prototype,
+                    'bind',
+                    {
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          Functionʼʼ.prototype.bind,
+                        writable:       true,
+                    },
+                );
+            },
+        );
+
+        it
+        (
+            'is not defined if a constructor prototype cannot be determined',
+            () =>
+            {
+                const emptyObj = { __proto__: null };
+                const Foo = Function();
+                Foo.constructor = { __proto__: emptyObj };
+                classes(Foo);
                 assert.notOwnProperty(emptyObj, 'bind');
             },
         );

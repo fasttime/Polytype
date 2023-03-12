@@ -1,14 +1,14 @@
 /* eslint-env mocha */
 /*
 global
-assert,
-classes,
-createDeceptiveObject,
-createFunctionFromConstructor,
-createNullPrototypeFunction,
-document,
-maybeIt,
-newRealm,
+assert
+classes
+createDeceptiveObject
+createFunctionFromConstructor
+createNullPrototypeFunction
+document
+maybeIt
+newRealm
 */
 
 'use strict';

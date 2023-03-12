@@ -1,6 +1,6 @@
 /* eslint no-alert: off */
 /* eslint-env mocha, shared-node-browser */
-/* global __dirname, alert, chai, document, location, process, require */
+/* global alert chai document location process require */
 
 'use strict';
 
@@ -139,10 +139,10 @@
 
     const maybeIt = (condition, ...args) => (condition ? it : it.skip)(...args);
 
-    async function reloadPolytypeESM(polytypePath)
+    async function reloadPolytypeESM(polytypeURL)
     {
         const { default: reimport } = await import('./reimport.mjs');
-        const { defineGlobally } = await reimport(polytypePath);
+        const { defineGlobally } = await reimport(polytypeURL);
         defineGlobally();
         return defineGlobally;
     }

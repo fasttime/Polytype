@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createNullPrototypeFunction */
+/* global assert classes createNullPrototypeFunction */
 
 'use strict';
 

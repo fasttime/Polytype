@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, console, createFunctionWithGetPrototypeCount, maybeIt */
+/* global assert classes console createFunctionWithGetPrototypeCount maybeIt */
 
 'use strict';
 

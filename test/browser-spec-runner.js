@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global MochaBar, mocha */
+/* global MochaBar mocha */
 
 'use strict';
 

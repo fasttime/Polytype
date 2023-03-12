@@ -56,7 +56,8 @@
     (
         failures =>
         {
-            process.exitCode = failures ? 1 : 0;
+            if (failures)
+                process.exitCode = 1;
         },
     );
 })();

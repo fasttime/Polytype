@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, createDeceptiveObject, newRealm */
+/* global assert classes createDeceptiveObject maybeIt newRealm */
 
 'use strict';
 
@@ -12,10 +12,11 @@ describe
 
         it
         (
-            'is defined on Object.prototype',
+            'preserves the original enumerable and writable attributes',
             async () =>
             {
                 const { Function: Functionʼ, Object: Objectʼ } = await newRealm();
+                const { Function: Functionʼʼ, Object: Objectʼʼ } = await newRealm();
                 Object.defineProperty
                 (
                     Objectʼ.prototype,
@@ -27,23 +28,20 @@ describe
                         writable:       false,
                     },
                 );
-                const A = Function();
-                const Aʼ = Functionʼ();
-                const emptyObj = { __proto__: null };
-                const B = Function();
-                Object.setPrototypeOf(B.prototype, emptyObj);
-                classes(A, Aʼ, B);
-                assert.hasOwnPropertyDescriptor
+                Object.defineProperty
                 (
-                    Object.prototype,
+                    Objectʼʼ.prototype,
                     'isPrototypeOf',
                     {
                         configurable:   true,
                         enumerable:     false,
-                        value:          Object.prototype.isPrototypeOf,
+                        value:          Objectʼʼ.prototype.isPrototypeOf,
                         writable:       true,
                     },
                 );
+                const Aʼ = Functionʼ();
+                const Aʼʼ = Functionʼʼ();
+                classes(Aʼ, Aʼʼ);
                 assert.hasOwnPropertyDescriptor
                 (
                     Objectʼ.prototype,
@@ -55,6 +53,29 @@ describe
                         writable:       false,
                     },
                 );
+                assert.hasOwnPropertyDescriptor
+                (
+                    Objectʼʼ.prototype,
+                    'isPrototypeOf',
+                    {
+                        configurable:   true,
+                        enumerable:     false,
+                        value:          Objectʼʼ.prototype.isPrototypeOf,
+                        writable:       true,
+                    },
+                );
+            },
+        );
+
+        it
+        (
+            'is not defined if a root prototype cannot be determined',
+            () =>
+            {
+                const emptyObj = { __proto__: null };
+                const Foo = Function();
+                Object.setPrototypeOf(Foo, emptyObj);
+                classes(Foo);
                 assert.notOwnProperty(emptyObj, 'isPrototypeOf');
             },
         );

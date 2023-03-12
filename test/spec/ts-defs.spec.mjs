@@ -1,5 +1,5 @@
 /* eslint-env mocha, node */
-/* global maybeIt, polytypeMode */
+/* global maybeIt polytypeMode */
 
 import assert                                               from 'assert/strict';
 import { getImportStatement, getTestCase, processTestCase } from 'eslint-plugin-tstest';

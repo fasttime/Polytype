@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert, classes, document, maybeIt, newRealm */
+/* global assert classes document maybeIt newRealm */
 
 'use strict';
 

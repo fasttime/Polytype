@@ -1,14 +1,14 @@
 /* eslint-env mocha */
 /*
 global
-assert,
-backupGlobals,
-classes,
-createNullPrototypeFunction,
-document,
-loadPolytype,
-maybeDescribe,
-newRealm,
+assert
+backupGlobals
+classes
+createNullPrototypeFunction
+document
+loadPolytype
+maybeDescribe
+newRealm
 */
 
 'use strict';
