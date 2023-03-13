@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert classes createDeceptiveObject newRealm */
+/* global assert classes createDeceptiveObject maybeIt newRealm */
 
 'use strict';
 
@@ -10,8 +10,9 @@ describe
     {
         before(() => classes(Object));
 
-        it
+        maybeIt
         (
+            newRealm,
             'preserves the original enumerable and writable attributes',
             async () =>
             {

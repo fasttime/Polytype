@@ -10,8 +10,9 @@ describe
     {
         before(() => classes(Object));
 
-        it
+        maybeIt
         (
+            newRealm,
             'preserves the original enumerable and writable attributes',
             async () =>
             {

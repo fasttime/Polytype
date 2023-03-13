@@ -78,56 +78,77 @@ describe
             () => assert.throwsTypeError(() => new hasInstance(), /\bis not a constructor\b/),
         );
 
-        it
+        describe
         (
             'is defined only on superclasses',
-            async () =>
+            () =>
             {
-                const { Function: Functionʼ, Object: Objectʼ, classes: classesʼ } =
-                await newRealm(true);
-                const A = Function();
-                A.prototype.constructor = null;
-                const B =
-                () =>
-                { };
-                B.prototype = { constructor: B };
-                const C = { __proto__: B };
-                C.prototype = { __proto__: B.prototype };
-                C.prototype.constructor = C;
-                const D = Function();
-                Object.setPrototypeOf(D, C);
-                D.prototype = { __proto__: C.prototype };
-                D.prototype.constructor = D;
-                const E = createFunctionFromConstructor(Functionʼ);
-                const F =
-                class extends E
-                { };
-                const G =
-                class
-                { };
-                const H =
-                class extends classesʼ(G)
-                { };
-                const _ADFH = classes(A, D, F, H);
-                const hasInstanceDescriptor =
-                {
-                    enumerable:     false,
-                    configurable:   true,
-                    value:          hasInstance,
-                    writable:       true,
-                };
-                assert.notOwnProperty(A, Symbol.hasInstance);
-                assert.hasOwnPropertyDescriptor(B, Symbol.hasInstance, hasInstanceDescriptor);
-                assert.notOwnProperty(C, Symbol.hasInstance);
-                assert.notOwnProperty(D, Symbol.hasInstance);
-                assert.hasOwnPropertyDescriptor(E, Symbol.hasInstance, hasInstanceDescriptor);
-                assert.notOwnProperty(F, Symbol.hasInstance);
-                assert.hasOwnPropertyDescriptor(G, Symbol.hasInstance, hasInstanceDescriptor);
-                assert.notOwnProperty(H, Symbol.hasInstance);
-                assert.notOwnProperty(_ADFH, Symbol.hasInstance);
-                assert.hasOwnPropertyDescriptor(Objectʼ, Symbol.hasInstance, hasInstanceDescriptor);
-                assert.hasOwnPropertyDescriptor
-                (Functionʼ, Symbol.hasInstance, hasInstanceDescriptor);
+                it
+                (
+                    'in the same realm',
+                    () =>
+                    {
+                        const A = Function();
+                        A.prototype.constructor = null;
+                        const B = () => { };
+                        B.prototype = { constructor: B };
+                        const C = { __proto__: B };
+                        C.prototype = { __proto__: B.prototype };
+                        C.prototype.constructor = C;
+                        const D = Function();
+                        Object.setPrototypeOf(D, C);
+                        D.prototype = { __proto__: C.prototype };
+                        D.prototype.constructor = D;
+                        const _AD = classes(A, D);
+                        const hasInstanceDescriptor =
+                        {
+                            enumerable:     false,
+                            configurable:   true,
+                            value:          hasInstance,
+                            writable:       true,
+                        };
+                        assert.notOwnProperty(A, Symbol.hasInstance);
+                        assert.hasOwnPropertyDescriptor
+                        (B, Symbol.hasInstance, hasInstanceDescriptor);
+                        assert.notOwnProperty(C, Symbol.hasInstance);
+                        assert.notOwnProperty(D, Symbol.hasInstance);
+                        assert.notOwnProperty(_AD, Symbol.hasInstance);
+                    },
+                );
+
+                maybeIt
+                (
+                    newRealm,
+                    'across realms',
+                    async () =>
+                    {
+                        const { Function: Functionʼ, Object: Objectʼ, classes: classesʼ } =
+                        await newRealm(true);
+                        const E = createFunctionFromConstructor(Functionʼ);
+                        const F = class extends E { };
+                        const G = class { };
+                        const H = class extends classesʼ(G) { };
+                        const _FH = classes(F, H);
+                        const hasInstanceDescriptor =
+                        {
+                            enumerable:     false,
+                            configurable:   true,
+                            value:          hasInstance,
+                            writable:       true,
+                        };
+                        assert.hasOwnPropertyDescriptor
+                        (E, Symbol.hasInstance, hasInstanceDescriptor);
+                        assert.notOwnProperty(F, Symbol.hasInstance);
+                        assert.hasOwnPropertyDescriptor
+                        (G, Symbol.hasInstance, hasInstanceDescriptor);
+                        assert.notOwnProperty(H, Symbol.hasInstance);
+                        assert.notOwnProperty(_FH, Symbol.hasInstance);
+                        assert.hasOwnPropertyDescriptor
+                        (Objectʼ, Symbol.hasInstance, hasInstanceDescriptor);
+                        assert.hasOwnPropertyDescriptor
+                        (Functionʼ, Symbol.hasInstance, hasInstanceDescriptor);
+                    },
+                );
             },
         );
 

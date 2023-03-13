@@ -6,6 +6,8 @@ jobs:
 
   build:
 
+    name: Build
+
     runs-on: ubuntu-latest
 
     steps:
@@ -23,9 +25,9 @@ jobs:
         name: lib
         path: lib
 
-  test:
+  node-test:
 
-    name: test (Node.js ${{ matrix.node-version }})
+    name: Test (Node.js ${{ matrix.node-version }})
 
     needs: build
 
@@ -51,3 +53,30 @@ jobs:
         npm test -- .min.mjs
         npm test -- .js
         npm test -- .min.js
+
+  deno-test:
+
+    name: Test (Deno ${{ matrix.deno-version }})
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        deno-version: [v1.24, v1.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: ${{ matrix.deno-version }}
+    - uses: actions/download-artifact@v3
+      with:
+        name: lib
+        path: lib
+    - run: |
+        deno run --allow-env --allow-read test/deno-spec-runner.mjs .mjs
+        deno run --allow-env --allow-read test/deno-spec-runner.mjs .min.mjs
+        deno run --allow-env --allow-read test/deno-spec-runner.mjs .js
+        deno run --allow-env --allow-read test/deno-spec-runner.mjs .min.js

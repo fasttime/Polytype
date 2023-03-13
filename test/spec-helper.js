@@ -1,6 +1,6 @@
 /* eslint no-alert: off */
 /* eslint-env mocha, shared-node-browser */
-/* global alert chai document location process require */
+/* global Deno alert chai document location process require */
 
 'use strict';
 
@@ -187,7 +187,22 @@
     let loadPolytype;
     let newRealm;
     let polytypeMode;
-    if (typeof module !== 'undefined')
+    if (typeof Deno !== 'undefined')
+    {
+        const [extname] = Deno.args;
+        const polytypeURL = getPolytypePath(extname, ['.js', '.min.js', '.mjs', '.min.mjs']);
+        const extension = getExtension(polytypeURL);
+        switch (extension)
+        {
+        case '.js':
+            loadPolytype = () => import(polytypeURL);
+            break;
+        case '.mjs':
+            loadPolytype = () => reloadPolytypeESM(polytypeURL);
+            break;
+        }
+    }
+    else if (typeof module !== 'undefined')
     {
         const { readFile }                                      = require('fs/promises');
         const { SourceTextModule, createContext, runInContext } = require('vm');
@@ -200,8 +215,9 @@
             return returnValue;
         }
 
+        const [,, extname] = process.argv;
         const polytypePath =
-        getPolytypePath(process.argv[2], ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
+        getPolytypePath(extname, ['.cjs', '.js', '.min.js', '.mjs', '.min.mjs']);
         const extension = getExtension(polytypePath);
         {
             const path = require.resolve(polytypePath);
@@ -359,10 +375,9 @@
             }
         };
 
+        let polytypePath;
         const urlParams = new URLSearchParams(location.search);
         const extname = urlParams.get('extname');
-        let loadPolytypeInIFrame;
-        let polytypePath;
         try
         {
             polytypePath = getPolytypePath(extname, ALLOWED_EXTENSIONS);
@@ -372,6 +387,7 @@
             polytypePath = getPolytypePath(null, ALLOWED_EXTENSIONS);
             alert(message);
         }
+        let loadPolytypeInIFrame;
         const extension = getExtension(polytypePath);
         switch (extension)
         {

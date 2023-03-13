@@ -155,8 +155,9 @@ describe
 
                 it('in the same realm', () => test(classes));
 
-                it
+                maybeIt
                 (
+                    newRealm,
                     'in another realm',
                     async () =>
                     {
@@ -200,8 +201,9 @@ describe
 
                 it('in the same realm', () => test(classes));
 
-                it
+                maybeIt
                 (
+                    newRealm,
                     'in another realm',
                     async () =>
                     {

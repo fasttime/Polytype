@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-/* global assert classes newRealm */
+/* global assert classes maybeIt newRealm */
 
 'use strict';
 
@@ -354,8 +354,9 @@ describe
 
                         it('in the same realm', () => test(classes));
 
-                        it
+                        maybeIt
                         (
+                            newRealm,
                             'in another realm',
                             async () =>
                             {

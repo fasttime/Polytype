@@ -8,8 +8,8 @@ TypeScript with a simple syntax.
 “Dynamic” means that changes to base classes at runtime are reflected immediately in all derived
 classes just as programmers would expect when working with single prototype inheritance.
 
-As of today, Polytype runs in **current versions of all major browsers** and in
-**Node.js**<sup>([*](#compatibility))</sup>.
+Polytype runs in [**Node.js**](https://nodejs.org/), [**Deno**](https://deno.land/) and in **current
+versions of all major browsers**.
 
 ## Contents
 
@@ -18,12 +18,12 @@ As of today, Polytype runs in **current versions of all major browsers** and in
 ## Features
 
 * Python style multiple inheritance
-* Works in Node.js and in all new browsers
+* Works in Node.js, Deno and in all new browsers
 * Full TypeScript support
 * Zero dependencies
-* Access to all base class features
+* Access to all inherited base class features
   * constructors
-  * methods, getters and setters, [class fields][Class fields] – both static and nonstatic
+  * methods, getters and setters, class fields
   * value properties on base classes and base instance prototypes
 * `in`, `instanceof` and `isPrototypeOf` integration
 
@@ -61,6 +61,17 @@ require("polytype/global"); // CommonJS syntax
 or
 ```js
 import "polytype/global"; // ECMAScript module syntax
+```
+
+### In Deno
+
+You can import the module or script build of Polytype from a CDN of your choice, e.g.
+```js
+import { classes } from "https://esm.sh/polytype"; // Module build
+```
+or
+```js
+import "https://esm.sh/polytype/global"; // Script build
 ```
 
 ### In the browser
@@ -656,6 +667,8 @@ Polytype was successfully tested in the following browsers/JavaScript engines.
  ![Opera](https://api.iconify.design/mdi:opera.svg) Opera 67+
 <br>
  ![Node.js](https://api.iconify.design/mdi:nodejs.svg) Node.js 14+
+<br>
+ ![Deno](https://api.iconify.design/file-icons:deno.svg) Deno 1.24+
 
 The minimum supported TypeScript version is 4.7.
 
@@ -664,8 +677,6 @@ ECMAScript 2020 or higher syntax.
 
 [npm badge]: https://badge.fury.io/js/polytype.svg
 [npm url]: https://www.npmjs.com/package/polytype
-[Class fields]:
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Public_class_fields
 [Why Use for...in?]:
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in#why_use_for...in
 [Enumerability and ownership of properties]:
