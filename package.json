@@ -57,7 +57,8 @@
     "typescript": "latest",
     "typescript_4.7": "npm:typescript@4.7",
     "typescript_4.8": "npm:typescript@4.8",
-    "typescript_4.9": "npm:typescript@4.9"
+    "typescript_4.9": "npm:typescript@4.9",
+    "typescript_5.0": "npm:typescript@5.0"
   },
   "engines": {
     "node": ">=14.0.0"
