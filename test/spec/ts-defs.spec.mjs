@@ -4,7 +4,7 @@
 import assert                                               from 'assert/strict';
 import { getImportStatement, getTestCase, processTestCase } from 'eslint-plugin-tstest';
 import { readFile }                                         from 'fs/promises';
-import glob                                                 from 'glob';
+import { glob }                                             from 'glob';
 import { createRequire }                                    from 'module';
 import { dirname, join }                                    from 'path';
 import { fileURLToPath }                                    from 'url';

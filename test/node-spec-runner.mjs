@@ -35,7 +35,7 @@
     }
     const promises =
     ['./spec-helper.js', 'mocha', 'inspector', 'glob', 'url'].map(specifier => import(specifier));
-    const [, { default: Mocha }, { url }, { default: glob }, { fileURLToPath }] =
+    const [, { default: Mocha }, { url }, { glob }, { fileURLToPath }] =
     await Promise.all(promises);
     {
         const inspectorUrl = url();
