@@ -44,7 +44,7 @@ async function bundle(inputPath, format, outputPath, outputPathMin)
 
 function readFileAsString(inputPath)
 {
-    const { readFile } = require('fs/promises');
+    const { readFile } = require('node:fs/promises');
 
     const promise = readFile(inputPath, 'utf8');
     return promise;
@@ -55,7 +55,7 @@ task
     'clean',
     async () =>
     {
-        const { rm } = require('fs/promises');
+        const { rm } = require('node:fs/promises');
 
         const paths = ['coverage', 'lib', 'readme.md', 'test/spec-runner.html'];
         const options = { force: true, recursive: true };
@@ -68,8 +68,8 @@ task
     'make-ts-defs',
     async () =>
     {
+        const { mkdir, writeFile }  = require('node:fs/promises');
         const { version }           = require('./package.json');
-        const { mkdir, writeFile }  = require('fs/promises');
         const Handlebars            = require('handlebars');
 
         async function writeOutput(outputPath, asModule)
@@ -239,9 +239,9 @@ task
     'make-spec-runner',
     async () =>
     {
-        const { readdir, writeFile }    = require('fs/promises');
+        const { readdir, writeFile }    = require('node:fs/promises');
+        const { extname }               = require('node:path');
         const Handlebars                = require('handlebars');
-        const { extname }               = require('path');
 
         async function getSpecs()
         {
@@ -269,8 +269,8 @@ task
     'make-toc',
     async () =>
     {
+        const { chmod, writeFile }  = require('node:fs/promises');
         const { version }           = require('./package.json');
-        const { chmod, writeFile }  = require('fs/promises');
         const Handlebars            = require('handlebars');
         const toc                   = require('markdown-toc');
 

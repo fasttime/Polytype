@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-import { createRequire } from 'module';
+import { createRequire } from 'node:module';
 
 const IGNORED_LINE =
 '        throw Error(\'Polytype cannot be transpiled to ES5 or earlier code.\');\n';

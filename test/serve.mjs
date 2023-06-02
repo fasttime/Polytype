@@ -2,12 +2,12 @@
 
 /* eslint-env node */
 
+import { createReadStream }     from 'node:fs';
+import { createServer }         from 'node:http';
+import { networkInterfaces }    from 'node:os';
+import { extname, join }        from 'node:path';
+import { fileURLToPath }        from 'node:url';
 import ansiColors               from 'ansi-colors';
-import { createReadStream }     from 'fs';
-import { createServer }         from 'http';
-import { networkInterfaces }    from 'os';
-import { extname, join }        from 'path';
-import { fileURLToPath }        from 'url';
 
 const pathDir = fileURLToPath(new URL('..', import.meta.url));
 const mimeTypes =

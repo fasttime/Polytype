@@ -32,7 +32,7 @@
   "scripts": {
     "build": "npm install && gulp",
     "lint": "gulp lint",
-    "release": "npm version -f -m 'Version %s' --tag-version-prefix=",
+    "release": "npm version -f -m \"Version %s\" --tag-version-prefix=",
     "test": "test/node-spec-runner.mjs",
     "test-serve": "test/serve.mjs",
     "version": "gulp make-toc && git add changelog.md readme.md"
@@ -58,10 +58,11 @@
     "typescript_4.7": "npm:typescript@4.7",
     "typescript_4.8": "npm:typescript@4.8",
     "typescript_4.9": "npm:typescript@4.9",
-    "typescript_5.0": "npm:typescript@5.0"
+    "typescript_5.0": "npm:typescript@5.0",
+    "typescript_5.1": "npm:typescript@5.1"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "exports": {
     ".": {

@@ -1,13 +1,13 @@
 /* eslint-env mocha, node */
 /* global maybeIt polytypeMode */
 
-import assert                                               from 'assert/strict';
+import assert                                               from 'node:assert/strict';
+import { readFile }                                         from 'node:fs/promises';
+import { createRequire }                                    from 'node:module';
+import { dirname, join }                                    from 'node:path';
+import { fileURLToPath }                                    from 'node:url';
 import { getImportStatement, getTestCase, processTestCase } from 'eslint-plugin-tstest';
-import { readFile }                                         from 'fs/promises';
 import { glob }                                             from 'glob';
-import { createRequire }                                    from 'module';
-import { dirname, join }                                    from 'path';
-import { fileURLToPath }                                    from 'url';
 
 function defineTests(typescriptPkgName)
 {
@@ -185,5 +185,6 @@ describe
         describe('TypeScript 4.8', () => defineTests('typescript_4.8'));
         describe('TypeScript 4.9', () => defineTests('typescript_4.9'));
         describe('TypeScript 5.0', () => defineTests('typescript_5.0'));
+        describe('TypeScript 5.1', () => defineTests('typescript_5.1'));
     },
 );

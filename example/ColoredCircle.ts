@@ -1,7 +1,7 @@
 /**
  * Polytype TypeScript example code for Node.js.
  *
- * Requires Node.js >= 14, TypeScript >= 4.7.
+ * Requires Node.js >= 16, TypeScript >= 4.7.
  *
  * Run from command line with:
  *      npx ts-node example/ColoredCircle.js

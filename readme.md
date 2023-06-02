@@ -690,7 +690,7 @@ Polytype was successfully tested in the following browsers/JavaScript engines.
 <br>
  ![Opera](https://api.iconify.design/mdi:opera.svg) Opera 67+
 <br>
- ![Node.js](https://api.iconify.design/mdi:nodejs.svg) Node.js 14+
+ ![Node.js](https://api.iconify.design/mdi:nodejs.svg) Node.js 16+
 <br>
  ![Deno](https://api.iconify.design/file-icons:deno.svg) Deno 1.24+
 

@@ -204,8 +204,8 @@
     }
     else if (typeof module !== 'undefined')
     {
-        const { readFile }                                      = require('fs/promises');
-        const { SourceTextModule, createContext, runInContext } = require('vm');
+        const { readFile }                                      = require('node:fs/promises');
+        const { SourceTextModule, createContext, runInContext } = require('node:vm');
 
         function loadPolytypeBase()
         {
@@ -250,7 +250,7 @@
             };
             polytypeMode = 'module';
             {
-                const { wrap } = require('module');
+                const { wrap } = require('node:module');
 
                 runInVM =
                 (code, context) =>

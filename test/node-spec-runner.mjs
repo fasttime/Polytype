@@ -14,11 +14,9 @@
     const { execArgv } = process;
     const childExecArgv = [...execArgv];
     addMissingFlag('--experimental-vm-modules');
-    if (process.config.variables.node_module_version < 88)
-        addMissingFlag('--harmony-top-level-await');
     if (childExecArgv.length > execArgv.length)
     {
-        const { fork } = await import('child_process');
+        const { fork } = await import('node:child_process');
 
         const [, modulePath, ...args] = process.argv;
         addMissingFlag('--no-warnings');
@@ -34,8 +32,9 @@
         return;
     }
     const promises =
-    ['./spec-helper.js', 'mocha', 'inspector', 'glob', 'url'].map(specifier => import(specifier));
-    const [, { default: Mocha }, { url }, { glob }, { fileURLToPath }] =
+    ['./spec-helper.js', 'node:inspector', 'mocha', 'node:url', 'glob']
+    .map(specifier => import(specifier));
+    const [, { url }, { default: Mocha }, { fileURLToPath }, { glob }] =
     await Promise.all(promises);
     {
         const inspectorUrl = url();
