@@ -12,7 +12,7 @@ deno run --allow-env --allow-read test/deno-spec-runner.mjs
 import { expandGlob } from                      'https://deno.land/std/fs/expand_glob.ts';
 import { dirname, fromFileUrl, toFileUrl } from 'https://deno.land/std/path/mod.ts';
 import chai from                                'https://esm.sh/chai';
-import                                          'https://esm.sh/mocha';
+import                                          'https://esm.sh/mocha/mocha.js';
 
 globalThis.chai = chai;
 await import('./spec-helper.js');
