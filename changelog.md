@@ -1,3 +1,9 @@
+<a name="0.17.0"></a>
+## [0.17.0](https://github.com/fasttime/Polytype/releases/tag/0.17.0) (2023-08-29)
+
+* Added support for Deno.
+* Dropped support for Node.js &lt; 16.
+
 <a name="0.16.2"></a>
 ## [0.16.2](https://github.com/fasttime/Polytype/releases/tag/0.16.2) (2023-02-21)
 
