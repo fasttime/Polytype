@@ -2,17 +2,31 @@
 {
     title: 'Superconstructor argument referencing indirect superclass',
     expectedMessage:
-    'No overload matches this call.\n' +
-    '  Overload 1 of 2, \'(args_0?: readonly [] | undefined): ClusteredPrototype<[typeof B]>\', ' +
-    'gave the following error.\n' +
-    '    Argument of type \'{ super: typeof A; }\' is not assignable to parameter of type ' +
-    '\'readonly []\'.\n' +
-    '      Object literal may only specify known properties, and \'super\' does not exist in ' +
-    'type \'readonly []\'.\n' +
-    '  Overload 2 of 2, \'(...args: Readonly<SuperConstructorInvokeInfo<typeof B>>[]): ' +
-    'ClusteredPrototype<[typeof B]>\', gave the following error.\n' +
-    '    Type \'typeof A\' is not assignable to type \'typeof B\'.\n' +
-    '      Property \'b\' is missing in type \'A\' but required in type \'B\'.',
+    [
+        // TypeScript < 5.3
+        'No overload matches this call.\n' +
+        '  Overload 1 of 2, \'(args_0?: readonly [] | undefined): ClusteredPrototype<[typeof ' +
+        'B]>\', gave the following error.\n' +
+        '    Argument of type \'{ super: typeof A; }\' is not assignable to parameter of type ' +
+        '\'readonly []\'.\n' +
+        '      Object literal may only specify known properties, and \'super\' does not exist in ' +
+        'type \'readonly []\'.\n' +
+        '  Overload 2 of 2, \'(...args: Readonly<SuperConstructorInvokeInfo<typeof B>>[]): ' +
+        'ClusteredPrototype<[typeof B]>\', gave the following error.\n' +
+        '    Type \'typeof A\' is not assignable to type \'typeof B\'.\n' +
+        '      Property \'b\' is missing in type \'A\' but required in type \'B\'.',
+
+        // TypeScript >= 5.3
+        'No overload matches this call.\n' +
+        '  Overload 1 of 2, \'(args_0?: readonly [] | undefined): ClusteredPrototype<[typeof ' +
+        'B]>\', gave the following error.\n' +
+        '    Object literal may only specify known properties, and \'super\' does not exist in ' +
+        'type \'readonly []\'.\n' +
+        '  Overload 2 of 2, \'(...args: Readonly<SuperConstructorInvokeInfo<typeof B>>[]): ' +
+        'ClusteredPrototype<[typeof B]>\', gave the following error.\n' +
+        '    Type \'typeof A\' is not assignable to type \'typeof B\'.\n' +
+        '      Property \'b\' is missing in type \'A\' but required in type \'B\'.',
+    ],
 }
 */
 

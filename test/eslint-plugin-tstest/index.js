@@ -62,7 +62,8 @@ function preprocess(text, filename)
     fileNameToTestCaseMap.set(filename, testCase);
     const polytypeMode = testCase.polytypeMode ?? 'global';
     const importStatement = getImportStatement(polytypeMode);
-    const testDataText = `void\n${testCase.testData}\n; // eslint-disable-line semi-style\n`;
+    const testDataText =
+    `void\n${testCase.testData}\n; // eslint-disable-line @stylistic/semi-style\n`;
     const processedCode = processTestCase(testCase, importStatement);
     const returnValue =
     [{ text: processedCode, filename: '/..' }, { text: testDataText, filename: '/test-data.mjs' }];

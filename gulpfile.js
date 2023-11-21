@@ -101,7 +101,7 @@ task
 
         const JS_EXAMPLE_RULES =
         {
-            'comma-dangle':
+            '@stylistic/comma-dangle':
             [
                 'error',
                 {
@@ -123,14 +123,10 @@ task
                     varsIgnorePattern:  '^(?:Green|WhiteUnit)Circle$',
                 },
             ],
-            'quotes': ['error', 'double'],
+            '@stylistic/quotes': ['error', 'double'],
         };
-        const TS_EXAMPLE_RULES =
-        Object.fromEntries
-        (
-            Object.entries(JS_EXAMPLE_RULES)
-            .map(([key, value]) => [`@typescript-eslint/${key}`, value]),
-        );
+        const { 'no-unused-vars': noUnusedVars, ...TS_EXAMPLE_RULES } = JS_EXAMPLE_RULES;
+        TS_EXAMPLE_RULES['@typescript-eslint/no-unused-vars'] = noUnusedVars;
         const overrideConfig =
         createConfig
         (
@@ -160,7 +156,7 @@ task
             },
             {
                 files:  'lib/**/*.d.ts',
-                rules:  { 'max-len': 'off' },
+                rules:  { '@stylistic/max-len': 'off' },
             },
             {
                 files:      '*.tstest',

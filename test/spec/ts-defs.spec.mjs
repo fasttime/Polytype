@@ -128,6 +128,22 @@ function defineTests(typescriptPkgName)
                             `${actualMessagesString}`,
                         );
                     }
+                    else if (Array.isArray(expectedMessage))
+                    {
+                        assert.equal
+                        (
+                            actualErrorCount,
+                            1,
+                            `expected exactly 1 compiler error, but got ${actualErrorCount}:` +
+                            `${actualMessagesString}`,
+                        );
+                        const [actualMessage] = testCase.actualMessages;
+                        assert
+                        (
+                            expectedMessage.includes(actualMessage),
+                            `Actual message:\n${actualMessage}`,
+                        );
+                    }
                     else
                     {
                         assert.equal
@@ -187,5 +203,6 @@ describe
         describe('TypeScript 5.0', () => defineTests('typescript_5.0'));
         describe('TypeScript 5.1', () => defineTests('typescript_5.1'));
         describe('TypeScript 5.2', () => defineTests('typescript_5.2'));
+        describe('TypeScript 5.3', () => defineTests('typescript_5.3'));
     },
 );

@@ -60,7 +60,8 @@
     "typescript_4.9": "npm:typescript@4.9",
     "typescript_5.0": "npm:typescript@5.0",
     "typescript_5.1": "npm:typescript@5.1",
-    "typescript_5.2": "npm:typescript@5.2"
+    "typescript_5.2": "npm:typescript@5.2",
+    "typescript_5.3": "npm:typescript@5.3"
   },
   "engines": {
     "node": ">=16.0.0"
