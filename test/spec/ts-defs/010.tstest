@@ -5,5 +5,4 @@
 }
 */
 
-// eslint-disable-next-line no-duplicate-imports
 import { SuperConstructorInvokeInfo } from 'polytype';

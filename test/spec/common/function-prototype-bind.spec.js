@@ -140,8 +140,16 @@ describe
             (
                 () => Function.prototype.bind.call({ }),
                 [
+                    // V8
                     'Bind must be called on a function',
+
+                    // Firefox 112 or later
+                    'Function.prototype.bind called on incompatible Object',
+
+                    // Firefox 111 or earlier
                     'Function.prototype.bind called on incompatible target',
+
+                    // Safari
                     '|this| is not a function inside Function.prototype.bind',
                 ],
             ),

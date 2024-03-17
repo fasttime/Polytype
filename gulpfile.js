@@ -2,7 +2,8 @@
 
 'use strict';
 
-const { parallel, series, src, task } = require('gulp');
+const { parallel, series, src, task }   = require('gulp');
+const syncReadable                      = require('sync-readable');
 
 async function bundle(inputPath, format, outputPath, outputPathMin)
 {
@@ -94,111 +95,139 @@ task
 task
 (
     'lint',
-    () =>
-    {
-        const { createConfig }  = require('@origin-1/eslint-config');
-        const gulpESLintNew     = require('gulp-eslint-new');
-
-        const JS_EXAMPLE_RULES =
+    syncReadable
+    (
+        async () =>
         {
-            '@stylistic/comma-dangle':
+            const
             [
-                'error',
-                {
-                    'arrays':       'always-multiline',
-                    'objects':      'always-multiline',
-                    'imports':      'always-multiline',
-                    'exports':      'always-multiline',
-                    'functions':    'only-multiline',
-                },
-            ],
-            'no-unused-vars':
-            [
-                'error',
-                {
-                    args:               'none',
-                    caughtErrors:       'all',
-                    ignoreRestSiblings: true,
-                    vars:               'local',
-                    varsIgnorePattern:  '^(?:Green|WhiteUnit)Circle$',
-                },
-            ],
-            '@stylistic/quotes': ['error', 'double'],
-        };
-        const { 'no-unused-vars': noUnusedVars, ...TS_EXAMPLE_RULES } = JS_EXAMPLE_RULES;
-        TS_EXAMPLE_RULES['@typescript-eslint/no-unused-vars'] = noUnusedVars;
-        const overrideConfig =
-        createConfig
-        (
-            {
-                files:      ['*.js', '*.mjs'],
-                jsVersion:  2022,
-            },
-            {
-                files:          ['*.ts', '*.tstest'],
-                tsVersion:      '4.7.0',
-                parserOptions:  { extraFileExtensions: ['.tstest'], project: 'tsconfig.json' },
-            },
-            {
-                files:          ['*.mjs', 'src/**/*.js'],
-                parserOptions:  { sourceType: 'module' },
-                rules:          { 'logical-assignment-operators': 'off' },
-            },
-            {
-                files:  'example/**/*.js',
-                env:    { 'node': 'readOnly' },
-                rules:  JS_EXAMPLE_RULES,
-            },
-            {
-                files:  'example/**/*.ts',
-                env:    { 'node': 'readOnly' },
-                rules:  TS_EXAMPLE_RULES,
-            },
-            {
-                files:  'lib/**/*.d.ts',
-                rules:  { '@stylistic/max-len': 'off' },
-            },
-            {
-                files:      '*.tstest',
-                plugins:    ['tstest'],
-                rules:
-                {
-                    '@typescript-eslint/no-extraneous-class':       'off',
-                    '@typescript-eslint/no-misused-new':            'off',
-                    '@typescript-eslint/no-unused-vars':            'off',
-                    '@typescript-eslint/no-useless-constructor':    'off',
-                    'constructor-super':                            'off',
-                    'spaced-comment':                               'off',
-                },
-            },
-        );
-        const stream =
-        src
-        (
-            [
-                '*.js',
-                'example/**/*.{js,ts}',
-                'lib/**/*.d.ts',
-                'src/**/*.js',
-                'test/**/*.{js,mjs,tstest}',
-            ],
-        )
-        .pipe
-        (
-            gulpESLintNew
+                { default: eslintPluginTSTest },
+                { createConfig },
+                { EslintEnvProcessor },
+                { default: globals },
+                { default: gulpESLintNew },
+            ] =
+            await Promise.all
             (
+                [
+                    import('#eslint-plugin-tstest'),
+                    import('@origin-1/eslint-config'),
+                    import('eslint-plugin-eslint-env'),
+                    import('globals'),
+                    import('gulp-eslint-new'),
+                ],
+            );
+            const JS_EXAMPLE_RULES =
+            {
+                '@stylistic/comma-dangle':
+                [
+                    'error',
+                    {
+                        'arrays':       'always-multiline',
+                        'objects':      'always-multiline',
+                        'imports':      'always-multiline',
+                        'exports':      'always-multiline',
+                        'functions':    'only-multiline',
+                    },
+                ],
+                'no-unused-vars':
+                [
+                    'error',
+                    {
+                        args:               'none',
+                        caughtErrors:       'all',
+                        ignoreRestSiblings: true,
+                        vars:               'local',
+                        varsIgnorePattern:  '^(?:Green|WhiteUnit)Circle$',
+                    },
+                ],
+                '@stylistic/quotes': ['error', 'double'],
+            };
+            const { 'no-unused-vars': noUnusedVars, ...TS_EXAMPLE_RULES } = JS_EXAMPLE_RULES;
+            TS_EXAMPLE_RULES['@typescript-eslint/no-unused-vars'] = noUnusedVars;
+            const overrideConfig =
+            await createConfig
+            (
+                { processor: new EslintEnvProcessor() },
                 {
-                    overrideConfig,
-                    reportUnusedDisableDirectives:  'error',
-                    useEslintrc:                    false,
-                    warnIgnored:                    true,
+                    files:              ['**/*.js'],
+                    ignores:            ['src/**/*.js'],
+                    jsVersion:          2022,
+                    languageOptions:    { sourceType: 'commonjs' },
                 },
-            ),
-        )
-        .pipe(gulpESLintNew.format('compact'))
-        .pipe(gulpESLintNew.failAfterError());
-        return stream;
-    },
+                {
+                    files:      ['src/**/*.js'],
+                    jsVersion:  2020,
+                },
+                {
+                    files:      ['**/*.mjs'],
+                    jsVersion:  2022,
+                },
+                {
+                    files:      ['**/*.ts', '**/*.tstest'],
+                    tsVersion:  '4.7.0',
+                    languageOptions:
+                    {
+                        parserOptions:
+                        { extraFileExtensions: ['.tstest'], project: 'tsconfig.json' },
+                    },
+                },
+                {
+                    files:              ['example/**/*.js'],
+                    languageOptions:    { globals: { ...globals.node } },
+                    rules:              JS_EXAMPLE_RULES,
+                },
+                {
+                    files:              ['example/**/*.ts'],
+                    languageOptions:    { globals: { ...globals.node } },
+                    rules:              TS_EXAMPLE_RULES,
+                },
+                {
+                    files:      ['lib/**/*.d.ts'],
+                    rules:      { '@stylistic/max-len': 'off' },
+                },
+                {
+                    files:      ['**/*.tstest'],
+                    plugins:    { tstest: eslintPluginTSTest },
+                    rules:
+                    {
+                        '@stylistic/spaced-comment':                    'off',
+                        '@typescript-eslint/no-extraneous-class':       'off',
+                        '@typescript-eslint/no-misused-new':            'off',
+                        '@typescript-eslint/no-unused-vars':            'off',
+                        '@typescript-eslint/no-useless-constructor':    'off',
+                        'constructor-super':                            'off',
+                    },
+                },
+            );
+            const stream =
+            src
+            (
+                [
+                    '*.js',
+                    'example/**/*.{js,ts}',
+                    'lib/**/*.d.ts',
+                    'src/**/*.js',
+                    'test/**/*.{js,mjs,tstest}',
+                ],
+            )
+            .pipe
+            (
+                gulpESLintNew
+                (
+                    {
+                        configType:         'flat',
+                        overrideConfig,
+                        overrideConfigFile: true,
+                        warnIgnored:        true,
+                    },
+                ),
+            )
+            .pipe(gulpESLintNew.format('compact'))
+            .pipe(gulpESLintNew.failAfterError());
+            return stream;
+        },
+    ),
 );
 
 task('bundle:cjs', () => bundle('src/polytype-esm.js', 'cjs', 'lib/polytype.cjs'));

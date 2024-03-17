@@ -41,8 +41,8 @@
     "@origin-1/eslint-config": "latest",
     "ansi-colors": "latest",
     "c8js": "latest",
-    "chai": "latest",
-    "eslint-plugin-tstest": "file:test/eslint-plugin-tstest",
+    "chai": "4",
+    "eslint-plugin-eslint-env": "latest",
     "glob": "latest",
     "gulp": "latest",
     "gulp-eslint-new": "latest",
@@ -54,6 +54,7 @@
     "rollup": "latest",
     "rollup-plugin-cleanup": "latest",
     "rollup-plugin-terser": "latest",
+    "sync-readable": "latest",
     "typescript": "latest",
     "typescript_4.7": "npm:typescript@4.7",
     "typescript_4.8": "npm:typescript@4.8",
@@ -61,7 +62,8 @@
     "typescript_5.0": "npm:typescript@5.0",
     "typescript_5.1": "npm:typescript@5.1",
     "typescript_5.2": "npm:typescript@5.2",
-    "typescript_5.3": "npm:typescript@5.3"
+    "typescript_5.3": "npm:typescript@5.3",
+    "typescript_5.4": "npm:typescript@5.4"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -97,6 +99,9 @@
       "default": "./lib/polytype.mjs"
     },
     "./package.json": "./package.json"
+  },
+  "imports": {
+    "#eslint-plugin-tstest": "./test/eslint-plugin-tstest.js"
   },
   "types": "lib/polytype-module.d.ts"
 }

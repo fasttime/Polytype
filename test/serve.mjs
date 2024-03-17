@@ -52,7 +52,8 @@ createServer
             'error',
             () =>
             {
-                response.writeHead(404);
+                if (!response.headersSent)
+                    response.writeHead(404);
                 response.end();
             },
         );

@@ -1,6 +1,6 @@
 /* eslint no-alert: off */
 /* eslint-env mocha, shared-node-browser */
-/* global Deno alert chai document location process require */
+/* global Deno alert chai document location process */
 
 'use strict';
 

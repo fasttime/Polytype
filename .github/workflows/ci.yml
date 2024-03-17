@@ -20,7 +20,7 @@ jobs:
         gulp make-ts-defs
         gulp lint
         gulp bundle:cjs bundle:esm bundle:global
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: lib
         path: lib
@@ -43,7 +43,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: lib
         path: lib
@@ -71,7 +71,7 @@ jobs:
     - uses: denoland/setup-deno@v1
       with:
         deno-version: ${{ matrix.deno-version }}
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: lib
         path: lib

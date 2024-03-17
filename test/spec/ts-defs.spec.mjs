@@ -6,7 +6,7 @@ import { readFile }                                         from 'node:fs/promis
 import { createRequire }                                    from 'node:module';
 import { dirname, join }                                    from 'node:path';
 import { fileURLToPath }                                    from 'node:url';
-import { getImportStatement, getTestCase, processTestCase } from 'eslint-plugin-tstest';
+import { getImportStatement, getTestCase, processTestCase } from '#eslint-plugin-tstest';
 import { glob }                                             from 'glob';
 
 function defineTests(typescriptPkgName)
@@ -204,5 +204,6 @@ describe
         describe('TypeScript 5.1', () => defineTests('typescript_5.1'));
         describe('TypeScript 5.2', () => defineTests('typescript_5.2'));
         describe('TypeScript 5.3', () => defineTests('typescript_5.3'));
+        describe('TypeScript 5.4', () => defineTests('typescript_5.4'));
     },
 );
