@@ -101,7 +101,7 @@ task
         {
             const
             [
-                { default: eslintPluginTSTest },
+                { processor: tsTestProcessor },
                 { createConfig },
                 { EslintEnvProcessor },
                 { default: globals },
@@ -188,7 +188,7 @@ task
                 },
                 {
                     files:      ['**/*.tstest'],
-                    plugins:    { tstest: eslintPluginTSTest },
+                    processor:  tsTestProcessor,
                     rules:
                     {
                         '@stylistic/spaced-comment':                    'off',
@@ -196,7 +196,7 @@ task
                         '@typescript-eslint/no-misused-new':            'off',
                         '@typescript-eslint/no-unused-vars':            'off',
                         '@typescript-eslint/no-useless-constructor':    'off',
-                        'constructor-super':                            'off',
+                        'no-duplicate-imports':                         'off',
                     },
                 },
             );

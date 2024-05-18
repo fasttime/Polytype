@@ -9,12 +9,13 @@ import { extname, join }        from 'node:path';
 import { fileURLToPath }        from 'node:url';
 import ansiColors               from 'ansi-colors';
 
-const pathDir = fileURLToPath(new URL('..', import.meta.url));
+const baseDir = fileURLToPath(new URL('..', import.meta.url));
 const mimeTypes =
 {
     '.css':     'text/css',
     '.html':    'text/html',
     '.js':      'application/javascript',
+    '.json':    'application/json',
     '.mjs':     'application/javascript',
 };
 const port = 8080;
@@ -22,16 +23,16 @@ createServer
 (
     ({ url }, response) =>
     {
-        const requestPath = fileURLToPath(new URL(url, 'file:'));
-        if (requestPath === '/favicon.ico')
+        const { pathname } = new URL(url, 'file:');
+        if (pathname === '/favicon.ico')
         {
             const headers = { 'Content-Type': 'image/x-icon' };
             response.writeHead(204, headers);
             response.end();
             return;
         }
-        const pathname = join(pathDir, requestPath);
-        const stream = createReadStream(pathname);
+        const fullPath = join(baseDir, pathname);
+        const stream = createReadStream(fullPath);
         stream.on
         (
             'open',
@@ -39,7 +40,7 @@ createServer
             {
                 const headers = { };
                 {
-                    const ext = extname(requestPath);
+                    const ext = extname(fullPath);
                     if (mimeTypes.hasOwnProperty(ext))
                         headers['Content-Type'] = mimeTypes[ext];
                 }

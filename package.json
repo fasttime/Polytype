@@ -42,6 +42,7 @@
     "ansi-colors": "latest",
     "c8js": "latest",
     "chai": "4",
+    "eslint-formatter-compact": "latest",
     "eslint-plugin-eslint-env": "latest",
     "glob": "latest",
     "gulp": "latest",
@@ -101,7 +102,7 @@
     "./package.json": "./package.json"
   },
   "imports": {
-    "#eslint-plugin-tstest": "./test/eslint-plugin-tstest.js"
+    "#eslint-plugin-tstest": "./test/eslint-plugin-tstest.mjs"
   },
   "types": "lib/polytype-module.d.ts"
 }

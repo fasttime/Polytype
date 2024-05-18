@@ -115,7 +115,7 @@ const _Function_prototype_hasInstance_call  = bindCall(_Function_prototype[_Symb
 const _Function_prototype_toString_call     = bindCall(_Function_prototype.toString);
 const _Object_prototype_valueOf_call        = bindCall(_Object.prototype.valueOf);
 
-bindCall = null;
+bindCall = null; // eslint-disable-line no-useless-assignment
 _Function_prototype_call = null;
 
 const checkDuplicateSuperType =

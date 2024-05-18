@@ -1,8 +1,6 @@
 /* eslint-env node */
 
-'use strict';
-
-function getImportStatement(polytypeMode)
+export function getImportStatement(polytypeMode)
 {
     switch (polytypeMode)
     {
@@ -15,7 +13,7 @@ function getImportStatement(polytypeMode)
     }
 }
 
-function getTestCase(code)
+export function getTestCase(code)
 {
     const match =
     code.match(/(?<=^|\u2028|\u2029)[^\S\r\n\u2028\u2029]?\/\*!TESTDATA\b(?<testData>.*?)\*\//msu);
@@ -70,7 +68,7 @@ function preprocess(text, filename)
     return returnValue;
 }
 
-function processTestCase({ testData, before, after }, importStatement)
+export function processTestCase({ testData, before, after }, importStatement)
 {
     const processedCode = `${before}${importStatement}/* TESTDATA${testData}*/${after}`;
     return processedCode;
@@ -78,10 +76,4 @@ function processTestCase({ testData, before, after }, importStatement)
 
 const fileNameToTestCaseMap = new Map();
 
-module.exports =
-{
-    getImportStatement,
-    getTestCase,
-    processTestCase,
-    processors: { '.tstest': { preprocess, postprocess } },
-};
+export const processor = { preprocess, postprocess };
