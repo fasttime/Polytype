@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@origin-1/eslint-config": "latest",
+    "@rollup/plugin-terser": "latest",
     "ansi-colors": "latest",
     "c8js": "latest",
     "chai": "4",
@@ -54,7 +55,6 @@
     "postrequire": "latest",
     "rollup": "latest",
     "rollup-plugin-cleanup": "latest",
-    "rollup-plugin-terser": "latest",
     "sync-readable": "latest",
     "typescript": "latest",
     "typescript_4.7": "npm:typescript@4.7",
