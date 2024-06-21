@@ -33,7 +33,7 @@ async function bundle(inputPath, format, outputPath, outputPathMin)
     addOutput(outputPath);
     if (outputPathMin != null)
     {
-        const { terser } = require('rollup-plugin-terser');
+        const terser = require('@rollup/plugin-terser');
 
         const minifyOpts =
         { compress: { passes: 2 }, output: { comments: (node, comment) => comment.pos === 0 } };
