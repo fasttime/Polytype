@@ -141,7 +141,7 @@ console.log(ColoredCircle.isPrototypeOf(ColoredCircle));        // false
 console.log(Object.isPrototypeOf(ColoredCircle));               // false
 console.log(Function.prototype.isPrototypeOf(ColoredCircle));   // true
 
-function getBaseNames(derivedClass: Function): string[]
+function getBaseNames(derivedClass: new () => unknown): string[]
 {
     return getPrototypeListOf(derivedClass).map(({ name }: { name: string; }): string => name);
 }

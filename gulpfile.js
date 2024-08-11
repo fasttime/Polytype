@@ -130,21 +130,21 @@ task
                         'functions':    'only-multiline',
                     },
                 ],
-                'no-unused-vars':
-                [
-                    'error',
-                    {
-                        args:               'none',
-                        caughtErrors:       'all',
-                        ignoreRestSiblings: true,
-                        vars:               'local',
-                        varsIgnorePattern:  '^(?:Green|WhiteUnit)Circle$',
-                    },
-                ],
                 '@stylistic/quotes': ['error', 'double'],
             };
-            const { 'no-unused-vars': noUnusedVars, ...TS_EXAMPLE_RULES } = JS_EXAMPLE_RULES;
-            TS_EXAMPLE_RULES['@typescript-eslint/no-unused-vars'] = noUnusedVars;
+            const TS_EXAMPLE_RULES = { ...JS_EXAMPLE_RULES };
+            JS_EXAMPLE_RULES['no-unused-vars'] =
+            TS_EXAMPLE_RULES['@typescript-eslint/no-unused-vars'] =
+            [
+                'error',
+                {
+                    args:               'none',
+                    caughtErrors:       'all',
+                    ignoreRestSiblings: true,
+                    vars:               'local',
+                    varsIgnorePattern:  '^(?:Green|WhiteUnit)Circle$',
+                },
+            ];
             const overrideConfig =
             await createConfig
             (
@@ -164,13 +164,9 @@ task
                     jsVersion:  2022,
                 },
                 {
-                    files:      ['**/*.ts', '**/*.tstest'],
-                    tsVersion:  '4.7.0',
-                    languageOptions:
-                    {
-                        parserOptions:
-                        { extraFileExtensions: ['.tstest'], project: 'tsconfig.json' },
-                    },
+                    files:              ['**/*.ts', '**/*.tstest'],
+                    tsVersion:          '4.7.0',
+                    languageOptions:    { parserOptions: { extraFileExtensions: ['.tstest'] } },
                 },
                 {
                     files:              ['example/**/*.js'],
@@ -183,15 +179,14 @@ task
                     rules:              TS_EXAMPLE_RULES,
                 },
                 {
-                    files:      ['lib/**/*.d.ts'],
-                    rules:      { '@stylistic/max-len': 'off' },
+                    files: ['lib/**/*.d.ts'],
+                    rules: { '@stylistic/max-len': 'off' },
                 },
                 {
                     files:      ['**/*.tstest'],
                     processor:  tsTestProcessor,
                     rules:
                     {
-                        '@stylistic/spaced-comment':                    'off',
                         '@typescript-eslint/no-extraneous-class':       'off',
                         '@typescript-eslint/no-misused-new':            'off',
                         '@typescript-eslint/no-unused-vars':            'off',
