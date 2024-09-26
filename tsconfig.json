@@ -4,6 +4,7 @@
     "forceConsistentCasingInFileNames": true,
     "module": "Node16",
     "moduleResolution": "Node16",
+    "noUncheckedSideEffectImports": true,
     "strict": true,
     "target": "ES2020"
   },
