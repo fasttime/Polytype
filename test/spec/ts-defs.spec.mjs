@@ -197,15 +197,22 @@ describe
     'TypeScript definitions',
     () =>
     {
-        describe('TypeScript 4.7', () => defineTests('typescript_4.7'));
-        describe('TypeScript 4.8', () => defineTests('typescript_4.8'));
-        describe('TypeScript 4.9', () => defineTests('typescript_4.9'));
-        describe('TypeScript 5.0', () => defineTests('typescript_5.0'));
-        describe('TypeScript 5.1', () => defineTests('typescript_5.1'));
-        describe('TypeScript 5.2', () => defineTests('typescript_5.2'));
-        describe('TypeScript 5.3', () => defineTests('typescript_5.3'));
-        describe('TypeScript 5.4', () => defineTests('typescript_5.4'));
-        describe('TypeScript 5.5', () => defineTests('typescript_5.5'));
-        describe('TypeScript 5.6', () => defineTests('typescript_5.6'));
+        const typescriptPkgNames =
+        (() =>
+        {
+            const require = createRequire(import.meta.url);
+            const { devDependencies } = require('../../package.json');
+            const typescriptPkgNames =
+            Object
+            .keys(devDependencies)
+            .filter(devDependency => /^typescript_\d+\.\d+$/.test(devDependency));
+            return typescriptPkgNames;
+        }
+        )();
+        for (const typescriptPkgName of typescriptPkgNames)
+        {
+            const title = typescriptPkgName.replace(/^typescript_/, 'TypeScript ');
+            describe(title, () => defineTests(typescriptPkgName));
+        }
     },
 );
