@@ -7,12 +7,13 @@
 {
     function backupGlobals()
     {
-        const globalThisDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'globalThis');
+        const _globalThis = globalThis;
 
         let bindDescriptor;
         let classesDescriptor;
         let fnHasInstanceDescriptor;
         let getPrototypeListOfDescriptor;
+        let globalThisDescriptor;
         let isPrototypeOfDescriptor;
         let objHasInstanceDescriptor;
 
@@ -20,7 +21,8 @@
         (
             () =>
             {
-                classesDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'classes');
+                classesDescriptor = Object.getOwnPropertyDescriptor(_globalThis, 'classes');
+                globalThisDescriptor = Object.getOwnPropertyDescriptor(_globalThis, 'globalThis');
                 fnHasInstanceDescriptor =
                 Object.getOwnPropertyDescriptor(Function, Symbol.hasInstance);
                 bindDescriptor = Object.getOwnPropertyDescriptor(Function.prototype, 'bind');
@@ -37,8 +39,8 @@
         (
             () =>
             {
-                setPropertyDescriptor(globalThis, 'globalThis', globalThisDescriptor);
-                Object.defineProperty(globalThis, 'classes', classesDescriptor);
+                Object.defineProperty(_globalThis, 'classes', classesDescriptor);
+                Object.defineProperty(_globalThis, 'globalThis', globalThisDescriptor);
                 setPropertyDescriptor(Function, Symbol.hasInstance, fnHasInstanceDescriptor);
                 // eslint-disable-next-line no-extend-native
                 Object.defineProperty(Function.prototype, 'bind', bindDescriptor);

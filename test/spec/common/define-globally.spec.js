@@ -9,26 +9,69 @@ maybeDescribe
     'defineGlobally',
     () =>
     {
+        let defineGlobally;
+
+        before
+        (async () => { defineGlobally = await loadPolytype(); });
+
+        after
+        (() => { defineGlobally = null; });
+
         backupGlobals();
 
-        it
+        describe
         (
-            'returns true',
-            async () =>
+            'with a falsy argument',
+            () =>
             {
-                const defineGlobally = await loadPolytype();
-                delete globalThis.classes;
-                assert.strictEqual(defineGlobally(), true);
+                it
+                (
+                    'returns true',
+                    () =>
+                    {
+                        delete globalThis.classes;
+                        assert.strictEqual(defineGlobally(), true);
+                        assert.isFunction(globalThis.classes);
+                        assert.isFunction(Object.getPrototypeListOf);
+                    },
+                );
+
+                it
+                (
+                    'returns false',
+                    () =>
+                    {
+                        assert.strictEqual(defineGlobally(), false);
+                    },
+                );
             },
         );
 
-        it
+        describe
         (
-            'returns false',
-            async () =>
+            'with a truthy argument',
+            () =>
             {
-                const defineGlobally = await loadPolytype();
-                assert.strictEqual(defineGlobally(), false);
+                it
+                (
+                    'returns true',
+                    () =>
+                    {
+                        assert.strictEqual(defineGlobally(true), true);
+                        assert.isNotFunction(globalThis.classes);
+                        assert.isNotFunction(Object.getPrototypeListOf);
+                    },
+                );
+
+                it
+                (
+                    'returns false',
+                    () =>
+                    {
+                        delete globalThis.classes;
+                        assert.strictEqual(defineGlobally(true), false);
+                    },
+                );
             },
         );
     },

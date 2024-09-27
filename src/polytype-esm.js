@@ -460,12 +460,20 @@ const createUnionProxy =
 };
 
 const defineGlobally =
-() =>
+undo =>
 {
-    if (globalThis.hasOwnProperty('classes'))
+    if (globalThis.hasOwnProperty('classes') === !undo)
         return false;
-    defineMutableDataProperty(globalThis, 'classes', classes);
-    defineMutableDataProperty(_Object, 'getPrototypeListOf', getPrototypeListOf);
+    if (undo)
+    {
+        delete globalThis.classes;
+        delete _Object.getPrototypeListOf;
+    }
+    else
+    {
+        defineMutableDataProperty(globalThis, 'classes', classes);
+        defineMutableDataProperty(_Object, 'getPrototypeListOf', getPrototypeListOf);
+    }
     return true;
 };
 

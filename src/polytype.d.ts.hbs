@@ -129,20 +129,28 @@ Polytype.ClusteredConstructor<T>;
 {{> classes q="export function "}}
 
 /**
- * Globally defines `classes` and `Object.getPrototypeListOf`.
+ * Globally defines or undefines `classes` and `Object.getPrototypeListOf`.
  *
- * Calling this function allows using Polytype everywhere inside the current JavaScript realm
- * without imports.
+ * Calling this function without arguments or with a falsy argument allows using Polytype everywhere
+ * inside the current JavaScript realm without imports.
+ * Calling it again with a truthy argument reverts the changes made by the previous call.
  *
  * This function is only available in the module versions of Polytype.
  * For most purposes it is better to import the global version of Polytype directly rather than
  * calling this function.
  *
+ * @param undo
+ *
+ * If this argument is falsy or unspecified, `classes` and `Object.getPrototypeListOf` will be
+ * defined globally.
+ * If this argument is truthy, the globals `classes` and `Object.getPrototypeListOf` will be
+ * deleted.
+ *
  * @returns
  *
- * `true` on success; `false` otherwise.
+ * `true` if any changes were made; `false` otherwise.
  */
-export function defineGlobally(): boolean;
+export function defineGlobally(uninstall?: boolean): boolean;
 
 {{> getPrototypeListOf q="export function "}}
 {{else}}
