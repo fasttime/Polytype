@@ -2,10 +2,10 @@ name: Node.js CI
 
 on:
   push:
-    branches: '**'
-    tags-ignore: '**'
+    branches: ['**']
+    tags-ignore: ['**']
   pull_request:
-    branches: '**'
+    branches: ['**']
 
 jobs:
 
@@ -40,7 +40,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['16.0.0', '16', '18', '20', '22']
+        node-version: ['16.0.0', '16', '18', '20', '22', '23']
 
     steps:
     - uses: actions/checkout@v4
