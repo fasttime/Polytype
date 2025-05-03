@@ -5,4 +5,4 @@
 }
 */
 
-import { SuperConstructorInvokeInfo } from 'polytype/global';
+import type { SuperConstructorInvokeInfo } from 'polytype/global';

@@ -7,13 +7,17 @@
 class A
 {
     public constructor(n: number, s?: string)
-    { }
+    {
+        void null;
+    }
 }
 
 abstract class B
 {
     public constructor(o: object)
-    { }
+    {
+        void null;
+    }
 }
 
 void
