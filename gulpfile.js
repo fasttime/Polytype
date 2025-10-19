@@ -166,7 +166,6 @@ task
                 {
                     files:              ['**/*.ts', '**/*.tstest'],
                     tsVersion:          '4.7.0',
-                    languageOptions:    { parserOptions: { extraFileExtensions: ['.tstest'] } },
                 },
                 {
                     files:              ['example/**/*.js'],
@@ -183,8 +182,9 @@ task
                     rules: { '@stylistic/max-len': 'off' },
                 },
                 {
-                    files:      ['**/*.tstest'],
-                    processor:  tsTestProcessor,
+                    files:              ['**/*.tstest'],
+                    languageOptions:    { parserOptions: { extraFileExtensions: ['.tstest'] } },
+                    processor:          tsTestProcessor,
                     rules:
                     {
                         '@typescript-eslint/no-extraneous-class':       'off',
@@ -194,12 +194,16 @@ task
                         'no-duplicate-imports':                         'off',
                     },
                 },
+                {
+                    files:          ['**/*.json'],
+                    jsonVersion:    'standard',
+                },
             );
             const stream =
             src
             (
                 [
-                    '*.js',
+                    '*.{js,json}',
                     'example/**/*.{js,ts}',
                     'lib/**/*.d.ts',
                     'src/**/*.js',

@@ -15,7 +15,7 @@ class B
 
 void
 (
-    (C: typeof A | typeof B): (new () => unknown) =>
+    (C: typeof A | typeof B): new () => unknown =>
     class extends classes(C)
     { }
 );

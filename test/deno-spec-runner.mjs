@@ -16,7 +16,11 @@ import                                          'https://esm.sh/mocha/mocha.js';
 
 globalThis.chai = chai;
 await import('./spec-helper.js');
-window.location = new URL('about:blank'); // Browser based Mocha expects `window.location` to exist.
+
+// Browser based Mocha expects `window.location` to exist.
+Object.defineProperty(globalThis, 'window', { value: globalThis, enumerable: true });
+window.location = new URL('about:blank');
+
 mocha.setup({ checkLeaks: true, reporter: 'spec', ui: 'bdd' });
 await import('./init-spec.js');
 {
