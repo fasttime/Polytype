@@ -46,6 +46,7 @@
     "eslint-formatter-compact": "latest",
     "eslint-plugin-eslint-env": "latest",
     "glob": "latest",
+    "globals": "latest",
     "gulp": "latest",
     "gulp-eslint-new": "latest",
     "handlebars": "latest",
