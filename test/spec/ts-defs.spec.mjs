@@ -8,6 +8,7 @@ import { dirname, join }                                    from 'node:path';
 import { fileURLToPath }                                    from 'node:url';
 import { getImportStatement, getTestCase, processTestCase } from '#eslint-plugin-tstest';
 import { glob }                                             from 'glob';
+import ts                                                   from 'typescript';
 
 function defineTests(typescriptPkgName)
 {
@@ -186,8 +187,8 @@ await
 const compilerOptions =
 (() =>
 {
-    const require = createRequire(import.meta.url);
-    const { compilerOptions } = require('../../tsconfig.json');
+    const { config: { compilerOptions } } =
+    ts.readConfigFile(join(__dirname, '..', '..', 'tsconfig.json'), ts.sys.readFile);
     return compilerOptions;
 }
 )();

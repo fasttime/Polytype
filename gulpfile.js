@@ -198,6 +198,12 @@ task
                     files:          ['**/*.json'],
                     jsonVersion:    'standard',
                 },
+                {
+                    files:              ['tsconfig.json'],
+                    jsonVersion:        'standard',
+                    language:           'json/jsonc',
+                    languageOptions:    { allowTrailingCommas: true },
+                },
             );
             const stream =
             src

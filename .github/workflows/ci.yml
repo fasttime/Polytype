@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: actions/setup-node@v6
       with:
         node-version: '24'
@@ -25,7 +25,7 @@ jobs:
         gulp make-ts-defs
         gulp lint
         gulp bundle:cjs bundle:esm bundle:global
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: lib
         path: lib
@@ -40,15 +40,15 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['16.0.0', '16', '18', '20', '22', '24', '25']
+        node-version: ['16.0.0', '16', '18', '20', '22', '24', latest]
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm uninstall @origin-1/eslint-config
-    - uses: actions/download-artifact@v5
+    - uses: actions/download-artifact@v8
       with:
         name: lib
         path: lib
@@ -72,11 +72,11 @@ jobs:
         deno-version: [v1.24, v1.x, v2.x]
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: denoland/setup-deno@v2
       with:
         deno-version: ${{ matrix.deno-version }}
-    - uses: actions/download-artifact@v5
+    - uses: actions/download-artifact@v8
       with:
         name: lib
         path: lib
