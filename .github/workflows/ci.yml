@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
-    - uses: actions/setup-node@v6
+    - uses: actions/checkout@v7
+    - uses: actions/setup-node@v7
       with:
         node-version: '24'
     - run: |
@@ -43,8 +43,8 @@ jobs:
         node-version: ['16.0.0', '16', '18', '20', '22', '24', latest]
 
     steps:
-    - uses: actions/checkout@v6
-    - uses: actions/setup-node@v6
+    - uses: actions/checkout@v7
+    - uses: actions/setup-node@v7
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm uninstall @origin-1/eslint-config
@@ -72,7 +72,7 @@ jobs:
         deno-version: [v1.24, v1.x, v2.x]
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: denoland/setup-deno@v2
       with:
         deno-version: ${{ matrix.deno-version }}

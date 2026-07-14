@@ -57,7 +57,7 @@
     "rollup": "latest",
     "rollup-plugin-cleanup": "latest",
     "sync-readable": "latest",
-    "typescript": "latest",
+    "typescript": "6",
     "typescript_4.7": "npm:typescript@4.7",
     "typescript_4.8": "npm:typescript@4.8",
     "typescript_4.9": "npm:typescript@4.9",
